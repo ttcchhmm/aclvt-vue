@@ -1,0 +1,44 @@
+* {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+html, body {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  margin-top: 65px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.mobile-show {
+  display: none;
+}
+
+@media screen and (max-width: 450px) {
+  .mobile-hide {
+    display: none;
+  }
+
+  .mobile-show {
+    display: unset;
+  }
+
+  .mobile-fill-width {
+    width: 100%;
+  }
+}

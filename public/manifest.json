@@ -1,0 +1,35 @@
+{
+    "name": "AMQ ACLVT",
+    "short_name": "ACLVT",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fff",
+    "description": "Browse the ACLVT list for AMQ rooms.",
+    "theme_color": "#7fdfff",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
