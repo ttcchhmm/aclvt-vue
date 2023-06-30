@@ -12,11 +12,7 @@ const endings = computed(() => props.anime.musique.filter(m => m.type === 'Endin
 const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Insert Song'));
 
 function pluralize(count, singular, plural) {
-    if (count === 1) {
-        return singular;
-    }
-
-    return plural;
+    return count === 1 ? singular : plural;
 }
 
 </script>
