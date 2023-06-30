@@ -5,47 +5,11 @@ import { computed } from 'vue';
 
 const props = defineProps({
     anime: Object,
-    checkTiralex: Boolean,
-    checkCycy: Boolean,
-    checkLeo: Boolean,
-    checkGyrehio: Boolean,
-    checktchm: Boolean,
-    search: String,
 });
 
 const openings = computed(() => props.anime.musique.filter(m => m.type === 'Opening'));
 const endings = computed(() => props.anime.musique.filter(m => m.type === 'Ending'));
 const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Insert Song'));
-
-function shouldShow() {   
-    if(props.search.trim().length > 0 && !props.anime.nom.toLowerCase().includes(props.search.toLowerCase())) {
-        return false;
-    }
-
-    let display = false;
-
-    if (props.checkTiralex && props.anime.users[0].A === 1) {
-        display = true;
-    }
-
-    if (props.checkCycy && props.anime.users[0].C === 1) {
-        display = true;
-    }
-
-    if (props.checkLeo && props.anime.users[0].L === 1) {
-        display = true;
-    }
-
-    if (props.checkGyrehio && props.anime.users[0].V === 1) {
-        display = true;
-    }
-
-    if (props.checktchm && props.anime.users[0].T === 1) {
-        display = true;
-    }
-
-    return display;
-}
 
 function pluralize(count, singular, plural) {
     if (count === 1) {
@@ -58,7 +22,7 @@ function pluralize(count, singular, plural) {
 </script>
 
 <template>
-    <div class="anime" v-show="shouldShow()">
+    <div class="anime">
         <h2><a :href="props.anime.lien">{{ props.anime.nom }}</a></h2>
 
         <table class="watchedTable">

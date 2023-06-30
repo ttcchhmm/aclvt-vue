@@ -3,6 +3,8 @@
 import { ref, watch } from 'vue';
 
 const search = ref('');
+const searchType = ref('anime');
+
 const dialogOpen = ref(false);
 const dialogRef = ref(null);
 
@@ -12,7 +14,7 @@ watch(search, (newVal) => {
     // There is a lot of anime in this dataset, so we wait a bit to not trigger too much DOM updates
     setTimeout(() => {
         if(newVal === search.value) {
-            emit('updated', newVal);
+            emit('updated', search.value, searchType.value);
         }
     }, 500);
 });
@@ -34,7 +36,14 @@ function clear() {
 </script>
 
 <template>
-    <input v-model="search" class="mobile-hide" type="text" id="search" placeholder="Type here to search...">
+    <div id="desktopSearchField" class="mobile-hide">
+        <select v-model="searchType">
+            <option value="anime">Anime</option>
+            <option value="song">Song</option>
+            <option value="artist">Artist</option>
+        </select>
+        <input v-model="search" type="text" id="search" placeholder="Type here to search...">
+    </div>
 
     <img class="mobile-show" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
 
@@ -44,12 +53,16 @@ function clear() {
             <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
         </div>
 
+        <select v-model="searchType">
+            <option value="anime">Anime</option>
+            <option value="song">Song</option>
+            <option value="artist">Artist</option>
+        </select>
+
         <div id="searchField">
             <input v-model="search" type="text" id="search" placeholder="Type here to search...">
             <img src="@/assets/backspace.svg" alt="Clear" @click="clear" height="30" width="30">
         </div>
-
-        <button @click="toggleDialog" class="mobile-fill-width" id="mobileCloseSearch">Close</button>
     </dialog>
 </template>
 
@@ -76,5 +89,9 @@ function clear() {
 
     #mobileCloseSearch {
         margin-top: 15px;
+    }
+
+    #desktopSearchField select {
+        margin-right: 10px;
     }
 </style>

@@ -3,7 +3,7 @@
 import LoadingIcon from './components/LoadingIcon.vue';
 import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const checkTiralex = ref(true);
 const checkCycy = ref(true);
@@ -12,11 +12,65 @@ const checkGyrehio = ref(true);
 const checktchm = ref(true);
 
 const search = ref('');
+const searchType = ref('anime');
 
-const data = ref(undefined);
+const data = ref({anime: null});
+const animes = computed(() => data.value?.anime.filter(filterAnimes));
 
-function updateSearch(value) {
-  search.value = value;
+function updateSearch(newSearch, newSearchType) {
+  search.value = newSearch;
+  searchType.value = newSearchType;
+}
+
+function filterAnimes(a) {
+  if(search.value.trim().length > 0) {
+      switch(searchType.value) {
+          case 'anime':
+              if(!a.nom.toLowerCase().includes(search.value.toLowerCase())) {
+                  return false;
+              }
+
+              break;
+          
+          case 'song':
+              if(!a.musique.some(m => m.nom.toLowerCase().includes(search.value.toLowerCase()))) {
+                  return false;
+              }
+
+              break;
+          
+          case 'artist':
+              if(!a.musique.some(m => m.artiste.toLowerCase().includes(search.value.toLowerCase()))) {
+                  return false;
+              }
+
+              break;
+      }
+  }
+
+  let display = false;
+
+  if (checkTiralex && a.users[0].A === 1) {
+      display = true;
+  }
+
+  if (checkCycy && a.users[0].C === 1) {
+      display = true;
+  }
+
+  if (checkLeo && a.users[0].L === 1) {
+      display = true;
+  }
+
+  if (checkGyrehio && a.users[0].V === 1) {
+      display = true;
+  }
+
+  if (checktchm && a.users[0].T === 1) {
+      display = true;
+  }
+
+  return display;
 }
 
 fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
@@ -40,13 +94,13 @@ fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
     </div>
   </header>
 
-  <LoadingIcon v-if="!data" />
+  <LoadingIcon v-if="data.anime === null" />
   <div v-else id="loadedData">
     <span id="stats" class="mobile-hide">Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</span>
     <small id="stats" class="mobile-show">Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</small>
 
     <div id="animes">
-      <Anime v-for="anime in data.anime" :key="anime.lien" :anime="anime" :checkTiralex="checkTiralex" :checkCycy="checkCycy" :checkLeo="checkLeo" :checkGyrehio="checkGyrehio" :checktchm="checktchm" :search="search"/>
+      <Anime v-for="anime in animes" :key="anime.lien" :anime="anime"/>
     </div>
   </div>
 </template>
