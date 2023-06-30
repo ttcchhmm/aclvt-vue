@@ -39,7 +39,10 @@ function clear() {
     <img class="mobile-show" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
 
     <dialog ref="dialogRef">
-        <h2>Search</h2>
+        <div class="dialogHeader">
+            <h2>Search</h2>
+            <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
+        </div>
 
         <div id="searchField">
             <input v-model="search" type="text" id="search" placeholder="Type here to search...">

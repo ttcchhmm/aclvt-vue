@@ -33,15 +33,27 @@ dialog {
   padding-right: 10px;
 
   width: 80%;
+
+  animation: fadein 0.75s;
 }
 
 dialog::backdrop {
   backdrop-filter: blur(5px);
+  animation: fadein 0.75s;
 }
 
-dialog h2 {
+.dialogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   margin: 0px;
   margin-bottom: 20px;
+  padding: 0px;
+}
+
+.dialogHeader h2 {
+  margin: 0px;
   padding: 0px;
 }
 
@@ -60,5 +72,15 @@ dialog h2 {
 
   .mobile-fill-width {
     width: 100%;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
