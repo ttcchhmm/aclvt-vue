@@ -2,6 +2,7 @@
 
 import Song from './Song.vue';
 import { computed } from 'vue';
+import { pluralize } from '../utils/Pluralize';
 
 /**
  * The props for this component.
@@ -27,16 +28,6 @@ const endings = computed(() => props.anime.musique.filter(m => m.type === 'Endin
  * The insert songs of the anime.
  */
 const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Insert Song'));
-
-/**
- * Pluralizes a word.
- * @param {number} count The number of entries.
- * @param {string} singular The singular form of the word.
- * @param {string} plural The plural form of the word.
- */
-function pluralize(count, singular, plural) {
-    return count === 1 ? singular : plural;
-}
 
 </script>
 
