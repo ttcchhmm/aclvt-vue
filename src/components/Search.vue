@@ -2,22 +2,44 @@
 
 import { ref, watch } from 'vue';
 
+/**
+ * The search query.
+ */
 const search = ref('');
+
+/**
+ * The search type.
+ */
 const searchType = ref('anime');
 
+/**
+ * Whether or not the search dialog is open.
+ */
 const dialogOpen = ref(false);
+
+/**
+ * The dialog reference.
+ */
 const dialogRef = ref(null);
 
+/**
+ * The event emitter.
+ */
 const emit = defineEmits(['updated']);
 
+// Watch the search query and emit an event when it changes
 watch(search, (newVal) => {
     emit('updated', search.value, searchType.value);
 });
 
+// Watch the search type and emit an event when it changes
 watch(searchType, (newVal) => {
     emit('updated', search.value, searchType.value);
 });
 
+/**
+ * Toggles the dialog.
+ */
 function toggleDialog() {
     if(dialogOpen.value) {
         dialogRef.value.close();
@@ -28,6 +50,9 @@ function toggleDialog() {
     dialogOpen.value = !dialogOpen.value;
 }
 
+/**
+ * Clears the search field.
+ */
 function clear() {
     search.value = '';
 }

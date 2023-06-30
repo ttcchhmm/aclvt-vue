@@ -5,24 +5,67 @@ import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
 import { computed, ref } from 'vue';
 
+/**
+ * Whether or not the Tiralex checkbox is checked.
+ */
 const checkTiralex = ref(true);
+
+/**
+ * Whether or not the Cycy checkbox is checked.
+ */
 const checkCycy = ref(true);
+
+/**
+ * Whether or not the Leo checkbox is checked.
+ */
 const checkLeo = ref(true);
+
+/**
+ * Whether or not the Gyrehio checkbox is checked.
+ */
 const checkGyrehio = ref(true);
+
+/**
+ * Whether or not the tchm checkbox is checked.
+ */
 const checktchm = ref(true);
 
+/**
+ * The search query.
+ */
 const search = ref('');
+
+/**
+ * The search type.
+ */
 const searchType = ref('anime');
 
+/**
+ * The data loaded from the JSON file.
+ */
 const data = ref({anime: null});
+
+/**
+ * The animes to display.
+ */
 const animes = computed(() => data.value?.anime.filter(filterAnimes));
 
+/**
+ * Updates the search query and type.
+ * @param {string} newSearch The new search query.
+ * @param {string} newSearchType The new search type.
+ */
 function updateSearch(newSearch, newSearchType) {
   search.value = newSearch;
   searchType.value = newSearchType;
 }
 
+/**
+ * Filter animes based on the search query and checkboxes.
+ * @param {object} a The anime to filter.
+ */
 function filterAnimes(a) {
+  // If a search query is present, filter based on it.
   if(search.value.trim().length > 0) {
       switch(searchType.value) {
           case 'anime':
@@ -48,6 +91,7 @@ function filterAnimes(a) {
       }
   }
 
+  // Checkboxes filter.
   let display = false;
 
   if (checkTiralex && a.users[0].A === 1) {
@@ -73,6 +117,7 @@ function filterAnimes(a) {
   return display;
 }
 
+// Load the data from the JSON file.
 fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
   .then(response => response.json())
   .then(json => data.value = json);

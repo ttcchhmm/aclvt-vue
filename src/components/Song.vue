@@ -2,10 +2,19 @@
 
 import { ref } from 'vue';
 
+/**
+ * The props for this component.
+ */
 const props = defineProps({
+    /**
+     * The song to display.
+     */
     song: Object,
 });
 
+/**
+ * Whether or not the video is shown.
+ */
 const showVideo = ref(false);
 
 </script>
