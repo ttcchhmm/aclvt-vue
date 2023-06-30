@@ -11,12 +11,7 @@ const dialogRef = ref(null);
 const emit = defineEmits(['updated']);
 
 watch(search, (newVal) => {
-    // There is a lot of anime in this dataset, so we wait a bit to not trigger too much DOM updates
-    setTimeout(() => {
-        if(newVal === search.value) {
-            emit('updated', search.value, searchType.value);
-        }
-    }, 500);
+    emit('updated', search.value, searchType.value);
 });
 
 function toggleDialog() {
