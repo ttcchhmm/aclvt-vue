@@ -93,6 +93,11 @@ function pluralize(count, singular, plural) {
     margin-bottom: 30px;
 }
 
+.anime:hover {
+    animation: hover 0.25s;
+    box-shadow: 2px 4px 5px 0px rgba(0,0,0,0.25)
+}
+
 .anime h2 {
     margin: 0px;
     max-width: 300px;
@@ -128,6 +133,7 @@ function pluralize(count, singular, plural) {
         border: unset;
         border-bottom: 1px solid lightslategray;
         border-radius: unset;
+        box-shadow: unset;
     }
 
     .songs {
