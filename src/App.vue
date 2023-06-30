@@ -46,7 +46,7 @@ fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
     <small id="stats" class="mobile-show">Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</small>
 
     <div id="animes">
-      <Anime v-for="anime in data.anime" :key="anime.nom" :anime="anime" :checkTiralex="checkTiralex" :checkCycy="checkCycy" :checkLeo="checkLeo" :checkGyrehio="checkGyrehio" :checktchm="checktchm" :search="search"/>
+      <Anime v-for="anime in data.anime" :key="anime.lien" :anime="anime" :checkTiralex="checkTiralex" :checkCycy="checkCycy" :checkLeo="checkLeo" :checkGyrehio="checkGyrehio" :checktchm="checktchm" :search="search"/>
     </div>
   </div>
 </template>
