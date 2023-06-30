@@ -4,6 +4,7 @@ import LoadingIcon from './components/LoadingIcon.vue';
 import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
 import { computed, ref } from 'vue';
+import { pluralize } from './utils/Pluralize';
 
 /**
  * Whether or not the Tiralex checkbox is checked.
@@ -141,8 +142,10 @@ fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
 
   <LoadingIcon v-if="data.anime === null" />
   <div v-else id="loadedData">
-    <span id="stats" class="mobile-hide">Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</span>
-    <small id="stats" class="mobile-show">Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</small>
+    <div class="stats">
+      <div>Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</div>
+      <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
+    </div>
 
     <div id="animes">
       <Anime v-for="anime in animes" :key="anime.lien" :anime="anime"/>
@@ -198,9 +201,13 @@ header h1 {
   align-items: center;
 }
 
-#stats {
+.stats {
   margin-top: 10px;
   margin-bottom: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @media screen and (max-width: 450px) {
@@ -209,6 +216,10 @@ header h1 {
     padding-right: 5px;
 
     width: calc(100% - 10px);
+  }
+
+  .stats div {
+    font-size: 14px;
   }
 
   #animes {
