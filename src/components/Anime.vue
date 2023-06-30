@@ -47,6 +47,14 @@ function shouldShow() {
     return display;
 }
 
+function pluralize(count, singular, plural) {
+    if (count === 1) {
+        return singular;
+    }
+
+    return plural;
+}
+
 </script>
 
 <template>
@@ -65,21 +73,21 @@ function shouldShow() {
             </tbody>
         </table>
 
-        <small>{{ props.anime.nb_musique }} <span v-if="props.anime.nb_musique === 1">entry</span> <span v-else>entries</span></small>
+        <small>{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
 
         <div class="mobile-fill-width">
             <div v-if="openings.length !== 0" class="songs">
-                <h3>Opening<span v-if="openings.length > 1">s</span></h3>
+                <h3>{{ pluralize(openings.length, 'Opening', 'Openings') }}</h3>
                 <Song v-for="song in openings" :key="song.nom" :song="song" />
             </div>
 
             <div v-if="endings.length !== 0" class="songs">
-                <h3>Ending<span v-if="endings.length > 1">s</span></h3>
+                <h3>{{ pluralize(endings.length), 'Ending', 'Endings' }}</h3>
                 <Song v-for="song in endings" :key="song.nom" :song="song" />
             </div>
 
             <div v-if="inserts.length !== 0" class="songs">
-                <h3>Insert<span v-if="inserts.length > 1">s</span></h3>
+                <h3>{{ pluralize(inserts.length, 'Insert', 'Inserts') }}</h3>
                 <Song v-for="song in inserts" :key="song.nom" :song="song" />
             </div>
         </div>
