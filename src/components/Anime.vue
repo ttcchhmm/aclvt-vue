@@ -56,7 +56,7 @@ const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Inser
             </div>
 
             <div v-if="endings.length !== 0" class="songs">
-                <h3>{{ pluralize(endings.length), 'Ending', 'Endings' }}</h3>
+                <h3>{{ pluralize(endings.length, 'Ending', 'Endings') }}</h3>
                 <Song v-for="song in endings" :key="song.nom" :song="song" />
             </div>
 
