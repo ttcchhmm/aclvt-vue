@@ -14,6 +14,10 @@ watch(search, (newVal) => {
     emit('updated', search.value, searchType.value);
 });
 
+watch(searchType, (newVal) => {
+    emit('updated', search.value, searchType.value);
+});
+
 function toggleDialog() {
     if(dialogOpen.value) {
         dialogRef.value.close();
