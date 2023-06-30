@@ -36,20 +36,22 @@ function clear() {
 <template>
     <input v-model="search" class="mobile-hide" type="text" id="search" placeholder="Type here to search...">
 
-    <img class="mobile-show" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
+    <img class="mobile-show" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
 
     <dialog ref="dialogRef">
         <h2>Search</h2>
 
-        <input v-model="search" type="text" id="search" placeholder="Type here to search...">
-        <button type="button" @click="clear">Clear</button> <br /> <br />
+        <div id="searchField">
+            <input v-model="search" type="text" id="search" placeholder="Type here to search...">
+            <img src="@/assets/backspace.svg" alt="Clear" @click="clear" height="30" width="30">
+        </div>
 
-        <button @click="toggleDialog" class="mobile-fill-width">Close</button>
+        <button @click="toggleDialog" class="mobile-fill-width" id="mobileCloseSearch">Close</button>
     </dialog>
 </template>
 
 <style scoped>
-    img {
+    #mobileSearchIcon {
         height: 30px;
 
         border: 1px solid lightslategray;
@@ -57,5 +59,19 @@ function clear() {
 
         color: black;
         background-color: white;
+    }
+
+    #searchField {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #searchField input {
+        width: calc(100% - 40px);
+    }
+
+    #mobileCloseSearch {
+        margin-top: 15px;
     }
 </style>

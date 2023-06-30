@@ -25,6 +25,26 @@ a {
   color: black;
 }
 
+dialog {
+  border: 1px solid lightslategray;
+  border-radius: 5px;
+
+  padding-left: 10px;
+  padding-right: 10px;
+
+  width: 80%;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(5px);
+}
+
+dialog h2 {
+  margin: 0px;
+  margin-bottom: 20px;
+  padding: 0px;
+}
+
 .mobile-show {
   display: none;
 }
