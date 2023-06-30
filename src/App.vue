@@ -32,6 +32,11 @@ const checkGyrehio = ref(true);
 const checktchm = ref(true);
 
 /**
+ * The list filter type.
+ */
+const listFilterType = ref('union');
+
+/**
  * The search query.
  */
 const search = ref('');
@@ -93,26 +98,66 @@ function filterAnimes(a) {
   }
 
   // Checkboxes filter.
-  let display = false;
+  let display = listFilterType.value === 'intersect';
 
-  if (checkTiralex && a.users[0].A === 1) {
-      display = true;
+  if(checkTiralex.value) {
+    if(listFilterType.value === 'union') {
+      if(a.users[0].A === 1) {
+        display = true;
+      }
+    } else { // Intersect mode
+      if(a.users[0].A === 0) {
+        return false;
+      }
+    }
   }
 
-  if (checkCycy && a.users[0].C === 1) {
-      display = true;
+  if(checkCycy.value) {
+    if(listFilterType.value === 'union') {
+      if(a.users[0].C === 1) {
+        display = true;
+      }
+    } else { // Intersect mode
+      if(a.users[0].C === 0) {
+        return false;
+      }
+    }
   }
 
-  if (checkLeo && a.users[0].L === 1) {
-      display = true;
+  if(checkLeo.value) {
+    if(listFilterType.value === 'union') {
+      if(a.users[0].L === 1) {
+        display = true;
+      }
+    } else { // Intersect mode
+      if(a.users[0].L === 0) {
+        return false;
+      }
+    }
   }
 
-  if (checkGyrehio && a.users[0].V === 1) {
-      display = true;
+  if(checkGyrehio.value) {
+    if(listFilterType.value === 'union') {
+      if(a.users[0].V === 1) {
+        display = true;
+      }
+    } else { // Intersect mode
+      if(a.users[0].V === 0) {
+        return false;
+      }
+    }
   }
 
-  if (checktchm && a.users[0].T === 1) {
-      display = true;
+  if(checktchm.value) {
+    if(listFilterType.value === 'union') {
+      if(a.users[0].T === 1) {
+        display = true;
+      }
+    } else { // Intersect mode
+      if(a.users[0].T === 0) {
+        return false;
+      }
+    }
   }
 
   return display;
@@ -132,6 +177,11 @@ fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
     <Search @updated="updateSearch" />
 
     <div>
+      <select id="listFilterType" v-model="listFilterType">
+        <option value="union">Union</option>
+        <option value="intersect">Intersect</option>
+      </select>
+
       <span class="cursorHelp listFilter" title="Alexis"><label for="checkTiralex">A</label> <input v-model="checkTiralex" type="checkbox" id="checkTiralex"></span>
       <span class="cursorHelp listFilter" title="Cyprien"><label for="checkCycy">C</label> <input v-model="checkCycy" type="checkbox" id="checkCycy"></span>
       <span class="cursorHelp listFilter" title="Léonard"><label for="checkLeo">L</label> <input v-model="checkLeo" type="checkbox" id="checkLeo"></span>
@@ -185,8 +235,8 @@ header h1 {
   padding-right: 0.25em;
 }
 
-.listFilter:first-child {
-  border-left: unset;
+#listFilterType {
+  margin-right: 10px;
 }
 
 #animes {
