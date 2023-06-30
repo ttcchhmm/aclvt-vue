@@ -47,11 +47,11 @@ function pluralize(count, singular, plural) {
         <table class="watchedTable">
             <tbody>
                 <tr>
-                    <td :class="props.anime.users[0].A === 1 ? 'watched' : 'notWatched'">A</td>
-                    <td :class="props.anime.users[0].C === 1 ? 'watched' : 'notWatched'">C</td>
-                    <td :class="props.anime.users[0].L === 1 ? 'watched' : 'notWatched'">L</td>
-                    <td :class="props.anime.users[0].V === 1 ? 'watched' : 'notWatched'">V</td>
-                    <td :class="props.anime.users[0].T === 1 ? 'watched' : 'notWatched'">T</td>
+                    <td class="cursorHelp" :class="props.anime.users[0].A === 1 ? 'watched' : 'notWatched'" title="Alexis">A</td>
+                    <td class="cursorHelp" :class="props.anime.users[0].C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C</td>
+                    <td class="cursorHelp" :class="props.anime.users[0].L === 1 ? 'watched' : 'notWatched'" title="Léonard">L</td>
+                    <td class="cursorHelp" :class="props.anime.users[0].V === 1 ? 'watched' : 'notWatched'" title="Victor">V</td>
+                    <td class="cursorHelp" :class="props.anime.users[0].T === 1 ? 'watched' : 'notWatched'" title="Tom">T</td>
                 </tr>
             </tbody>
         </table>

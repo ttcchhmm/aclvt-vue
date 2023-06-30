@@ -57,6 +57,10 @@ dialog::backdrop {
   padding: 0px;
 }
 
+.cursorHelp, .cursorHelp label {
+  cursor: help;
+}
+
 .mobile-show {
   display: none;
 }
