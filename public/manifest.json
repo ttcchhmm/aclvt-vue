@@ -3,9 +3,9 @@
     "short_name": "ACLVT",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#fff",
+    "background_color": "#000",
     "description": "Browse the ACLVT list for AMQ rooms.",
-    "theme_color": "#7fdfff",
+    "theme_color": "#006080",
     "icons": [
         {
             "src": "favicon.svg",
