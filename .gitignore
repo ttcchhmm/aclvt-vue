@@ -26,3 +26,5 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+metadata-updater/additional-data.json
