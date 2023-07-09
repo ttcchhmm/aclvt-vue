@@ -3,7 +3,7 @@
 import LoadingIcon from './components/LoadingIcon.vue';
 import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
 
 /**
@@ -49,12 +49,18 @@ const searchType = ref('anime');
 /**
  * The data loaded from the JSON file.
  */
-const data = ref({anime: null});
+const data = ref({primary: null, secondary: null});
 
 /**
  * The animes to display.
  */
-const animes = computed(() => data.value?.anime.filter(filterAnimes));
+const animes = computed(() => {
+  if(data.value.primary === null) {
+    return [];
+  } else {
+    return data.value.primary.anime.filter(filterAnimes)
+  }
+});
 
 /**
  * Updates the search query and type.
@@ -163,10 +169,17 @@ function filterAnimes(a) {
   return display;
 }
 
-// Load the data from the JSON file.
-fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
-  .then(response => response.json())
-  .then(json => data.value = json);
+onMounted(async () => {
+  const [primary, secondary] = await Promise.all([
+    fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json').then(response => response.json()),
+    fetch('/additional-data.json').then(response => response.json()),
+  ]);
+
+  data.value = {
+    primary: primary,
+    secondary: secondary,
+  };
+});
 
 </script>
 
@@ -190,15 +203,15 @@ fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json')
     </div>
   </header>
 
-  <LoadingIcon v-if="data.anime === null" />
+  <LoadingIcon v-if="data.primary === null" />
   <div v-else id="loadedData">
     <div class="stats">
-      <div>Loaded {{ data.nb_musique }} entries across {{ data.nb_anime }} animes.</div>
+      <div>Loaded {{ data.primary?.nb_musique }} entries across {{ data.primary?.nb_anime }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
     </div>
 
     <div id="animes">
-      <Anime v-for="anime in animes" :key="anime.lien" :anime="anime"/>
+      <Anime v-for="anime in animes" :key="anime.lien" :anime="anime" :metadata="data.secondary[anime.lien.substring(30).split('/')[0]]"/>
     </div>
   </div>
 </template>
@@ -276,6 +289,8 @@ header h1 {
     flex-flow: unset;
     flex-direction: column;
     align-items: center;
+
+    width: 100%;
   }
 }
 

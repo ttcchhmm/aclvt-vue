@@ -1,7 +1,7 @@
 <script setup>
 
 import Song from './Song.vue';
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { pluralize } from '../utils/Pluralize';
 
 /**
@@ -12,6 +12,11 @@ const props = defineProps({
      * The anime to display.
      */
     anime: Object,
+
+    /**
+     * Additional metadata, such as scores and covers.
+     */
+    metadata: Object,
 });
 
 /**
@@ -29,64 +34,107 @@ const endings = computed(() => props.anime.musique.filter(m => m.type === 'Endin
  */
 const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Insert Song'));
 
+const showBackground = ref(false);
+
+const backgroundRef = ref(null);
+
+const coverRule = computed(() => {
+    if(props.metadata?.cover !== undefined && showBackground.value) {
+        return `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.metadata?.cover});`;
+    } else {
+        return 'background: rgb(70, 70, 70);';
+    }
+});
+
+/**
+ * Lazy load the background image if needed.
+ * @param {IntersectionObserverEntry[]} entries 
+ * @param {IntersectionObserver} observer 
+ */
+function lazyBackground(entries, observer) {
+    entries.forEach((e) => {
+        if(e.isIntersecting) {
+            showBackground.value = true;
+            observer.unobserve(e.target);
+        }
+    });
+}
+
+onMounted(() => {
+    const observer = new IntersectionObserver(lazyBackground, { root: null, rootMargin: '0px', threshold: 0.1 });
+    observer.observe(backgroundRef.value);
+});
+
 </script>
 
 <template>
-    <div class="anime">
-        <h2><a :href="props.anime.lien">{{ props.anime.nom }}</a></h2>
+    <div class="background-target" ref="backgroundRef" :style="coverRule">
+        <div class="anime">
+            <h2><a :href="props.anime.lien">{{ props.anime.nom }}</a></h2>
 
-        <table class="watchedTable">
-            <tbody>
-                <tr>
-                    <td class="cursorHelp" :class="props.anime.users[0].A === 1 ? 'watched' : 'notWatched'" title="Alexis">A</td>
-                    <td class="cursorHelp" :class="props.anime.users[0].C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C</td>
-                    <td class="cursorHelp" :class="props.anime.users[0].L === 1 ? 'watched' : 'notWatched'" title="Léonard">L</td>
-                    <td class="cursorHelp" :class="props.anime.users[0].V === 1 ? 'watched' : 'notWatched'" title="Victor">V</td>
-                    <td class="cursorHelp" :class="props.anime.users[0].T === 1 ? 'watched' : 'notWatched'" title="Tom">T</td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="watchedTable">
+                <tbody>
+                    <tr>
+                        <td class="cursorHelp" :class="props.anime.users[0].A === 1 ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="metadata?.scores['A'] !== undefined">{{ metadata?.scores['A'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users[0].C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="metadata?.scores['C'] !== undefined">{{ metadata?.scores['C'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users[0].L === 1 ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="metadata?.scores['L'] !== undefined">{{ metadata?.scores['L'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users[0].V === 1 ? 'watched' : 'notWatched'" title="Victor">V <span v-if="metadata?.scores['V'] !== undefined">{{ metadata?.scores['V'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users[0].T === 1 ? 'watched' : 'notWatched'" title="Tom">T <span v-if="metadata?.scores['T'] !== undefined">{{ metadata?.scores['T'] }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <small>{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
+            <small>{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
 
-        <div class="mobile-fill-width">
-            <div v-if="openings.length !== 0" class="songs">
-                <h3>{{ pluralize(openings.length, 'Opening', 'Openings') }}</h3>
-                <Song v-for="song in openings" :key="song.nom" :song="song" />
-            </div>
+            <div class="mobile-fill-width">
+                <div v-if="openings.length !== 0" class="songs">
+                    <h3>{{ pluralize(openings.length, 'Opening', 'Openings') }}</h3>
+                    <Song v-for="song in openings" :key="song.nom" :song="song" />
+                </div>
 
-            <div v-if="endings.length !== 0" class="songs">
-                <h3>{{ pluralize(endings.length, 'Ending', 'Endings') }}</h3>
-                <Song v-for="song in endings" :key="song.nom" :song="song" />
-            </div>
+                <div v-if="endings.length !== 0" class="songs">
+                    <h3>{{ pluralize(endings.length, 'Ending', 'Endings') }}</h3>
+                    <Song v-for="song in endings" :key="song.nom" :song="song" />
+                </div>
 
-            <div v-if="inserts.length !== 0" class="songs">
-                <h3>{{ pluralize(inserts.length, 'Insert', 'Inserts') }}</h3>
-                <Song v-for="song in inserts" :key="song.nom" :song="song" />
+                <div v-if="inserts.length !== 0" class="songs">
+                    <h3>{{ pluralize(inserts.length, 'Insert', 'Inserts') }}</h3>
+                    <Song v-for="song in inserts" :key="song.nom" :song="song" />
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style>
+.background-target {
+    width: fit-content;
+    height: fit-content;
+
+    border: 1px solid lightslategray;
+    border-radius: 5px;
+
+    margin: 5px;
+    margin-bottom: 30px;
+
+    background-size: cover !important;
+}
+
 .anime {
     display: flex;
     align-items: center;
     flex-direction: column;
 
+    padding: 5px;
+
     width: fit-content;
 
-    border: 1px solid lightslategray;
-    border-radius: 5px;
-
-    padding: 5px;
-    margin: 5px;
-    margin-bottom: 30px;
+    backdrop-filter: blur(5px);
 }
 
 .anime:hover {
     animation: hover 0.25s;
-    box-shadow: 2px 4px 5px 0px rgba(0,0,0,0.25)
+    box-shadow: 2px 4px 5px 0px rgba(255,255,255,0.25)
 }
 
 .anime h2 {
@@ -103,9 +151,13 @@ const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Inser
     background-color: lightcoral;
 }
 
-.watchedTable {
+.watchedTable tbody tr td {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.watchedTable * {
+    color: black;
 }
 
 .songs {
@@ -119,17 +171,19 @@ const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Inser
 }
 
 @media screen and (max-width: 450px) {
-    .anime {
-        width: 100%;
+    .background-target {
         border: unset;
-        border-bottom: 1px solid lightslategray;
         border-radius: unset;
         box-shadow: unset;
+
+        width: 100%;
+
+        margin: 0px;
+        margin-bottom: 10px;
     }
 
-    .songs {
-        margin-left: 5px;
-        margin-right: 5px;
+    .anime {
+        width: calc(100% - 10px);
     }
 }
 </style>
