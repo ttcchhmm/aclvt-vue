@@ -28,3 +28,4 @@ coverage
 *.sw?
 
 metadata-updater/additional-data.json
+public/additional-data.json
