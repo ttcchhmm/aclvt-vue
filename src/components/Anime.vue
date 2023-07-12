@@ -75,11 +75,11 @@ onMounted(() => {
             <table class="watchedTable">
                 <tbody>
                     <tr>
-                        <td class="cursorHelp" :class="props.anime.users[0].A === 1 ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="metadata?.scores['A'] !== undefined">{{ metadata?.scores['A'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users[0].C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="metadata?.scores['C'] !== undefined">{{ metadata?.scores['C'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users[0].L === 1 ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="metadata?.scores['L'] !== undefined">{{ metadata?.scores['L'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users[0].V === 1 ? 'watched' : 'notWatched'" title="Victor">V <span v-if="metadata?.scores['V'] !== undefined">{{ metadata?.scores['V'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users[0].T === 1 ? 'watched' : 'notWatched'" title="Tom">T <span v-if="metadata?.scores['T'] !== undefined">{{ metadata?.scores['T'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.A === 1 ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="metadata?.scores['A'] !== undefined">{{ metadata?.scores['A'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="metadata?.scores['C'] !== undefined">{{ metadata?.scores['C'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.L === 1 ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="metadata?.scores['L'] !== undefined">{{ metadata?.scores['L'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.V === 1 ? 'watched' : 'notWatched'" title="Victor">V <span v-if="metadata?.scores['V'] !== undefined">{{ metadata?.scores['V'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.T === 1 ? 'watched' : 'notWatched'" title="Tom">T <span v-if="metadata?.scores['T'] !== undefined">{{ metadata?.scores['T'] }}</span></td>
                     </tr>
                 </tbody>
             </table>

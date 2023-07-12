@@ -108,11 +108,11 @@ function filterAnimes(a) {
 
   if(checkTiralex.value) {
     if(listFilterType.value === 'union') {
-      if(a.users[0].A === 1) {
+      if(a.users.A === 1) {
         display = true;
       }
     } else { // Intersect mode
-      if(a.users[0].A === 0) {
+      if(a.users.A === 0) {
         return false;
       }
     }
@@ -120,11 +120,11 @@ function filterAnimes(a) {
 
   if(checkCycy.value) {
     if(listFilterType.value === 'union') {
-      if(a.users[0].C === 1) {
+      if(a.users.C === 1) {
         display = true;
       }
     } else { // Intersect mode
-      if(a.users[0].C === 0) {
+      if(a.users.C === 0) {
         return false;
       }
     }
@@ -132,11 +132,11 @@ function filterAnimes(a) {
 
   if(checkLeo.value) {
     if(listFilterType.value === 'union') {
-      if(a.users[0].L === 1) {
+      if(a.users.L === 1) {
         display = true;
       }
     } else { // Intersect mode
-      if(a.users[0].L === 0) {
+      if(a.users.L === 0) {
         return false;
       }
     }
@@ -144,11 +144,11 @@ function filterAnimes(a) {
 
   if(checkGyrehio.value) {
     if(listFilterType.value === 'union') {
-      if(a.users[0].V === 1) {
+      if(a.users.V === 1) {
         display = true;
       }
     } else { // Intersect mode
-      if(a.users[0].V === 0) {
+      if(a.users.V === 0) {
         return false;
       }
     }
@@ -156,11 +156,11 @@ function filterAnimes(a) {
 
   if(checktchm.value) {
     if(listFilterType.value === 'union') {
-      if(a.users[0].T === 1) {
+      if(a.users.T === 1) {
         display = true;
       }
     } else { // Intersect mode
-      if(a.users[0].T === 0) {
+      if(a.users.T === 0) {
         return false;
       }
     }
