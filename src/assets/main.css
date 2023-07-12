@@ -50,7 +50,7 @@ header {
   z-index: 9999;
 }
 
-button, select, input::placeholder, dialog *, input {
+button, select, input::placeholder, dialog *, input, option {
   color: black;
 }
 
