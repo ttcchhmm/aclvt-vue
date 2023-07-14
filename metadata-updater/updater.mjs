@@ -58,7 +58,7 @@ for(const user of [tiralex, cycy, leo, gyrehio, tchm]) {
         if(additionalData[anime.node.id] === undefined) {
             additionalData[anime.node.id] = {
                 scores: {},
-                cover: anime.node.main_picture.large,
+                cover: anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium,
             };
         }
 
