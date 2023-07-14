@@ -105,69 +105,77 @@ function filterAnimes(a) {
   }
 
   // Checkboxes filter.
-  let display = listFilterType.value === 'intersect';
+  if(listFilterType.value !== 'strict') {
+    let display = listFilterType.value === 'intersect';
 
-  if(checkTiralex.value) {
-    if(listFilterType.value === 'union') {
-      if(a.users.A === 1) {
-        display = true;
-      }
-    } else { // Intersect mode
-      if(a.users.A === 0) {
-        return false;
+    if(checkTiralex.value) {
+      if(listFilterType.value === 'union') {
+        if(a.users.A === 1) {
+          display = true;
+        }
+      } else { // Intersect mode
+        if(a.users.A === 0) {
+          return false;
+        }
       }
     }
-  }
 
-  if(checkCycy.value) {
-    if(listFilterType.value === 'union') {
-      if(a.users.C === 1) {
-        display = true;
-      }
-    } else { // Intersect mode
-      if(a.users.C === 0) {
-        return false;
+    if(checkCycy.value) {
+      if(listFilterType.value === 'union') {
+        if(a.users.C === 1) {
+          display = true;
+        }
+      } else { // Intersect mode
+        if(a.users.C === 0) {
+          return false;
+        }
       }
     }
-  }
 
-  if(checkLeo.value) {
-    if(listFilterType.value === 'union') {
-      if(a.users.L === 1) {
-        display = true;
-      }
-    } else { // Intersect mode
-      if(a.users.L === 0) {
-        return false;
+    if(checkLeo.value) {
+      if(listFilterType.value === 'union') {
+        if(a.users.L === 1) {
+          display = true;
+        }
+      } else { // Intersect mode
+        if(a.users.L === 0) {
+          return false;
+        }
       }
     }
-  }
 
-  if(checkGyrehio.value) {
-    if(listFilterType.value === 'union') {
-      if(a.users.V === 1) {
-        display = true;
-      }
-    } else { // Intersect mode
-      if(a.users.V === 0) {
-        return false;
+    if(checkGyrehio.value) {
+      if(listFilterType.value === 'union') {
+        if(a.users.V === 1) {
+          display = true;
+        }
+      } else { // Intersect mode
+        if(a.users.V === 0) {
+          return false;
+        }
       }
     }
-  }
 
-  if(checktchm.value) {
-    if(listFilterType.value === 'union') {
-      if(a.users.T === 1) {
-        display = true;
-      }
-    } else { // Intersect mode
-      if(a.users.T === 0) {
-        return false;
+    if(checktchm.value) {
+      if(listFilterType.value === 'union') {
+        if(a.users.T === 1) {
+          display = true;
+        }
+      } else { // Intersect mode
+        if(a.users.T === 0) {
+          return false;
+        }
       }
     }
-  }
 
-  return display;
+    return display;
+  } else { // Strict match
+    return checkTiralex.value == a.users.A &&
+           checkCycy.value == a.users.C &&
+           checkLeo.value == a.users.L &&
+           checkGyrehio.value == a.users.V &&
+           checktchm.value == a.users.T;
+  }
 }
 
 onMounted(async () => {
@@ -194,6 +202,7 @@ onMounted(async () => {
       <select id="listFilterType" v-model="listFilterType">
         <option value="union">Union</option>
         <option value="intersect">Intersect</option>
+        <option value="strict">Strict</option>
       </select>
 
       <span class="cursorHelp listFilter" title="Alexis"><label for="checkTiralex">A</label> <input v-model="checkTiralex" type="checkbox" id="checkTiralex"></span>
