@@ -273,7 +273,7 @@ header h1 {
   align-items: center;
 }
 
-@media screen and (max-width: 450px) {
+@media screen and ((max-width: 450px) or (orientation: portrait)) {
   header {
     padding-left: 5px;
     padding-right: 5px;

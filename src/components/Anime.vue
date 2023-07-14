@@ -170,7 +170,7 @@ onMounted(() => {
     border-bottom: none;
 }
 
-@media screen and (max-width: 450px) {
+@media screen and ((max-width: 450px) or (orientation: portrait)) {
     .background-target {
         border: unset;
         border-radius: unset;
