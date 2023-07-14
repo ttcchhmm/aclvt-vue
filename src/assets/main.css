@@ -73,6 +73,10 @@ button, select, input::placeholder, dialog *, input, option {
   cursor: help;
 }
 
+.svgFix {
+  filter: invert(1);
+}
+
 .mobile-show {
   display: none;
 }

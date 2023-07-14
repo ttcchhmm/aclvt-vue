@@ -213,6 +213,11 @@ onMounted(async () => {
     <div id="animes">
       <Anime v-for="anime in animes" :key="anime.lien" :anime="anime" :metadata="data.secondary[anime.lien.substring(30).split('/')[0]]"/>
     </div>
+
+    <div v-if="animes.length === 0" id="noResults">
+      <img src="./assets/no-results.svg" class="svgFix">
+      <p>No results found.</p>
+    </div>
   </div>
 </template>
 
@@ -258,10 +263,14 @@ header h1 {
   flex-flow: row wrap;
 }
 
-#loadedData {
+#loadedData, #noResults {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#noResults {
+  margin-top: 40px;
 }
 
 .stats {
