@@ -90,7 +90,7 @@ function clear() {
     </dialog>
 </template>
 
-<style scoped>
+<style>
     #mobileSearchIcon {
         height: 30px;
 
