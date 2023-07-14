@@ -32,15 +32,6 @@ async function fetchUserList(username) {
     return data;
 }
 
-/**
- * Filters the data to only keep completed and watching anime
- * @param {Object} anime An anime object from the MAL API
- * @returns True if the anime is completed or watching, false otherwise
- */
-function filterData(anime) {
-    return anime.list_status.status === 'completed' || anime.list_status.status === 'watching';
-}
-
 // Check if the MAL_CLIENT_ID environment variable is set
 if(process.env.MAL_CLIENT_ID === undefined || process.env.MAL_CLIENT_ID === '') {
     console.error("Please set the MAL_CLIENT_ID environment variable");
@@ -49,11 +40,11 @@ if(process.env.MAL_CLIENT_ID === undefined || process.env.MAL_CLIENT_ID === '') 
 
 // Fetch the data for each user
 const [tiralex, cycy, leo, gyrehio, tchm] = await Promise.all([
-    fetchUserList('Tiralex1').then(data => data.filter(filterData)),
-    fetchUserList('CycyGonzales').then(data => data.filter(filterData)),
-    fetchUserList('49Leo').then(data => data.filter(filterData)),
-    fetchUserList('Gyrehio').then(data => data.filter(filterData)),
-    fetchUserList('tchm').then(data => data.filter(filterData)),
+    fetchUserList('Tiralex1'),
+    fetchUserList('CycyGonzales'),
+    fetchUserList('49Leo'),
+    fetchUserList('Gyrehio'),
+    fetchUserList('tchm'),
 ]);
 
 // Create a map of anime id to additional data
