@@ -70,7 +70,7 @@ onMounted(() => {
 <template>
     <div class="background-target" ref="backgroundRef" :style="coverRule">
         <div class="anime">
-            <h2><a :href="props.anime.lien">{{ props.anime.nom }}</a></h2>
+            <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ props.anime.nom }}</a></h2>
 
             <table class="watchedTable">
                 <tbody>

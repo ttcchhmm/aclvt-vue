@@ -211,7 +211,7 @@ onMounted(async () => {
     </div>
 
     <div id="animes">
-      <Anime v-for="anime in animes" :key="anime.lien" :anime="anime" :metadata="data.secondary[anime.lien.substring(30).split('/')[0]]"/>
+      <Anime v-for="anime in animes" :key="anime.lien" :anime="anime" :metadata="data.secondary[anime.mal_id]"/>
     </div>
 
     <div v-if="animes.length === 0" id="noResults">
