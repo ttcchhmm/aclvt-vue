@@ -14,7 +14,7 @@ async function fetchUserList(username) {
     while (hasMore) {
         console.log(`Fetching ${username} offset ${offset}`);
 
-        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status&offset=${offset}`, {
+        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status&offset=${offset}&nsfw=true`, {
             headers: {
                 'X-MAL-CLIENT-ID': process.env.MAL_CLIENT_ID, // Authenticate with the MAL API
             }
