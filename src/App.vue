@@ -3,6 +3,7 @@
 import LoadingIcon from './components/LoadingIcon.vue';
 import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
+import VideoPlayer from './components/VideoPlayer.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
 
@@ -202,6 +203,8 @@ onMounted(async () => {
       <span class="cursorHelp listFilter" title="Tom"><label for="checktchm">T</label> <input v-model="checktchm" type="checkbox" id="checktchm"></span>
     </div>
   </header>
+
+  <VideoPlayer />
 
   <LoadingIcon v-if="data.primary === null" />
   <div v-else id="loadedData">

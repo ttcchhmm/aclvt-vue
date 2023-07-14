@@ -86,7 +86,7 @@ onMounted(() => {
 
             <small>{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
 
-            <div class="mobile-fill-width">
+            <div class="mobile-fill-width songsDisplay">
                 <div v-if="openings.length !== 0" class="songs">
                     <h3>{{ pluralize(openings.length, 'Opening', 'Openings') }}</h3>
                     <Song v-for="song in openings" :key="song.nom" :song="song" />
@@ -158,6 +158,10 @@ onMounted(() => {
 
 .watchedTable * {
     color: black;
+}
+
+.songsDisplay {
+    width: 100%;
 }
 
 .songs {
