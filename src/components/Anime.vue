@@ -69,6 +69,22 @@ const typeLabel = computed(() => {
 });
 
 /**
+ * Contains the label for the state of the anime.
+ */
+const stateLabel = computed(() => {
+    switch(props.metadata.status) {
+        case 'finished_airing':
+            return 'Finished';
+        case 'currently_airing':
+            return 'Airing';
+        case 'not_yet_aired':
+            return 'Not Yet Aired';
+        default:
+            return '';
+    }
+});
+
+/**
  * Lazy load the background image if needed.
  * @param {IntersectionObserverEntry[]} entries 
  * @param {IntersectionObserver} observer 
@@ -94,7 +110,12 @@ onMounted(() => {
         <div class="anime">
             <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ props.anime.nom }}</a></h2>
 
-            <small v-if="typeLabel.length !== 0" class="typeLabel">{{ typeLabel }}</small>
+            <div class="labels">
+                <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
+                <small v-if="stateLabel.length !== 0">{{ stateLabel }}</small>
+
+                <small class="songCount">{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
+            </div>
 
             <table class="watchedTable">
                 <tbody>
@@ -107,8 +128,6 @@ onMounted(() => {
                     </tr>
                 </tbody>
             </table>
-
-            <small>{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
 
             <div class="mobile-fill-width songsDisplay">
                 <div v-if="openings.length !== 0" class="songs">
@@ -198,8 +217,16 @@ onMounted(() => {
     border-bottom: none;
 }
 
-.typeLabel {
+.labels {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     margin-bottom: 10px;
+}
+
+.songCount {
+    margin-top: 5px;
 }
 
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
