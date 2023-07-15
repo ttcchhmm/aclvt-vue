@@ -48,6 +48,16 @@ const search = ref('');
 const searchType = ref('anime');
 
 /**
+ * The search airing filter.
+ */
+const searchAiringFilter = ref('any');
+
+/**
+ * The search type filter.
+ */
+const searchTypeFilter = ref('any');
+
+/**
  * The data loaded from the JSON file.
  */
 const data = ref({primary: null, secondary: null});
@@ -68,9 +78,11 @@ const animes = computed(() => {
  * @param {string} newSearch The new search query.
  * @param {string} newSearchType The new search type.
  */
-function updateSearch(newSearch, newSearchType) {
+function updateSearch(newSearch, newSearchType, newSearchAiringFilter, newSearchTypeFilter) {
   search.value = newSearch;
   searchType.value = newSearchType;
+  searchAiringFilter.value = newSearchAiringFilter;
+  searchTypeFilter.value = newSearchTypeFilter;
 }
 
 /**
@@ -102,6 +114,32 @@ function filterAnimes(a) {
 
               break;
       }
+  }
+
+  // If an airing filter is present, filter based on it.
+  if(searchAiringFilter.value !== 'any') {
+    switch(searchAiringFilter.value) {
+        case 'airing':
+            if(data.value.secondary[a.mal_id].status !== 'currently_airing') {
+                return false;
+            }
+
+            break;
+        
+        case 'finished':
+            if(data.value.secondary[a.mal_id].status !== 'finished_airing') {
+                return false;
+            }
+
+            break;
+    }
+  }
+
+  // If a type filter is present, filter based on it.
+  if(searchTypeFilter.value !== 'any') {
+    if(searchTypeFilter.value !== data.value.secondary[a.mal_id].type) {
+      return false;
+    }
   }
 
   // Checkboxes filter.
