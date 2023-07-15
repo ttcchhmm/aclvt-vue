@@ -1,4 +1,9 @@
-import fs from 'fs';
+import { writeFileSync, createReadStream, createWriteStream } from 'fs';
+import { createGzip, createBrotliCompress, constants as zlibConstants } from 'zlib';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+
+const pipe = promisify(pipeline);
 
 /**
  * Fetches the anime list of a user from the MAL API
@@ -30,6 +35,38 @@ async function fetchUserList(username) {
     }
 
     return data;
+}
+
+/**
+ * Compresses a file using gzip.
+ * @param {import('fs').PathLike} input Input file.
+ * @param {import('fs').PathLike} output Output file.
+ */
+async function gzipFile(input, output) {
+    const gzip = createGzip({
+        level: 9,
+    });
+    const source = createReadStream(input);
+    const destination = createWriteStream(output);
+    await pipe(source, gzip, destination);
+}
+
+/**
+ * Compresses a file using brotli.
+ * @param {import('fs').PathLike} input Input file.
+ * @param {import('fs').PathLike} output Output file.
+ */
+async function brotliFile(input, output) {
+    const brotli = createBrotliCompress({
+        params: {
+            [zlibConstants.BROTLI_PARAM_MODE]: zlibConstants.BROTLI_MODE_TEXT,
+            [zlibConstants.BROTLI_PARAM_QUALITY]: zlibConstants.BROTLI_MAX_QUALITY,
+
+        },
+    });
+    const source = createReadStream(input);
+    const destination = createWriteStream(output);
+    await pipe(source, brotli, destination);
 }
 
 // Check if the MAL_CLIENT_ID environment variable is set
@@ -89,5 +126,12 @@ for(const user of [tiralex, cycy, leo, gyrehio, tchm]) {
     }
 }
 
-fs.writeFileSync('additional-data.json', JSON.stringify(additionalData));
+writeFileSync('additional-data.json', JSON.stringify(additionalData));
+
+// Compress the file
+await Promise.all([
+    gzipFile('additional-data.json', 'additional-data.json.gz'),
+    brotliFile('additional-data.json', 'additional-data.json.br'),
+]);
+
 console.log('Done.');
