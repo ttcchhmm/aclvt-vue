@@ -132,8 +132,8 @@ function clear() {
                                 <option value="any">Any</option>
                                 <option value="tv">Series</option>
                                 <option value="movie">Movie</option>
-                                <option value="ova">Original Video Animation (OVA)</option>
-                                <option value="ona">Original Net Animation (ONA)</option>
+                                <option value="ova">Original Video Animation</option>
+                                <option value="ona">Original Net Animation</option>
                                 <option value="special">Special</option>
                             </select>
                         </td>
