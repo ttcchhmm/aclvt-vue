@@ -74,6 +74,23 @@ const animes = computed(() => {
 });
 
 /**
+ * A map of alternative titles for each anime.
+ */
+const alternativeTitles = computed(() => {
+  if(data.value.primary === null) {
+    return {};
+  } else {
+    const titles = {};
+
+    for(const anime of data.value.primary.anime) {
+      titles[anime.mal_id] = getAlternativeTitles(anime.mal_id);
+    }
+
+    return titles;
+  }
+});
+
+/**
  * Updates the search query and type.
  * @param {string} newSearch The new search query.
  * @param {string} newSearchType The new search type.
@@ -86,6 +103,19 @@ function updateSearch(newSearch, newSearchType, newSearchAiringFilter, newSearch
 }
 
 /**
+ * Gets the alternative titles for an anime.
+ * @param {number} malId The MyAnimeList ID of the anime.
+ */
+function getAlternativeTitles(malId) {
+  return [
+    data.value.secondary[malId].titles.original,
+    data.value.secondary[malId].titles.en,
+    data.value.secondary[malId].titles.ja,
+    ...data.value.secondary[malId].titles.synonyms,
+  ];
+}
+
+/**
  * Filter animes based on the search query and checkboxes.
  * @param {object} a The anime to filter.
  */
@@ -95,7 +125,10 @@ function filterAnimes(a) {
       switch(searchType.value) {
           case 'anime':
               if(!a.nom.toLowerCase().includes(search.value.toLowerCase())) {
+                // If the anime doesn't match the search query, check if any of its alternative titles do.
+                if(!alternativeTitles.value[a.mal_id].some(t => t.toLowerCase().includes(search.value.toLowerCase()))) {
                   return false;
+                }
               }
 
               break;
