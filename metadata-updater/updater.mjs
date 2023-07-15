@@ -19,7 +19,7 @@ async function fetchUserList(username) {
     while (hasMore) {
         console.log(`Fetching ${username} offset ${offset}`);
 
-        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status&offset=${offset}&nsfw=true`, {
+        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status,alternative_titles,media_type,status&offset=${offset}&nsfw=true`, {
             headers: {
                 'X-MAL-CLIENT-ID': process.env.MAL_CLIENT_ID, // Authenticate with the MAL API
             }
@@ -96,6 +96,9 @@ for(const user of [tiralex, cycy, leo, gyrehio, tchm]) {
             additionalData[anime.node.id] = {
                 scores: {},
                 cover: anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium,
+                titles: { original: anime.node.title , ...anime.node.alternative_titles },
+                status: anime.node.status,
+                type: anime.node.media_type,
             };
         }
 
