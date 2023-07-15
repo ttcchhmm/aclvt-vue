@@ -47,6 +47,28 @@ const coverRule = computed(() => {
 });
 
 /**
+ * Contains the label for the type of anime.
+ */
+const typeLabel = computed(() => {
+    switch(props.metadata.type) {
+        case 'tv':
+            return 'Series';
+        case 'movie':
+            return 'Movie';
+        case 'ova':
+            return 'Original Video Animation';
+        case 'ona':
+            return 'Original Net Animation';
+        case 'special':
+            return 'Special';
+        case 'music':
+            return 'Music';
+        default:
+            return '';
+    }
+});
+
+/**
  * Lazy load the background image if needed.
  * @param {IntersectionObserverEntry[]} entries 
  * @param {IntersectionObserver} observer 
@@ -71,6 +93,8 @@ onMounted(() => {
     <div class="background-target" ref="backgroundRef" :style="coverRule">
         <div class="anime">
             <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ props.anime.nom }}</a></h2>
+
+            <small v-if="typeLabel.length !== 0" class="typeLabel">{{ typeLabel }}</small>
 
             <table class="watchedTable">
                 <tbody>
@@ -172,6 +196,10 @@ onMounted(() => {
 
 .songs:last-child {
     border-bottom: none;
+}
+
+.typeLabel {
+    margin-bottom: 10px;
 }
 
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
