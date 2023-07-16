@@ -6,6 +6,7 @@ import Search from './components/Search.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
+import { getFilterAnimes } from './utils/SearchFilter';
 
 /**
  * Whether or not the Tiralex checkbox is checked.
@@ -69,7 +70,7 @@ const animes = computed(() => {
   if(data.value.primary === null) {
     return [];
   } else {
-    return data.value.primary.anime.filter(filterAnimes)
+    return data.value.primary.anime.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, data.value.secondary));
   }
 });
 
@@ -113,140 +114,6 @@ function getAlternativeTitles(malId) {
     data.value.secondary[malId].titles.ja,
     ...data.value.secondary[malId].titles.synonyms,
   ];
-}
-
-/**
- * Filter animes based on the search query and checkboxes.
- * @param {object} a The anime to filter.
- */
-function filterAnimes(a) {
-  // If a search query is present, filter based on it.
-  if(search.value.trim().length > 0) {
-      switch(searchType.value) {
-          case 'anime':
-              if(!a.nom.toLowerCase().includes(search.value.toLowerCase())) {
-                // If the anime doesn't match the search query, check if any of its alternative titles do.
-                if(!alternativeTitles.value[a.mal_id].some(t => t.toLowerCase().includes(search.value.toLowerCase()))) {
-                  return false;
-                }
-              }
-
-              break;
-          
-          case 'song':
-              if(!a.musique.some(m => m.nom.toLowerCase().includes(search.value.toLowerCase()))) {
-                  return false;
-              }
-
-              break;
-          
-          case 'artist':
-              if(!a.musique.some(m => m.artiste.toLowerCase().includes(search.value.toLowerCase()))) {
-                  return false;
-              }
-
-              break;
-      }
-  }
-
-  // If an airing filter is present, filter based on it.
-  if(searchAiringFilter.value !== 'any') {
-    switch(searchAiringFilter.value) {
-        case 'airing':
-            if(data.value.secondary[a.mal_id].status !== 'currently_airing') {
-                return false;
-            }
-
-            break;
-        
-        case 'finished':
-            if(data.value.secondary[a.mal_id].status !== 'finished_airing') {
-                return false;
-            }
-
-            break;
-    }
-  }
-
-  // If a type filter is present, filter based on it.
-  if(searchTypeFilter.value !== 'any') {
-    if(searchTypeFilter.value !== data.value.secondary[a.mal_id].type) {
-      return false;
-    }
-  }
-
-  // Checkboxes filter.
-  if(listFilterType.value !== 'strict') {
-    let display = listFilterType.value === 'intersect';
-
-    if(checkTiralex.value) {
-      if(listFilterType.value === 'union') {
-        if(a.users.A === 1) {
-          display = true;
-        }
-      } else { // Intersect mode
-        if(a.users.A === 0) {
-          return false;
-        }
-      }
-    }
-
-    if(checkCycy.value) {
-      if(listFilterType.value === 'union') {
-        if(a.users.C === 1) {
-          display = true;
-        }
-      } else { // Intersect mode
-        if(a.users.C === 0) {
-          return false;
-        }
-      }
-    }
-
-    if(checkLeo.value) {
-      if(listFilterType.value === 'union') {
-        if(a.users.L === 1) {
-          display = true;
-        }
-      } else { // Intersect mode
-        if(a.users.L === 0) {
-          return false;
-        }
-      }
-    }
-
-    if(checkGyrehio.value) {
-      if(listFilterType.value === 'union') {
-        if(a.users.V === 1) {
-          display = true;
-        }
-      } else { // Intersect mode
-        if(a.users.V === 0) {
-          return false;
-        }
-      }
-    }
-
-    if(checktchm.value) {
-      if(listFilterType.value === 'union') {
-        if(a.users.T === 1) {
-          display = true;
-        }
-      } else { // Intersect mode
-        if(a.users.T === 0) {
-          return false;
-        }
-      }
-    }
-
-    return display;
-  } else { // Strict match
-    return checkTiralex.value == a.users.A &&
-           checkCycy.value == a.users.C &&
-           checkLeo.value == a.users.L &&
-           checkGyrehio.value == a.users.V &&
-           checktchm.value == a.users.T;
-  }
 }
 
 onMounted(async () => {
