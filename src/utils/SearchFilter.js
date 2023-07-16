@@ -4,7 +4,7 @@
  * @param {string} search The search query.
  * @param {string} searchType The search type, either 'anime', 'song' or 'artist'.
  * @param {string} searchAiringFilter The airing filter, either 'any', 'airing' or 'finished'.
- * @param {string} searchTypeFilter The type filter, either 'any', 'tv', 'ova', 'movie', 'special' or 'ona'.
+ * @param {string[]} searchTypeFilter The type filter, either 'any', 'tv', 'ova', 'movie', 'special' or 'ona'.
  * @param {string} listFilterType The list filter type, either 'strict', 'union' or 'intersect'. 
  * @param {boolean} checkTiralex Whether to display animes from Tiralex's list.
  * @param {boolean} checkCycy Whether to display animes from Cycy's list.
@@ -67,7 +67,7 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
 
         // If a type filter is present, filter based on it.
         if(searchTypeFilter !== 'any') {
-            if(searchTypeFilter !== secondaryData[a.mal_id].type) {
+            if(!searchTypeFilter.includes(secondaryData[a.mal_id].type)) {
                 return false;
             }
         }

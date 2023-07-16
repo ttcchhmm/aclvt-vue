@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 /**
  * The search query.
@@ -20,7 +20,13 @@ const searchAiringFilter = ref('any');
 /**
  * The search type filter.
  */
-const searchTypeFilter = ref('any');
+const searchTypeFilter = ref({
+    tv: true,
+    movie: true,
+    ova: true,
+    ona: true,
+    special: true
+});
 
 /**
  * Whether or not the search dialog is open.
@@ -38,14 +44,40 @@ const dialogRef = ref(null);
 const emit = defineEmits(['updated']);
 
 function update() {
-    emit('updated', search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value);
+    emit('updated', search.value, searchType.value, searchAiringFilter.value, searchTypeFilterArray.value);
 }
+
+const searchTypeFilterArray = computed(() => {
+    const searchTypeFilterArray = [];
+
+    if(searchTypeFilter.value.tv) {
+        searchTypeFilterArray.push('tv');
+    }
+
+    if(searchTypeFilter.value.movie) {
+        searchTypeFilterArray.push('movie');
+    }
+
+    if(searchTypeFilter.value.ova) {
+        searchTypeFilterArray.push('ova');
+    }
+
+    if(searchTypeFilter.value.ona) {
+        searchTypeFilterArray.push('ona');
+    }
+
+    if(searchTypeFilter.value.special) {
+        searchTypeFilterArray.push('special');
+    }
+
+    return searchTypeFilterArray;
+});
 
 // Watchers
 watch(search, update);
 watch(searchType, update);
 watch(searchAiringFilter, update);
-watch(searchTypeFilter, update);
+watch(searchTypeFilterArray, update);
 
 /**
  * Toggles the dialog.
@@ -125,17 +157,14 @@ function clear() {
 
                     <tr>
                         <td>
-                            <label for="searchTypeFilter">Type: </label>
+                            <span>Type: </span>
                         </td>
-                        <td>
-                            <select v-model="searchTypeFilter" id="searchTypeFilter">
-                                <option value="any">Any</option>
-                                <option value="tv">Series</option>
-                                <option value="movie">Movie</option>
-                                <option value="ova">Original Video Animation</option>
-                                <option value="ona">Original Net Animation</option>
-                                <option value="special">Special</option>
-                            </select>
+                        <td id="advancedSearchTypes">
+                            <div><input v-model="searchTypeFilter.tv" type="checkbox" id="tv"> <label for="tv">Series</label></div>
+                            <div><input v-model="searchTypeFilter.movie" type="checkbox" id="movie"> <label for="movie">Movie</label></div>
+                            <div><input v-model="searchTypeFilter.ova" type="checkbox" id="ova"> <label for="ova">OVA</label></div>
+                            <div><input v-model="searchTypeFilter.ona" type="checkbox" id="ona"> <label for="ona">ONA</label></div>
+                            <div><input v-model="searchTypeFilter.special" type="checkbox" id="special"> <label for="special">Special</label></div>
                         </td>
                     </tr>
                 </tbody>
@@ -183,5 +212,46 @@ function clear() {
     #advancedSearchCategories td {
         padding: 5px;
         border: none;
+    }
+
+    #advancedSearchCategories tr {
+        border-bottom: 1px dotted lightslategray;
+    }
+
+    #advancedSearchCategories tr:last-child {
+        border-bottom: none;
+    }
+
+    #advancedSearchTypes {
+        display: flex;
+    }
+
+    #advancedSearchTypes div {
+        border-left: 1px solid black;
+        padding-left: 10px;
+        margin-left: 10px;
+    }
+
+    #advancedSearchTypes div:nth-child(1) {
+        border-left: none;
+        padding-left: 0px;
+        margin-left: 0px;
+    }
+
+    #advancedSearchTypes div input {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    @media screen and ((max-width: 450px) or (orientation: portrait)) {
+        #advancedSearchTypes {
+            flex-direction: column;
+        }
+
+        #advancedSearchTypes div {
+            border-left: none;
+            padding-left: 0px;
+            margin-left: 0px;
+        }
     }
 </style>
