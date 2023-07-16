@@ -99,6 +99,22 @@ function clear() {
     search.value = '';
 }
 
+/**
+ * Resets the search fields.
+ */
+function reset() {
+    search.value = '';
+    searchType.value = 'anime';
+    searchAiringFilter.value = 'any';
+    searchTypeFilter.value = {
+        tv: true,
+        movie: true,
+        ova: true,
+        ona: true,
+        special: true
+    };
+}
+
 </script>
 
 <template>
@@ -119,7 +135,10 @@ function clear() {
     <dialog ref="dialogRef" id="advancedSearchDialog">
         <div class="dialogHeader">
             <h2>Search</h2>
-            <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            <div>
+                <img @click="reset" src="@/assets/reset.svg" alt="Clear all" height="30" width="30">
+                <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            </div>
         </div>
 
         <div>
