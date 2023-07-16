@@ -10,7 +10,12 @@ const props = defineProps({
     /**
      * The search result count.
      */
-   searchResultCount: Number, 
+   searchResultCount: Number,
+
+   /**
+    * The list filter type.
+    */
+   listFilterType: String
 });
 
 /**
@@ -27,6 +32,11 @@ const searchType = ref('anime');
  * The search airing filter.
  */
 const searchAiringFilter = ref('any');
+
+/**
+ * The list filter type.
+ */
+const listFilterType = ref(props.listFilterType);
 
 /**
  * The search type filter.
@@ -62,7 +72,7 @@ onMounted(() => {
 const emit = defineEmits(['updated']);
 
 function update() {
-    emit('updated', search.value, searchType.value, searchAiringFilter.value, searchTypeFilterArray.value);
+    emit('updated', search.value, searchType.value, searchAiringFilter.value, searchTypeFilterArray.value, listFilterType.value);
 }
 
 const searchTypeFilterArray = computed(() => {
@@ -96,6 +106,11 @@ watch(search, update);
 watch(searchType, update);
 watch(searchAiringFilter, update);
 watch(searchTypeFilterArray, update);
+watch(listFilterType, update);
+
+watch(() => props.listFilterType, (newValue) => {
+    listFilterType.value = newValue;
+});
 
 /**
  * Toggles the dialog.
@@ -124,6 +139,7 @@ function reset() {
     search.value = '';
     searchType.value = 'anime';
     searchAiringFilter.value = 'any';
+    listFilterType.value = 'union';
     searchTypeFilter.value = {
         tv: true,
         movie: true,
@@ -192,6 +208,19 @@ function reset() {
                                 <option value="any">Any</option>
                                 <option value="finished">Finished</option>
                                 <option value="airing">Currently Airing</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="listFilterType">List filter mode: </label>
+                        </td>
+                        <td>
+                            <select id="listFilterType" v-model="listFilterType">
+                                <option value="union">Union</option>
+                                <option value="intersect">Intersect</option>
+                                <option value="strict">Strict</option>
                             </select>
                         </td>
                     </tr>

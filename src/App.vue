@@ -96,11 +96,12 @@ const alternativeTitles = computed(() => {
  * @param {string} newSearch The new search query.
  * @param {string} newSearchType The new search type.
  */
-function updateSearch(newSearch, newSearchType, newSearchAiringFilter, newSearchTypeFilter) {
+function updateSearch(newSearch, newSearchType, newSearchAiringFilter, newSearchTypeFilter, newListFilterType) {
   search.value = newSearch;
   searchType.value = newSearchType;
   searchAiringFilter.value = newSearchAiringFilter;
   searchTypeFilter.value = newSearchTypeFilter;
+  listFilterType.value = newListFilterType;
 }
 
 /**
@@ -137,7 +138,7 @@ onMounted(async () => {
     <Search @updated="updateSearch" :searchResultCount="animes.length" />
 
     <div>
-      <select id="listFilterType" v-model="listFilterType">
+      <select class="mobile-hide" id="listFilterType" v-model="listFilterType">
         <option value="union">Union</option>
         <option value="intersect">Intersect</option>
         <option value="strict">Strict</option>
