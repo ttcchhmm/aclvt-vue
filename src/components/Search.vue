@@ -1,6 +1,17 @@
 <script setup>
 
 import { computed, ref, watch } from 'vue';
+import { pluralize } from '../utils/Pluralize';
+
+/**
+ * The props for this component.
+ */
+const props = defineProps({
+    /**
+     * The search result count.
+     */
+   searchResultCount: Number, 
+});
 
 /**
  * The search query.
@@ -134,7 +145,11 @@ function reset() {
 
     <dialog ref="dialogRef" id="advancedSearchDialog">
         <div class="dialogHeader">
-            <h2>Search</h2>
+            <div>
+                <h2>Search</h2>
+                <small>{{ `${props.searchResultCount} ${pluralize(props.searchResultCount, 'result', 'results')}` }}</small>
+            </div>
+
             <div>
                 <img @click="reset" src="@/assets/reset.svg" alt="Clear all" height="30" width="30">
                 <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">

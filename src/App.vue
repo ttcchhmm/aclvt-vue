@@ -134,7 +134,7 @@ onMounted(async () => {
   <header>
     <h1 class="mobile-hide">AMQ ACLVT</h1>
 
-    <Search @updated="updateSearch" />
+    <Search @updated="updateSearch" :searchResultCount="animes.length" />
 
     <div>
       <select id="listFilterType" v-model="listFilterType">
