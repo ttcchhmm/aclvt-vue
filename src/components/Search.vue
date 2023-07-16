@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { pluralize } from '../utils/Pluralize';
 
 /**
@@ -48,6 +48,13 @@ const dialogOpen = ref(false);
  * The dialog reference.
  */
 const dialogRef = ref(null);
+
+onMounted(() => {
+    // Support closing the dialog by pressing the escape key.
+    dialogRef.value.addEventListener('close', () => {
+        dialogOpen.value = false;
+    });
+});
 
 /**
  * The event emitter.
