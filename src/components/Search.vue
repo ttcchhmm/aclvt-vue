@@ -1,7 +1,9 @@
 <script setup>
 
 import { computed, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
+import { useSearchStore } from '../stores/SearchStore';
 
 /**
  * The props for this component.
@@ -11,32 +13,17 @@ const props = defineProps({
      * The search result count.
      */
    searchResultCount: Number,
-
-   /**
-    * The list filter type.
-    */
-   listFilterType: String
 });
 
-/**
- * The search query.
- */
-const search = ref('');
 
-/**
- * The search type.
- */
-const searchType = ref('anime');
+const searchStore = useSearchStore();
 
-/**
- * The search airing filter.
- */
-const searchAiringFilter = ref('any');
-
-/**
- * The list filter type.
- */
-const listFilterType = ref(props.listFilterType);
+const {
+    search,
+    searchType,
+    searchAiringFilter,
+    listFilterType,
+} = storeToRefs(searchStore);
 
 /**
  * The search type filter.
@@ -66,15 +53,6 @@ onMounted(() => {
     });
 });
 
-/**
- * The event emitter.
- */
-const emit = defineEmits(['updated']);
-
-function update() {
-    emit('updated', search.value, searchType.value, searchAiringFilter.value, searchTypeFilterArray.value, listFilterType.value);
-}
-
 const searchTypeFilterArray = computed(() => {
     const searchTypeFilterArray = [];
 
@@ -101,15 +79,10 @@ const searchTypeFilterArray = computed(() => {
     return searchTypeFilterArray;
 });
 
-// Watchers
-watch(search, update);
-watch(searchType, update);
-watch(searchAiringFilter, update);
-watch(searchTypeFilterArray, update);
-watch(listFilterType, update);
-
-watch(() => props.listFilterType, (newValue) => {
-    listFilterType.value = newValue;
+watch(searchTypeFilterArray, () => {
+    searchStore.$patch({
+        searchTypeFilter: searchTypeFilterArray.value,
+    });
 });
 
 /**
@@ -185,7 +158,7 @@ function reset() {
                 <img src="@/assets/backspace.svg" alt="Clear" @click="clear" height="30" width="30">
             </div>
 
-            <table id="advancedSearchCategories">
+            <table class="tableOptions">
                 <tbody>
                     <tr>
                         <td>
@@ -273,23 +246,6 @@ function reset() {
 
     #advancedSearchDialog {
         max-width: 500px;
-    }
-
-    #advancedSearchCategories {
-        margin-top: 10px;
-    }
-
-    #advancedSearchCategories td {
-        padding: 5px;
-        border: none;
-    }
-
-    #advancedSearchCategories tr {
-        border-bottom: 1px dotted lightslategray;
-    }
-
-    #advancedSearchCategories tr:last-child {
-        border-bottom: none;
     }
 
     #advancedSearchTypes {

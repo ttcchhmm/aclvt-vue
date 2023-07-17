@@ -7,11 +7,21 @@ import VideoPlayer from './components/VideoPlayer.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
 import { getFilterAnimes } from './utils/SearchFilter';
+import { storeToRefs } from 'pinia';
+import { useSearchStore } from './stores/SearchStore';
 
-/**
- * Whether or not the Tiralex checkbox is checked.
- */
-const checkTiralex = ref(true);
+const {
+  checkTiralex,
+  checkCycy,
+  checkLeo,
+  checkGyrehio,
+  checktchm,
+  listFilterType,
+  search,
+  searchType,
+  searchAiringFilter,
+  searchTypeFilter,
+} = storeToRefs(useSearchStore());
 
 /**
  * Whether or not the Cycy checkbox is checked.
@@ -92,19 +102,6 @@ const alternativeTitles = computed(() => {
 });
 
 /**
- * Updates the search query and type.
- * @param {string} newSearch The new search query.
- * @param {string} newSearchType The new search type.
- */
-function updateSearch(newSearch, newSearchType, newSearchAiringFilter, newSearchTypeFilter, newListFilterType) {
-  search.value = newSearch;
-  searchType.value = newSearchType;
-  searchAiringFilter.value = newSearchAiringFilter;
-  searchTypeFilter.value = newSearchTypeFilter;
-  listFilterType.value = newListFilterType;
-}
-
-/**
  * Gets the alternative titles for an anime.
  * @param {number} malId The MyAnimeList ID of the anime.
  */
@@ -135,7 +132,7 @@ onMounted(async () => {
   <header>
     <h1 class="mobile-hide">AMQ ACLVT</h1>
 
-    <Search @updated="updateSearch" :searchResultCount="animes.length" />
+      <Search :searchResultCount="animes.length" />
 
     <div>
       <select class="mobile-hide" id="listFilterType" v-model="listFilterType">

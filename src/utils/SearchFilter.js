@@ -66,7 +66,7 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
         }
 
         // If a type filter is present, filter based on it.
-        if(searchTypeFilter !== 'any') {
+        if(searchTypeFilter.length !== 0) {
             if(!searchTypeFilter.includes(secondaryData[a.mal_id].type)) {
                 return false;
             }

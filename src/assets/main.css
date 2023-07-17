@@ -82,6 +82,23 @@ button, select, input::placeholder, dialog *, input, option {
   display: none;
 }
 
+.tableOptions {
+  margin-top: 10px;
+}
+
+.tableOptions td {
+  padding: 5px;
+  border: none;
+}
+
+.tableOptions tr {
+  border-bottom: 1px dotted lightslategray;
+}
+
+.tableOptions tr:last-child {
+  border-bottom: none;
+}
+
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
   .mobile-hide {
     display: none;
