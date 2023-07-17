@@ -2,7 +2,9 @@
 
 import Song from './Song.vue';
 import { computed, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
+import { useSettingsStore } from '../stores/SettingsStore';
 
 /**
  * The props for this component.
@@ -34,10 +36,21 @@ const endings = computed(() => props.anime.musique.filter(m => m.type === 'Endin
  */
 const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Insert Song'));
 
+/**
+ * Whether or not the background should be shown.
+ */
 const showBackground = ref(false);
 
+/**
+ * The background reference.
+ */
 const backgroundRef = ref(null);
 
+const { animeLanguage } = storeToRefs(useSettingsStore());
+
+/**
+ * CSS code for the background.
+ */
 const coverRule = computed(() => {
     if(props.metadata?.cover !== undefined && showBackground.value) {
         return `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.metadata?.cover});`;
@@ -84,6 +97,17 @@ const stateLabel = computed(() => {
     }
 });
 
+const title = computed(() => {
+    switch(animeLanguage.value) {
+        case 'original':
+            return props.metadata.titles.original || props.anime.nom;
+        case 'en':
+            return props.metadata.titles.en || props.anime.nom;
+        case 'ja':
+            return props.metadata.titles.ja || props.anime.nom;
+    }
+});
+
 /**
  * Lazy load the background image if needed.
  * @param {IntersectionObserverEntry[]} entries 
@@ -108,7 +132,7 @@ onMounted(() => {
 <template>
     <div class="background-target" ref="backgroundRef" :style="coverRule">
         <div class="anime">
-            <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ props.anime.nom }}</a></h2>
+            <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ title }}</a></h2>
 
             <div class="labels">
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>

@@ -4,9 +4,11 @@ import LoadingIcon from './components/LoadingIcon.vue';
 import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
+import Settings from './components/Settings.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
 import { getFilterAnimes } from './utils/SearchFilter';
+import { setupSettings, useSettingsStore } from './stores/SettingsStore';
 import { storeToRefs } from 'pinia';
 import { useSearchStore } from './stores/SearchStore';
 
@@ -24,54 +26,19 @@ const {
 } = storeToRefs(useSearchStore());
 
 /**
- * Whether or not the Cycy checkbox is checked.
- */
-const checkCycy = ref(true);
-
-/**
- * Whether or not the Leo checkbox is checked.
- */
-const checkLeo = ref(true);
-
-/**
- * Whether or not the Gyrehio checkbox is checked.
- */
-const checkGyrehio = ref(true);
-
-/**
- * Whether or not the tchm checkbox is checked.
- */
-const checktchm = ref(true);
-
-/**
- * The list filter type.
- */
-const listFilterType = ref('union');
-
-/**
- * The search query.
- */
-const search = ref('');
-
-/**
- * The search type.
- */
-const searchType = ref('anime');
-
-/**
- * The search airing filter.
- */
-const searchAiringFilter = ref('any');
-
-/**
- * The search type filter.
- */
-const searchTypeFilter = ref('any');
-
-/**
  * The data loaded from the JSON file.
  */
 const data = ref({primary: null, secondary: null});
+
+const settingsStore = useSettingsStore();
+
+const { headerColor, colorizeLinks } = storeToRefs(settingsStore);
+
+const linksCss = computed(() => {
+  return colorizeLinks.value ? '#0091FF' : 'white';
+});
+
+const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
 
 /**
  * The animes to display.
@@ -115,6 +82,8 @@ function getAlternativeTitles(malId) {
 }
 
 onMounted(async () => {
+  setupSettings();
+
   const [primary, secondary] = await Promise.all([
     fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json').then(response => response.json()),
     fetch('/additional-data.json').then(response => response.json()),
@@ -132,7 +101,10 @@ onMounted(async () => {
   <header>
     <h1 class="mobile-hide">AMQ ACLVT</h1>
 
+    <div id="headerCenter">
       <Search :searchResultCount="animes.length" />
+      <Settings />
+    </div>
 
     <div>
       <select class="mobile-hide" id="listFilterType" v-model="listFilterType">
@@ -170,6 +142,10 @@ onMounted(async () => {
 </template>
 
 <style>
+a {
+  color: v-bind(linksCss);
+}
+
 header {
   position: fixed;
   top: 0px;
@@ -177,7 +153,8 @@ header {
   width: calc(100% - 50px);
   height: 50px;
   
-  background-color: rgba(0, 191, 255, 0.5);
+  /* background-color: rgba(0, 191, 255, 0.5); */
+  background-color: v-bind(headerColorWithAlpha);
   backdrop-filter: blur(5px);
 
   display: flex;
@@ -227,6 +204,11 @@ header h1 {
 
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+#headerCenter {
+  display: flex;
   align-items: center;
 }
 
