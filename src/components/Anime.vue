@@ -195,6 +195,7 @@ onMounted(() => {
     padding: 5px;
 
     width: fit-content;
+    min-width: 250px;
 
     backdrop-filter: blur(5px);
 }
