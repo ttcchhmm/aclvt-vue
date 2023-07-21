@@ -153,8 +153,8 @@ onMounted(async () => {
   <VideoPlayer />
 
   <LoadingIcon v-if="primary === null" />
-  <div v-else id="loadedData">
-    <div class="stats">
+  <main v-else id="loadedData">
+    <div class="stats" role="status" aria-label="Current statistics">
       <div>Loaded {{ primary?.nb_musique }} entries across {{ primary?.nb_anime }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
     </div>
@@ -167,7 +167,7 @@ onMounted(async () => {
       <img src="./assets/no-results.svg" class="svgFix">
       <p>No results found.</p>
     </div>
-  </div>
+  </main>
 </template>
 
 <style>

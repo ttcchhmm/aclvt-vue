@@ -56,7 +56,7 @@ onMounted(() => {
                 <small>{{ artist }}</small>
             </div>
 
-            <img @click="videoStore.$patch({ visible: false })" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            <img @click="videoStore.$patch({ visible: false })" src="@/assets/close.svg" alt="Close" height="30" width="30" role="button">
         </div>
 
         <div id="videoDialogContent">

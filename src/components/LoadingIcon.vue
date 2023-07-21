@@ -1,5 +1,5 @@
 <template>
-    <div class="loadingIcon">
+    <div class="loadingIcon" aria-hidden="true">
         <div>
             <div class="lds-ripple"><div></div><div></div></div>
         </div>

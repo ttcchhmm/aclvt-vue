@@ -46,14 +46,14 @@ function reset() {
 </script>
 
 <template>
-    <img @click="dialogOpen = true" src="@/assets/settings.svg" alt="Settings" height="30" width="30" class="svgFix" id="settingsButton">
+    <img role="button" @click="dialogOpen = true" src="@/assets/settings.svg" alt="Settings" title="Settings" height="30" width="30" class="svgFix" id="settingsButton">
 
     <dialog ref="dialogRef" id="settingsDialog">
         <div class="dialogHeader">
             <h2>Settings</h2>
             <div>
-                <img @click="reset" src="@/assets/reset.svg" alt="Reset" height="30" width="30">
-                <img @click="dialogOpen = false" src="@/assets/close.svg" alt="Close" height="30" width="30">
+                <img role="button" @click="reset" src="@/assets/reset.svg" alt="Reset" title="Reset" height="30" width="30">
+                <img role="button" @click="dialogOpen = false" src="@/assets/close.svg" alt="Close" title="Close" height="30" width="30">
             </div>
         </div>
 

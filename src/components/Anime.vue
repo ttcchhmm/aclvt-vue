@@ -131,7 +131,7 @@ onMounted(() => {
 
 <template>
     <div class="background-target" ref="backgroundRef" :style="coverRule">
-        <div class="anime">
+        <section class="anime">
             <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ title }}</a></h2>
 
             <div class="labels">
@@ -169,7 +169,7 @@ onMounted(() => {
                     <Song v-for="song in inserts" :key="song.nom" :song="song" />
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </template>
 
