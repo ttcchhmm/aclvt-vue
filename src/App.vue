@@ -11,6 +11,7 @@ import { getFilterAnimes } from './utils/SearchFilter';
 import { setupSettings, useSettingsStore } from './stores/SettingsStore';
 import { storeToRefs } from 'pinia';
 import { useSearchStore } from './stores/SearchStore';
+import { useDataStore } from './stores/DataStore';
 
 const {
   checkTiralex,
@@ -28,7 +29,11 @@ const {
 /**
  * The data loaded from the JSON file.
  */
-const data = ref({primary: null, secondary: null});
+// const data = ref({primary: null, secondary: null});
+
+const dataStore = useDataStore();
+
+const { primary, secondary } = storeToRefs(dataStore);
 
 const settingsStore = useSettingsStore();
 
@@ -44,23 +49,23 @@ const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
  * The animes to display.
  */
 const animes = computed(() => {
-  if(data.value.primary === null) {
+  if(primary.value === null) {
     return [];
   } else {
-    const filteredAnimes = data.value.primary.anime.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, data.value.secondary));
+    const filteredAnimes = primary.value.anime.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, secondary));
 
     return orderByOriginalName.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
       switch(animeLanguage.value) {
         case 'en': {
-          const aTitle = data.value.secondary[a.mal_id].titles.en || a.nom;
-          const bTitle = data.value.secondary[b.mal_id].titles.en || b.nom;
+          const aTitle = secondary[a.mal_id].titles.en || a.nom;
+          const bTitle = secondary[b.mal_id].titles.en || b.nom;
 
           return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
         }
 
         case 'ja': {
-          const aTitle = data.value.secondary[a.mal_id].titles.ja || a.nom;
-          const bTitle = data.value.secondary[b.mal_id].titles.ja || b.nom;
+          const aTitle = secondary[a.mal_id].titles.ja || a.nom;
+          const bTitle = secondary[b.mal_id].titles.ja || b.nom;
 
           return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
         }
@@ -76,12 +81,12 @@ const animes = computed(() => {
  * A map of alternative titles for each anime.
  */
 const alternativeTitles = computed(() => {
-  if(data.value.primary === null) {
+  if(primary === null) {
     return {};
   } else {
     const titles = {};
 
-    for(const anime of data.value.primary.anime) {
+    for(const anime of primary.value.anime) {
       titles[anime.mal_id] = getAlternativeTitles(anime.mal_id);
     }
 
@@ -95,25 +100,28 @@ const alternativeTitles = computed(() => {
  */
 function getAlternativeTitles(malId) {
   return [
-    data.value.secondary[malId].titles.original,
-    data.value.secondary[malId].titles.en,
-    data.value.secondary[malId].titles.ja,
-    ...data.value.secondary[malId].titles.synonyms,
+    secondary.value[malId].titles.original,
+    secondary.value[malId].titles.en,
+    secondary.value[malId].titles.ja,
+    ...secondary.value[malId].titles.synonyms,
   ];
 }
 
 onMounted(async () => {
   setupSettings();
 
-  const [primary, secondary] = await Promise.all([
+  const [primaryResponse, secondaryResponse] = await Promise.all([
     fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json').then(response => response.json()),
     fetch('/additional-data.json').then(response => response.json()),
   ]);
 
-  data.value = {
-    primary: primary,
-    secondary: secondary,
-  };
+  // data.value = {
+  //   primary: primary,
+  //   secondary: secondary,
+  // };
+
+  dataStore.setPrimary(primaryResponse);
+  dataStore.setSecondary(secondaryResponse);
 });
 
 </script>
@@ -144,15 +152,15 @@ onMounted(async () => {
 
   <VideoPlayer />
 
-  <LoadingIcon v-if="data.primary === null" />
+  <LoadingIcon v-if="primary === null" />
   <div v-else id="loadedData">
     <div class="stats">
-      <div>Loaded {{ data.primary?.nb_musique }} entries across {{ data.primary?.nb_anime }} animes.</div>
+      <div>Loaded {{ primary?.nb_musique }} entries across {{ primary?.nb_anime }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
     </div>
 
     <div id="animes">
-      <Anime v-for="anime in animes" :key="anime.mal_id" :anime="anime" :metadata="data.secondary[anime.mal_id]"/>
+      <Anime v-for="anime in animes" :key="anime.mal_id" :anime="anime" :metadata="secondary[anime.mal_id]"/>
     </div>
 
     <div v-if="animes.length === 0" id="noResults">
