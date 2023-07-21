@@ -228,8 +228,8 @@ header h1 {
 }
 
 .stats {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 
   display: flex;
   flex-direction: column;
