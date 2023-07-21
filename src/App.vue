@@ -26,11 +26,6 @@ const {
   searchTypeFilter,
 } = storeToRefs(useSearchStore());
 
-/**
- * The data loaded from the JSON file.
- */
-// const data = ref({primary: null, secondary: null});
-
 const dataStore = useDataStore();
 
 const { primary, secondary } = storeToRefs(dataStore);
@@ -114,11 +109,6 @@ onMounted(async () => {
     fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json').then(response => response.json()),
     fetch('/additional-data.json').then(response => response.json()),
   ]);
-
-  // data.value = {
-  //   primary: primary,
-  //   secondary: secondary,
-  // };
 
   dataStore.setPrimary(primaryResponse);
   dataStore.setSecondary(secondaryResponse);
