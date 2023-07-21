@@ -44,6 +44,28 @@ onMounted(() => {
     dialogRef.value.addEventListener('close', (e) => {
         videoStore.$patch({ visible: false });
     });
+
+    // When the user presses the 'F' key, toggle fullscreen.
+    // When the user presses the 'Space' key, toggle play/pause.
+    document.addEventListener('keydown', (e) => {
+        if(e.key.toLowerCase() === 'f') {
+            if(!document.fullscreenElement) {
+                videoRef.value.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+
+            e.preventDefault();
+        } else if(e.key.toLowerCase() === ' ') {
+            if(videoRef.value.paused) {
+                videoRef.value.play();
+            } else {
+                videoRef.value.pause();
+            }
+
+            e.preventDefault();
+        }
+    });
 });
 
 </script>
