@@ -109,6 +109,13 @@ const title = computed(() => {
 });
 
 /**
+ * The title language used.
+ */
+const titleLanguage = computed(() => {
+    return animeLanguage.value === 'ja' ? 'ja' : 'en';
+});
+
+/**
  * Lazy load the background image if needed.
  * @param {IntersectionObserverEntry[]} entries 
  * @param {IntersectionObserver} observer 
@@ -132,7 +139,7 @@ onMounted(() => {
 <template>
     <div class="background-target" ref="backgroundRef" :style="coverRule">
         <section class="anime">
-            <h2><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ title }}</a></h2>
+            <h2 :lang="titleLanguage"><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ title }}</a></h2>
 
             <div class="labels">
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
