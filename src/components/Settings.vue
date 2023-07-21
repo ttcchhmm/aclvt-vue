@@ -18,7 +18,7 @@ const dialogRef = ref(null);
  */
 const settingsStore = useSettingsStore();
 
-const { headerColor, colorizeLinks, animeLanguage } = storeToRefs(settingsStore);
+const { headerColor, colorizeLinks, animeLanguage, orderByOriginalName } = storeToRefs(settingsStore);
 
 watch(dialogOpen, (value) => {
     if (value) {
@@ -69,6 +69,14 @@ function reset() {
                             <option value="en">English</option>
                             <option value="ja">Japanese</option>
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="orderByOriginalName">Always order by original name: </label>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="orderByOriginalName" v-model="orderByOriginalName">
                     </td>
                 </tr>
                 <tr>

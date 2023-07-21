@@ -32,7 +32,7 @@ const data = ref({primary: null, secondary: null});
 
 const settingsStore = useSettingsStore();
 
-const { headerColor, colorizeLinks } = storeToRefs(settingsStore);
+const { headerColor, colorizeLinks, animeLanguage, orderByOriginalName } = storeToRefs(settingsStore);
 
 const linksCss = computed(() => {
   return colorizeLinks.value ? '#0091FF' : 'white';
@@ -47,7 +47,28 @@ const animes = computed(() => {
   if(data.value.primary === null) {
     return [];
   } else {
-    return data.value.primary.anime.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, data.value.secondary));
+    const filteredAnimes = data.value.primary.anime.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, data.value.secondary));
+
+    return orderByOriginalName.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
+      switch(animeLanguage.value) {
+        case 'en': {
+          const aTitle = data.value.secondary[a.mal_id].titles.en || a.nom;
+          const bTitle = data.value.secondary[b.mal_id].titles.en || b.nom;
+
+          return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
+        }
+
+        case 'ja': {
+          const aTitle = data.value.secondary[a.mal_id].titles.ja || a.nom;
+          const bTitle = data.value.secondary[b.mal_id].titles.ja || b.nom;
+
+          return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
+        }
+
+        default:
+          return 0; // Should never happen, but keep the default case to avoid warnings.
+      }
+    });
   }
 });
 
