@@ -123,7 +123,7 @@ function lazyBackground(entries, observer) {
 }
 
 onMounted(() => {
-    const observer = new IntersectionObserver(lazyBackground, { root: null, rootMargin: '0px', threshold: 0.1 });
+    const observer = new IntersectionObserver(lazyBackground, { root: null, rootMargin: '20px' });
     observer.observe(backgroundRef.value);
 });
 
