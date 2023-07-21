@@ -268,6 +268,8 @@ onMounted(() => {
 
     .anime {
         width: calc(100% - 10px);
+        box-shadow: unset;
+        animation: unset;
     }
 }
 </style>
