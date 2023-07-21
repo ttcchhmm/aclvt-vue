@@ -57,15 +57,15 @@ const animes = computed(() => {
     return orderByOriginalName.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
       switch(animeLanguage.value) {
         case 'en': {
-          const aTitle = secondary[a.mal_id].titles.en || a.nom;
-          const bTitle = secondary[b.mal_id].titles.en || b.nom;
+          const aTitle = secondary.value[a.mal_id].titles.en || a.nom;
+          const bTitle = secondary.value[b.mal_id].titles.en || b.nom;
 
           return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
         }
 
         case 'ja': {
-          const aTitle = secondary[a.mal_id].titles.ja || a.nom;
-          const bTitle = secondary[b.mal_id].titles.ja || b.nom;
+          const aTitle = secondary.value[a.mal_id].titles.ja || a.nom;
+          const bTitle = secondary.value[b.mal_id].titles.ja || b.nom;
 
           return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
         }
