@@ -41,13 +41,45 @@ const linksCss = computed(() => {
 const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
 
 /**
+ * The anime database.
+ */
+const animeDatabase = computed(() => {
+  if(primary.value === null) {
+    return [];
+  } else {
+    const animesTotal = primary.value.anime;
+
+    // Add dummy entries for animes that are in the secondary data but not in the primary data.
+    for(const [key, value] of Object.entries(secondary.value)) {
+      if(value.wasWatched && !animesTotal.some(a => a.mal_id === parseInt(key))) {
+        animesTotal.push({
+          mal_id: parseInt(key),
+          nom: value.titles.original,
+          musique: [],
+          nb_musique: 0,
+          users: {
+            A: value.scores.A === undefined ? 0 : 1,
+            C: value.scores.C === undefined ? 0 : 1,
+            L: value.scores.L === undefined ? 0 : 1,
+            V: value.scores.V === undefined ? 0 : 1,
+            T: value.scores.T === undefined ? 0 : 1,
+          },
+        });
+      }
+    }
+
+    return animesTotal;
+  }
+});
+
+/**
  * The animes to display.
  */
 const animes = computed(() => {
   if(primary.value === null) {
     return [];
   } else {
-    const filteredAnimes = primary.value.anime.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, secondary));
+    const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, secondary));
 
     return orderByOriginalName.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
       switch(animeLanguage.value) {
@@ -145,7 +177,7 @@ onMounted(async () => {
   <LoadingIcon v-if="primary === null" />
   <main v-else id="loadedData">
     <div class="stats" role="status" aria-label="Current statistics">
-      <div>Loaded {{ primary?.nb_musique }} entries across {{ primary?.nb_anime }} animes.</div>
+      <div>Loaded {{ primary?.nb_musique }} entries across {{ animeDatabase.length }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
     </div>
 

@@ -99,28 +99,32 @@ for(const user of [tiralex, cycy, leo, gyrehio, tchm]) {
                 titles: { original: anime.node.title , ...anime.node.alternative_titles },
                 status: anime.node.status,
                 type: anime.node.media_type,
+                wasWatched: false,
             };
         }
 
-        // Check if the user has a score for this anime
-        if(anime.list_status.score !== 0) {
+        // Check if the anime was watched
+        if(anime.list_status.status === 'completed' || anime.list_status.status === 'watching') {
+            additionalData[anime.node.id].wasWatched = true;
+
+            // Add the score
             switch(user) {
                 case tiralex:
                     additionalData[anime.node.id].scores.A = anime.list_status.score;
                     break;
-    
+
                 case cycy:
                     additionalData[anime.node.id].scores.C = anime.list_status.score;
                     break;
-    
+
                 case leo:
                     additionalData[anime.node.id].scores.L = anime.list_status.score;
                     break;
-    
+
                 case gyrehio:
                     additionalData[anime.node.id].scores.V = anime.list_status.score;
                     break;
-    
+
                 case tchm:
                     additionalData[anime.node.id].scores.T = anime.list_status.score;
                     break;

@@ -151,16 +151,21 @@ onMounted(() => {
             <table class="watchedTable">
                 <tbody>
                     <tr>
-                        <td class="cursorHelp" :class="props.anime.users.A === 1 ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="metadata?.scores['A'] !== undefined">{{ metadata?.scores['A'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="metadata?.scores['C'] !== undefined">{{ metadata?.scores['C'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.L === 1 ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="metadata?.scores['L'] !== undefined">{{ metadata?.scores['L'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.V === 1 ? 'watched' : 'notWatched'" title="Victor">V <span v-if="metadata?.scores['V'] !== undefined">{{ metadata?.scores['V'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.T === 1 ? 'watched' : 'notWatched'" title="Tom">T <span v-if="metadata?.scores['T'] !== undefined">{{ metadata?.scores['T'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.A === 1 ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="metadata?.scores['A'] !== undefined && metadata?.scores['A'] !== 0">{{ metadata?.scores['A'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="metadata?.scores['C'] !== undefined && metadata?.scores['C'] !== 0">{{ metadata?.scores['C'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.L === 1 ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="metadata?.scores['L'] !== undefined && metadata?.scores['L'] !== 0">{{ metadata?.scores['L'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.V === 1 ? 'watched' : 'notWatched'" title="Victor">V <span v-if="metadata?.scores['V'] !== undefined && metadata?.scores['V'] !== 0">{{ metadata?.scores['V'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.users.T === 1 ? 'watched' : 'notWatched'" title="Tom">T <span v-if="metadata?.scores['T'] !== undefined && metadata?.scores['T'] !== 0">{{ metadata?.scores['T'] }}</span></td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="mobile-fill-width songsDisplay">
+                <div v-if="props.anime?.musique.length === 0" class="noSongs">
+                    <img src="@/assets/error.svg" class="svgFix">
+                    <p>No songs found.</p>
+                </div>
+
                 <div v-if="openings.length !== 0" class="songs">
                     <h3>{{ pluralize(openings.length, 'Opening', 'Openings') }}</h3>
                     <Song v-for="song in openings" :key="song.nom" :song="song" />
@@ -259,6 +264,14 @@ onMounted(() => {
 
 .songCount {
     margin-top: 5px;
+}
+
+.noSongs {
+    margin-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
