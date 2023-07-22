@@ -48,6 +48,8 @@ onMounted(() => {
     // When the user presses the 'F' key, toggle fullscreen.
     // When the user presses the 'Space' key, toggle play/pause.
     document.addEventListener('keydown', (e) => {
+        if(!visible.value) return;
+
         if(e.key.toLowerCase() === 'f') {
             if(!document.fullscreenElement) {
                 videoRef.value.requestFullscreen();
