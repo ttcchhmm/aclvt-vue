@@ -63,7 +63,7 @@ const coverRule = computed(() => {
  * Contains the label for the type of anime.
  */
 const typeLabel = computed(() => {
-    switch(props.metadata.type) {
+    switch(props.metadata?.type) {
         case 'tv':
             return 'Series';
         case 'movie':
@@ -85,7 +85,7 @@ const typeLabel = computed(() => {
  * Contains the label for the state of the anime.
  */
 const stateLabel = computed(() => {
-    switch(props.metadata.status) {
+    switch(props.metadata?.status) {
         case 'finished_airing':
             return 'Finished';
         case 'currently_airing':
@@ -100,11 +100,13 @@ const stateLabel = computed(() => {
 const title = computed(() => {
     switch(animeLanguage.value) {
         case 'original':
-            return props.metadata.titles.original || props.anime.nom;
+            return props.metadata?.titles.original || props.anime.nom;
         case 'en':
-            return props.metadata.titles.en || props.anime.nom;
+            return props.metadata?.titles.en || props.anime.nom;
         case 'ja':
-            return props.metadata.titles.ja || props.anime.nom;
+            return props.metadata?.titles.ja || props.anime.nom;
+        default:
+            return props.anime.nom;
     }
 });
 

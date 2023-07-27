@@ -126,12 +126,29 @@ const alternativeTitles = computed(() => {
  * @param {number} malId The MyAnimeList ID of the anime.
  */
 function getAlternativeTitles(malId) {
-  return [
-    secondary.value[malId].titles.original,
-    secondary.value[malId].titles.en,
-    secondary.value[malId].titles.ja,
-    ...secondary.value[malId].titles.synonyms,
-  ];
+  if(secondary.value[malId] === undefined) {
+    return [];
+  }
+
+  const titles = [];
+
+  if(secondary.value[malId].titles.original !== undefined) {
+    titles.push(secondary.value[malId].titles.original);
+  }
+
+  if(secondary.value[malId].titles.en !== undefined) {
+    titles.push(secondary.value[malId].titles.en);
+  }
+
+  if(secondary.value[malId].titles.ja !== undefined) {
+    titles.push(secondary.value[malId].titles.ja);
+  }
+
+  if(secondary.value[malId].titles.synonyms !== undefined) {
+    titles.push(...secondary.value[malId].titles.synonyms);
+  }
+
+  return titles;
 }
 
 onMounted(async () => {
