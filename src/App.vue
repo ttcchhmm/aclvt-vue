@@ -79,7 +79,7 @@ const animes = computed(() => {
   if(primary.value === null) {
     return [];
   } else {
-    const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, secondary));
+    const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, secondary.value));
 
     return orderByOriginalName.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
       switch(animeLanguage.value) {
