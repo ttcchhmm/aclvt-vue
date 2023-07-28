@@ -30,4 +30,6 @@ coverage
 metadata-updater/additional-data.json
 metadata-updater/additional-data.json.br
 metadata-updater/additional-data.json.gz
+metadata-updater/api
 public/additional-data.json
+public/api/
