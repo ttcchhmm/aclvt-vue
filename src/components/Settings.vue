@@ -18,7 +18,7 @@ const dialogRef = ref(null);
  */
 const settingsStore = useSettingsStore();
 
-const { headerColor, colorizeLinks, animeLanguage, orderByOriginalName } = storeToRefs(settingsStore);
+const { headerColor, colorizeLinks, animeLanguage, orderByMAL } = storeToRefs(settingsStore);
 
 watch(dialogOpen, (value) => {
     if (value) {
@@ -40,6 +40,7 @@ function reset() {
         headerColor: '#00bfff',
         colorizeLinks: false,
         animeLanguage: 'original',
+        orderByMAL: true,
     });
 }
 
@@ -73,10 +74,10 @@ function reset() {
                 </tr>
                 <tr>
                     <td>
-                        <label for="orderByOriginalName">Always order by original name: </label>
+                        <label for="orderByMAL">Use the same ordering as MyAnimeList: </label>
                     </td>
                     <td>
-                        <input type="checkbox" id="orderByOriginalName" v-model="orderByOriginalName">
+                        <input type="checkbox" id="orderByMAL" v-model="orderByMAL">
                     </td>
                 </tr>
                 <tr>

@@ -6,33 +6,15 @@ import { defineStore } from "pinia";
 export const useDataStore = defineStore("data", {
     state: () => ({
         /**
-         * Primary data source, coming from Tiralex1's API
+         * The data loaded from the API
          */
-        primary: localStorage.getItem('data:primary') !== null ? tryParseJSON(localStorage.getItem('data:primary')) : null,
-
-        /**
-         * Secondary data source, coming from the MyAnimeList API
-         */
-        secondary: localStorage.getItem('data:secondary') !== null ? tryParseJSON(localStorage.getItem('data:secondary')) : null,
+        data: localStorage.getItem('data') !== null ? tryParseJSON(localStorage.getItem('data')) : null
     }),
     actions: {
-        /**
-         * Set and save the primary data source to local storage
-         * @param {Object} data Data loaded from Tiralex1's API
-         */
-        setPrimary(data) {
-            this.primary = data;
-            localStorage.setItem('data:primary', JSON.stringify(data));
-        },
-
-        /**
-         * Set and save the secondary data source to local storage
-         * @param {Object} data Data loaded from the MyAnimeList API
-         */
-        setSecondary(data) {
-            this.secondary = data;
-            localStorage.setItem('data:secondary', JSON.stringify(data));
-        },
+        setData(data) {
+            this.data = data;
+            localStorage.setItem('data', JSON.stringify(data));
+        }
     }
 });
 
@@ -48,4 +30,13 @@ function tryParseJSON(json) {
         console.error(e);
         return null;
     }
+}
+
+// Remove traces of the V1 API
+if(localStorage.getItem('data:primary') !== null) {
+    localStorage.removeItem('data:primary');
+}
+
+if(localStorage.getItem('data:secondary') !== null) {
+    localStorage.removeItem('data:secondary');
 }

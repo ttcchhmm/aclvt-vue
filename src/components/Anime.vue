@@ -14,27 +14,22 @@ const props = defineProps({
      * The anime to display.
      */
     anime: Object,
-
-    /**
-     * Additional metadata, such as scores and covers.
-     */
-    metadata: Object,
 });
 
 /**
  * The openings of the anime.
  */
-const openings = computed(() => props.anime.musique.filter(m => m.type === 'Opening'));
+const openings = computed(() => props.anime.music?.filter(m => m.type === 'Opening'));
 
 /**
  * The endings of the anime.
  */
-const endings = computed(() => props.anime.musique.filter(m => m.type === 'Ending'));
+const endings = computed(() => props.anime.music?.filter(m => m.type === 'Ending'));
 
 /**
  * The insert songs of the anime.
  */
-const inserts = computed(() => props.anime.musique.filter(m => m.type === 'Insert Song'));
+const inserts = computed(() => props.anime.music?.filter(m => m.type === 'Insert Song'));
 
 /**
  * Whether or not the background should be shown.
@@ -52,8 +47,8 @@ const { animeLanguage } = storeToRefs(useSettingsStore());
  * CSS code for the background.
  */
 const coverRule = computed(() => {
-    if(props.metadata?.cover !== undefined && showBackground.value) {
-        return `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.metadata?.cover});`;
+    if(props.anime?.cover !== undefined && showBackground.value) {
+        return `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.anime?.cover});`;
     } else {
         return 'background: rgb(70, 70, 70);';
     }
@@ -63,7 +58,7 @@ const coverRule = computed(() => {
  * Contains the label for the type of anime.
  */
 const typeLabel = computed(() => {
-    switch(props.metadata?.type) {
+    switch(props.anime.type) {
         case 'tv':
             return 'Series';
         case 'movie':
@@ -85,7 +80,7 @@ const typeLabel = computed(() => {
  * Contains the label for the state of the anime.
  */
 const stateLabel = computed(() => {
-    switch(props.metadata?.status) {
+    switch(props.anime?.status) {
         case 'finished_airing':
             return 'Finished';
         case 'currently_airing':
@@ -100,13 +95,13 @@ const stateLabel = computed(() => {
 const title = computed(() => {
     switch(animeLanguage.value) {
         case 'original':
-            return props.metadata?.titles.original || props.anime.nom;
+            return props.anime?.titles.original || props.anime?.titles.original;
         case 'en':
-            return props.metadata?.titles.en || props.anime.nom;
+            return props.anime?.titles.en || props.anime?.titles.original;
         case 'ja':
-            return props.metadata?.titles.ja || props.anime.nom;
+            return props.anime?.titles.ja || props.anime?.titles.original;
         default:
-            return props.anime.nom;
+            return props.title.original;
     }
 });
 
@@ -147,23 +142,23 @@ onMounted(() => {
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
                 <small v-if="stateLabel.length !== 0">{{ stateLabel }}</small>
 
-                <small class="songCount">{{ `${props.anime.nb_musique} ${pluralize(props.anime.nb_musique, 'entry', 'entries')}` }}</small>
+                <small class="songCount">{{ `${props.anime?.music.length} ${pluralize(props.anime?.music.length, 'entry', 'entries')}` }}</small>
             </div>
 
             <table class="watchedTable">
                 <tbody>
                     <tr>
-                        <td class="cursorHelp" :class="props.anime.users.A === 1 ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="metadata?.scores['A'] !== undefined && metadata?.scores['A'] !== 0">{{ metadata?.scores['A'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.C === 1 ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="metadata?.scores['C'] !== undefined && metadata?.scores['C'] !== 0">{{ metadata?.scores['C'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.L === 1 ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="metadata?.scores['L'] !== undefined && metadata?.scores['L'] !== 0">{{ metadata?.scores['L'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.V === 1 ? 'watched' : 'notWatched'" title="Victor">V <span v-if="metadata?.scores['V'] !== undefined && metadata?.scores['V'] !== 0">{{ metadata?.scores['V'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.users.T === 1 ? 'watched' : 'notWatched'" title="Tom">T <span v-if="metadata?.scores['T'] !== undefined && metadata?.scores['T'] !== 0">{{ metadata?.scores['T'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.scores.A !== undefined ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="props.anime.scores.A !== undefined && props.anime?.scores.A !== 0">{{ props.anime?.scores['A'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.scores.C !== undefined ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="props.anime.scores.C !== undefined && props.anime?.scores.C !== 0">{{ props.anime?.scores['C'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.scores.L !== undefined ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="props.anime.scores.L !== undefined && props.anime?.scores.L !== 0">{{ props.anime?.scores['L'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.scores.V !== undefined ? 'watched' : 'notWatched'" title="Victor">V <span v-if="props.anime.scores.V !== undefined && props.anime?.scores.V !== 0">{{ props.anime?.scores['V'] }}</span></td>
+                        <td class="cursorHelp" :class="props.anime.scores.T !== undefined ? 'watched' : 'notWatched'" title="Tom">T <span v-if="props.anime.scores.T !== undefined && props.anime?.scores.T !== 0">{{ props.anime?.scores['T'] }}</span></td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="mobile-fill-width songsDisplay">
-                <div v-if="props.anime?.musique.length === 0" class="noSongs">
+                <div v-if="props.anime?.music?.length === 0" class="noSongs">
                     <img src="@/assets/error.svg" class="svgFix">
                     <p>No songs found.</p>
                 </div>

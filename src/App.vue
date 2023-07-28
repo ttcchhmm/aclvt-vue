@@ -28,11 +28,11 @@ const {
 
 const dataStore = useDataStore();
 
-const { primary, secondary } = storeToRefs(dataStore);
+const { data } = storeToRefs(dataStore);
 
 const settingsStore = useSettingsStore();
 
-const { headerColor, colorizeLinks, animeLanguage, orderByOriginalName } = storeToRefs(settingsStore);
+const { headerColor, colorizeLinks, animeLanguage, orderByMAL } = storeToRefs(settingsStore);
 
 const linksCss = computed(() => {
   return colorizeLinks.value ? '#0091FF' : 'white';
@@ -41,61 +41,35 @@ const linksCss = computed(() => {
 const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
 
 /**
- * The anime database.
- */
-const animeDatabase = computed(() => {
-  if(primary.value === null) {
-    return [];
-  } else {
-    const animesTotal = primary.value.anime;
-
-    // Add dummy entries for animes that are in the secondary data but not in the primary data.
-    for(const [key, value] of Object.entries(secondary.value)) {
-      if(value.wasWatched && !animesTotal.some(a => a.mal_id === parseInt(key))) {
-        animesTotal.push({
-          mal_id: parseInt(key),
-          nom: value.titles.original,
-          musique: [],
-          nb_musique: 0,
-          users: {
-            A: value.scores.A === undefined ? 0 : 1,
-            C: value.scores.C === undefined ? 0 : 1,
-            L: value.scores.L === undefined ? 0 : 1,
-            V: value.scores.V === undefined ? 0 : 1,
-            T: value.scores.T === undefined ? 0 : 1,
-          },
-        });
-      }
-    }
-
-    return animesTotal;
-  }
-});
-
-/**
  * The animes to display.
  */
 const animes = computed(() => {
-  if(primary.value === null) {
+  if(data.value === null) {
     return [];
   } else {
-    const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value, secondary.value));
+    const filteredAnimes = data.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value));
 
-    return orderByOriginalName.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
+    return orderByMAL.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
       switch(animeLanguage.value) {
         case 'en': {
-          const aTitle = secondary.value[a.mal_id].titles.en || a.nom;
-          const bTitle = secondary.value[b.mal_id].titles.en || b.nom;
+          const aTitle = a.titles.en || a.titles.original;
+          const bTitle = b.titles.en || b.titles.original;
 
           return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
         }
 
         case 'ja': {
-          const aTitle = secondary.value[a.mal_id].titles.ja || a.nom;
-          const bTitle = secondary.value[b.mal_id].titles.ja || b.nom;
+          const aTitle = a.titles.ja || a.titles.original;
+          const bTitle = b.titles.ja || b.titles.original;
 
           return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
         }
+
+        case 'original':
+          const aTitle = a.titles.original;
+          const bTitle = b.titles.original;
+
+          return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
 
         default:
           return 0; // Should never happen, but keep the default case to avoid warnings.
@@ -108,44 +82,48 @@ const animes = computed(() => {
  * A map of alternative titles for each anime.
  */
 const alternativeTitles = computed(() => {
-  if(primary === null) {
+  if(data.value === null) {
     return {};
   } else {
     const titles = {};
 
-    for(const anime of primary.value.anime) {
-      titles[anime.mal_id] = getAlternativeTitles(anime.mal_id);
-    }
+    data.value.forEach((a) => {
+      titles[a.id] = getAlternativeTitles(a);
+    })
 
     return titles;
   }
 });
 
+const songsCount = computed(() => {
+  if(data.value === null) {
+    return 0;
+  } else {
+    return data.value.reduce((acc, anime) => acc + anime.music?.length, 0);
+  }
+});
+
 /**
  * Gets the alternative titles for an anime.
- * @param {number} malId The MyAnimeList ID of the anime.
+ * @param {Object} anime The anime.
  */
-function getAlternativeTitles(malId) {
-  if(secondary.value[malId] === undefined) {
-    return [];
-  }
-
+function getAlternativeTitles(anime) {
   const titles = [];
 
-  if(secondary.value[malId].titles.original !== undefined) {
-    titles.push(secondary.value[malId].titles.original);
+  if(anime.titles.original !== undefined) {
+    titles.push(anime.titles.original);
   }
 
-  if(secondary.value[malId].titles.en !== undefined) {
-    titles.push(secondary.value[malId].titles.en);
+  if(anime.titles.en !== undefined) {
+    titles.push(anime.titles.en);
   }
 
-  if(secondary.value[malId].titles.ja !== undefined) {
-    titles.push(secondary.value[malId].titles.ja);
+  if(anime.titles.ja !== undefined) {
+    titles.push(anime.titles.ja);
   }
 
-  if(secondary.value[malId].titles.synonyms !== undefined) {
-    titles.push(...secondary.value[malId].titles.synonyms);
+  if(anime.titles.synonyms !== undefined) {
+    titles.push(...anime.titles.synonyms);
   }
 
   return titles;
@@ -154,13 +132,9 @@ function getAlternativeTitles(malId) {
 onMounted(async () => {
   setupSettings();
 
-  const [primaryResponse, secondaryResponse] = await Promise.all([
-    fetch('https://raw.githubusercontent.com/Tiralex1/ACLV/main/data.json').then(response => response.json()),
-    fetch('/additional-data.json').then(response => response.json()),
-  ]);
-
-  dataStore.setPrimary(primaryResponse);
-  dataStore.setSecondary(secondaryResponse);
+  // Load the data.
+  const data = await fetch('/api/v2/index.json').then(response => response.json());
+  dataStore.setData(data)
 });
 
 </script>
@@ -191,15 +165,15 @@ onMounted(async () => {
 
   <VideoPlayer />
 
-  <LoadingIcon v-if="primary === null" />
+  <LoadingIcon v-if="data === null" />
   <main v-else id="loadedData">
     <div class="stats" role="status" aria-label="Current statistics">
-      <div>Loaded {{ primary?.nb_musique }} entries across {{ animeDatabase.length }} animes.</div>
+      <div>Loaded {{ songsCount }} entries across {{ animes.length }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
     </div>
 
     <div id="animes">
-      <Anime v-for="anime in animes" :key="anime.mal_id" :anime="anime" :metadata="secondary[anime.mal_id]"/>
+      <Anime v-for="anime in animes" :key="anime.id" :anime="anime"/>
     </div>
 
     <div v-if="animes.length === 0" id="noResults">

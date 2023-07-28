@@ -1,6 +1,5 @@
 <script setup>
 
-import { onMounted } from 'vue';
 import { useVideoStore } from '../stores/VideoStore';
 
 /**
@@ -18,9 +17,9 @@ const videoStore = useVideoStore();
 function playVideo() {
     videoStore.$patch({
         visible: true,
-        url: props.song.lien,
-        title: props.song.nom,
-        artist: props.song.artiste,
+        url: props.song.link,
+        title: props.song.name,
+        artist: props.song.artist,
     });
 }
 
@@ -29,8 +28,8 @@ function playVideo() {
 <template>
 <div class="songDetails">
     <div>
-        <h4>{{ props.song.nom }}</h4>
-        <h5>{{ props.song.artiste }}</h5>
+        <h4>{{ props.song.name }}</h4>
+        <h5>{{ props.song.artist }}</h5>
     </div>
 
     <img @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix" height="30" width="30" role="button">
