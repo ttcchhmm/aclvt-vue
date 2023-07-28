@@ -104,7 +104,7 @@ function reset() {
         <div id="about">
             <p>This website was initially made as a remake of <a href="https://tiralex1.github.io/ACLV/" target="_blank">the original AMQ ACLVT</a> by <a href="https://github.com/Tiralex1/" target="_blank">Tiralex1</a> as a way for me to learn <a href="https://vuejs.org/" target="_blank">Vue.js</a>. Since then, this project became a bit larger in scope and I added some stuff not in the original website.</p>
 
-            <p>I use data pulled directly from Tiralex1's GitHub repository (mostly anime and music data such as names and links) plus additional metadata from <a href="https://myanimelist.net/" target="_blank">MyAnimeList</a> (scores, airing state, type and cover art).</p>
+            <p>I use data pulled directly from Tiralex1's GitHub repository (music data such as titles, artists and links) plus additional metadata from <a href="https://myanimelist.net/" target="_blank">MyAnimeList</a> (scores, airing state, type, cover art and more).</p>
 
             <p>This website was made using the following technologies :</p>
             <ul>
