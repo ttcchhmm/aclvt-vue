@@ -120,7 +120,7 @@ function capitlizeFirstLetter(string) {
                                 <td>{{ data.secondary.endDate }}</td>
                             </tr>
                             <tr v-if="data.secondary.startSeason !== undefined">
-                                <td class="label">Start season</td>
+                                <td class="label">Airing season</td>
                                 <td>{{ `${capitlizeFirstLetter(data.secondary.startSeason.season)} ${data.secondary.startSeason.year}` }}</td>
                             </tr>
                             <tr v-if="data.secondary.studios !== undefined">
