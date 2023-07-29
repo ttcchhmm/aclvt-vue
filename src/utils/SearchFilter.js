@@ -11,6 +11,7 @@
  * @param {boolean} checkLeo Whether to display animes from Leo's list.
  * @param {boolean} checkGyrehio Whether to display animes from Gyrehio's list.
  * @param {boolean} checktchm Whether to display animes from tchm's list.
+ * @param {boolean} checkqgWolf Whether to display animes from QGWolfWarrior's list.
  * @param {Object} alternativeTitles The alternative titles of the animes.
  * @returns A function that takes an anime as a parameter and returns whether it should be displayed or not.
  */
