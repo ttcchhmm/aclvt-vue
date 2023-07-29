@@ -41,42 +41,42 @@ const linksCss = computed(() => {
 
 const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
 
+const animeDatabase = computed(() => {
+  return data.value === null ? [] : data.value.filter(a => a.wasWatched === true);
+});
+
 /**
  * The animes to display.
  */
 const animes = computed(() => {
-  if(data.value === null) {
-    return [];
-  } else {
-    const filteredAnimes = data.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value));
+  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value));
 
-    return orderByMAL.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
-      switch(animeLanguage.value) {
-        case 'en': {
-          const aTitle = a.titles.en || a.titles.original;
-          const bTitle = b.titles.en || b.titles.original;
+  return orderByMAL.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
+    switch(animeLanguage.value) {
+      case 'en': {
+        const aTitle = a.titles.en || a.titles.original;
+        const bTitle = b.titles.en || b.titles.original;
 
-          return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
-        }
-
-        case 'ja': {
-          const aTitle = a.titles.ja || a.titles.original;
-          const bTitle = b.titles.ja || b.titles.original;
-
-          return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
-        }
-
-        case 'original':
-          const aTitle = a.titles.original;
-          const bTitle = b.titles.original;
-
-          return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
-
-        default:
-          return 0; // Should never happen, but keep the default case to avoid warnings.
+        return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
       }
-    });
-  }
+
+      case 'ja': {
+        const aTitle = a.titles.ja || a.titles.original;
+        const bTitle = b.titles.ja || b.titles.original;
+
+        return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
+      }
+
+      case 'original':
+        const aTitle = a.titles.original;
+        const bTitle = b.titles.original;
+
+        return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
+
+      default:
+        return 0; // Should never happen, but keep the default case to avoid warnings.
+    }
+  });
 });
 
 /**
@@ -170,7 +170,7 @@ onMounted(async () => {
   <LoadingIcon v-if="data === null" />
   <main v-else id="loadedData">
     <div class="stats" role="status" aria-label="Current statistics">
-      <div>Loaded {{ songsCount }} entries across {{ animes.length }} animes.</div>
+      <div>Loaded {{ songsCount }} entries across {{ animeDatabase.length }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
     </div>
 
