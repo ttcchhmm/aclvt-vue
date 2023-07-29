@@ -66,7 +66,7 @@ function reset() {
                     </td>
                     <td>
                         <select id="animeLanguage" v-model="animeLanguage">
-                            <option value="original">Romanji</option>
+                            <option value="original">Romaji</option>
                             <option value="en">English</option>
                             <option value="ja">Japanese</option>
                         </select>

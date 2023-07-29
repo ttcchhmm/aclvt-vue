@@ -134,7 +134,7 @@ function capitlizeFirstLetter(string) {
                         <h3>Titles</h3>
                         <table class="tableOptions">
                             <tr>
-                                <td class="label">Romanji title</td>
+                                <td class="label">Romaji title</td>
                                 <td>{{ anime.titles.original }}</td>
                             </tr>
                             <tr v-if="anime.titles.en !== undefined">
