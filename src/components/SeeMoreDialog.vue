@@ -107,7 +107,7 @@ function capitlizeFirstLetter(string) {
                     <div class="infoSection">
                         <h3>More info</h3>
                         <table class="tableOptions">
-                            <tr v-if="data.secondary.episodes !== undefined && data.secondary.episodes > 0">
+                            <tr v-if="data.secondary.episodes !== undefined && data.secondary.episodes > 0 && anime.type !== 'movie'">
                                 <td class="label">Episodes</td>
                                 <td>{{ data.secondary.episodes }}</td>
                             </tr>
@@ -115,7 +115,7 @@ function capitlizeFirstLetter(string) {
                                 <td class="label">Start date</td>
                                 <td>{{ data.secondary.startDate }}</td>
                             </tr>
-                            <tr v-if="data.secondary.endDate !== undefined">
+                            <tr v-if="data.secondary.endDate !== undefined && anime.type !== 'movie'">
                                 <td class="label">End date</td>
                                 <td>{{ data.secondary.endDate }}</td>
                             </tr>
