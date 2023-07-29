@@ -1,7 +1,21 @@
+<script setup>
+
+/**
+ * The props for this component.
+ */
+const props = defineProps({
+  /**
+   * Whether or not the light mode is enabled.
+   */
+  lightMode: Boolean,
+});
+
+</script>
+
 <template>
     <div class="loadingIcon" aria-hidden="true">
         <div>
-            <div class="lds-ripple"><div></div><div></div></div>
+            <div class="lds-ripple" :class="lightMode === true ? 'light' : ''"><div></div><div></div></div>
         </div>
         <p>Loading...</p>
     </div>
@@ -38,6 +52,10 @@
 
 .lds-ripple div:nth-child(2) {
   animation-delay: -0.5s;
+}
+
+.light div {
+  border: 4px solid black;
 }
 
 @keyframes lds-ripple {
