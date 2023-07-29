@@ -76,12 +76,13 @@ if(process.env.MAL_CLIENT_ID === undefined || process.env.MAL_CLIENT_ID === '') 
 }
 
 // Fetch the data for each user
-const [tiralex, cycy, leo, gyrehio, tchm] = await Promise.all([
+const [tiralex, cycy, leo, gyrehio, tchm, qgWolf] = await Promise.all([
     fetchUserList('Tiralex1'),
     fetchUserList('CycyGonzales'),
     fetchUserList('49Leo'),
     fetchUserList('Gyrehio'),
     fetchUserList('tchm'),
+    fetchUserList('QGWolfWarrior'),
 ]);
 
 /**
@@ -92,7 +93,7 @@ async function generateApiV1() {
     const additionalData = {}
 
     // Add the data for each user
-    for(const user of [tiralex, cycy, leo, gyrehio, tchm]) {
+    for(const user of [tiralex, cycy, leo, gyrehio, tchm, qgWolf]) {
         // Add the data for each anime
         for(const anime of user) {
             // Check if the anime is already in the map
@@ -132,6 +133,10 @@ async function generateApiV1() {
                     case tchm:
                         additionalData[anime.node.id].scores.T = anime.list_status.score;
                         break;
+
+                    case qgWolf:
+                        additionalData[anime.node.id].scores.Q = anime.list_status.score;
+                        break;
                 }
             }
         }
@@ -162,7 +167,7 @@ async function generateApiV2() {
     const mergedData = [];
 
     // Add the data for each user
-    for(const user of [tiralex, cycy, leo, gyrehio, tchm]) {
+    for(const user of [tiralex, cycy, leo, gyrehio, tchm, qgWolf]) {
         for(const anime of user) {
             // Get the current state of the anime
             let currentState = mergedData.find(a => a.id === anime.node.id);
@@ -212,6 +217,10 @@ async function generateApiV2() {
 
                     case tchm:
                         currentState.scores.T = anime.list_status.score;
+                        break;
+
+                    case qgWolf:
+                        currentState.scores.Q = anime.list_status.score;
                         break;
                 }
             }

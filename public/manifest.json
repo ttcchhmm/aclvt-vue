@@ -1,10 +1,10 @@
 {
-    "name": "AMQ ACLVT",
-    "short_name": "ACLVT",
+    "name": "AMQ ACLVTQ",
+    "short_name": "ACLVTQ",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#000",
-    "description": "Browse the ACLVT list for AMQ rooms.",
+    "description": "Browse the ACLVTQ list for AMQ rooms.",
     "theme_color": "#006080",
     "icons": [
         {

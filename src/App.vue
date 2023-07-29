@@ -20,6 +20,7 @@ const {
   checkLeo,
   checkGyrehio,
   checktchm,
+  checkqgWolf,
   listFilterType,
   search,
   searchType,
@@ -49,7 +50,7 @@ const animeDatabase = computed(() => {
  * The animes to display.
  */
 const animes = computed(() => {
-  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, alternativeTitles.value));
+  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, alternativeTitles.value));
 
   return orderByMAL.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
     switch(animeLanguage.value) {
@@ -142,7 +143,7 @@ onMounted(async () => {
 
 <template>
   <header>
-    <h1 class="mobile-hide">AMQ ACLVT</h1>
+    <h1 class="mobile-hide">AMQ ACLVTQ</h1>
 
     <div id="headerCenter">
       <Search :searchResultCount="animes.length" />
@@ -161,6 +162,7 @@ onMounted(async () => {
       <span class="cursorHelp listFilter" title="Léonard"><label for="checkLeo">L</label> <input v-model="checkLeo" type="checkbox" id="checkLeo"></span>
       <span class="cursorHelp listFilter" title="Victor"><label for="checkGyrehio">V</label> <input v-model="checkGyrehio" type="checkbox" id="checkGyrehio"></span>
       <span class="cursorHelp listFilter" title="Tom"><label for="checktchm">T</label> <input v-model="checktchm" type="checkbox" id="checktchm"></span>
+      <span class="cursorHelp listFilter" title="Quentin"><label for="checkqgWolf">Q</label> <input v-model="checkqgWolf" type="checkbox" id="checkqgWolf"></span>
     </div>
   </header>
 

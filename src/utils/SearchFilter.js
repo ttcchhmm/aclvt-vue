@@ -14,7 +14,7 @@
  * @param {Object} alternativeTitles The alternative titles of the animes.
  * @returns A function that takes an anime as a parameter and returns whether it should be displayed or not.
  */
-export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, alternativeTitles) {
+export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, alternativeTitles) {
     return (a) => {
         // If a search query is present, filter based on it.
         if(search.trim().length > 0) {
@@ -132,13 +132,26 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 }
             }
 
+            if(checkqgWolf) {
+                if(listFilterType === 'union') {
+                    if(watched(a.scores.Q)) {
+                        display = true;
+                    }
+                } else { // Intersect mode
+                    if(!watched(a.scores.Q)) {
+                        return false;
+                    }
+                }
+            }
+
             return display;
         } else { // Strict match
             return checkTiralex === watched(a.scores.A) &&
                     checkCycy === watched(a.scores.C) &&
                     checkLeo === watched(a.scores.L) &&
                     checkGyrehio === watched(a.scores.V) &&
-                    checktchm === watched(a.scores.T);
+                    checktchm === watched(a.scores.T) &&
+                    checkqgWolf === watched(a.scores.Q);
         }
     };
 }

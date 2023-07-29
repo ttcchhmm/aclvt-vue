@@ -41,6 +41,13 @@ export const useSearchStore = defineStore('search', {
         checktchm: true,
 
         /**
+         * Whether or not QGWolfWarrior's list should be displayed.
+         * 
+         * @type {boolean}
+         */
+        checkqgWolf: true,
+
+        /**
          * The type of list filter.
          * 
          * @type {'union' | 'intersect' | 'strict'}
