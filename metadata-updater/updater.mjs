@@ -242,6 +242,7 @@ async function generateApiV2() {
             endDate: anime.endDate,
             startSeason: anime.startSeason,
             studios: anime.studios,
+            episodes: anime.episodes,
         }));
 
         // Compress the file
