@@ -42,5 +42,5 @@ const props = defineProps({
 
 .watchedTable * {
     color: black;
-}   
+}
 </style>
