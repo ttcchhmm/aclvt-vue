@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
 import { useSearchStore } from '../stores/SearchStore';
+import { getRating } from '../utils/AnimeLabels';
 
 /**
  * The props for this component.
@@ -23,6 +24,7 @@ const {
     searchType,
     searchAiringFilter,
     listFilterType,
+    maxAgeRating,
 } = storeToRefs(searchStore);
 
 /**
@@ -120,6 +122,7 @@ function reset() {
         ona: true,
         special: true
     };
+    maxAgeRating.value = '4';
 }
 
 </script>
@@ -194,6 +197,22 @@ function reset() {
                                 <option value="union">Union</option>
                                 <option value="intersect">Intersect</option>
                                 <option value="strict">Strict</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="ageRating">Max age rating: </label>
+                        </td>
+                        <td>
+                            <select id="ageRating" v-model="maxAgeRating">
+                                <option value="0">{{ getRating(0) }}</option>
+                                <option value="1">{{ getRating(1) }}</option>
+                                <option value="2">{{ getRating(2) }}</option>
+                                <option value="3">{{ getRating(3) }}</option>
+                                <option value="4">{{ getRating(4) }}</option>
+                                <option value="5">{{ getRating(5) }}</option>
                             </select>
                         </td>
                     </tr>

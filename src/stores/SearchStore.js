@@ -81,5 +81,10 @@ export const useSearchStore = defineStore('search', {
          * @type {string[]}
          */
         searchTypeFilter: [],
+
+        /**
+         * The search age rating filter.
+         */
+        maxAgeRating: 4,
     }),
 });

@@ -12,11 +12,17 @@
  * @param {boolean} checkGyrehio Whether to display animes from Gyrehio's list.
  * @param {boolean} checktchm Whether to display animes from tchm's list.
  * @param {boolean} checkqgWolf Whether to display animes from QGWolfWarrior's list.
+ * @param {number} maxAgeRating The maximum age rating to display.
  * @param {Object} alternativeTitles The alternative titles of the animes.
  * @returns A function that takes an anime as a parameter and returns whether it should be displayed or not.
  */
-export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, alternativeTitles) {
+export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, maxAgeRating, alternativeTitles) {
     return (a) => {
+        // Check the age rating.
+        if(a.rating > maxAgeRating) {
+            return false;
+        }
+
         // If a search query is present, filter based on it.
         if(search.trim().length > 0) {
             switch(searchType) {

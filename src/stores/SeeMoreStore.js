@@ -20,7 +20,8 @@ export const useSeeMoreStore = defineStore('seeMore', {
             status: '',
             type: '',
             wasWatched: false,
-            scores: {}
+            scores: {},
+            rating: 0,
         },
 
         /**

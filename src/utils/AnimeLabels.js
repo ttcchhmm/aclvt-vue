@@ -55,3 +55,30 @@ export function getType(anime) {
             return '';
     }
 }
+
+/**
+ * Get the age rating of the anime.
+ * @param {number} rating The age rating of the anime.
+ * @returns A string representing the age rating of the anime.
+ */
+export function getRating(rating) {
+    switch(rating) {
+        case 0:
+            return 'All Ages';
+
+        case 1:
+            return 'Children';
+
+        case 2:
+            return '13 and older';
+
+        case 3:
+            return '17 - Violence and profanity';
+
+        case 4:
+            return '17 - Mild Nudity';
+
+        case 5:
+            return '18+ - Not Safe for Work';
+    }
+}
