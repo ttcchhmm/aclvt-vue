@@ -7,6 +7,7 @@ import { getTitle, getLangCode, getType } from '../utils/AnimeLabels';
 import LoadingIcon from './LoadingIcon.vue';
 import Scores from './Scores.vue';
 import { useSettingsStore } from '../stores/SettingsStore';
+import { pluralize } from '../utils/Pluralize';
 
 /**
  * Settings store.
@@ -102,32 +103,60 @@ function capitlizeFirstLetter(string) {
                 <h3>Synopsis</h3>
                 <p v-for="paragraph in data.secondary.synopsis.split('\n')">{{ paragraph }}</p>
 
-                <h3>More info</h3>
-                <table class="tableOptions">
-                    <tr v-if="data.secondary.episodes !== undefined && data.secondary.episodes > 0">
-                        <td class="label">Episodes</td>
-                        <td>{{ data.secondary.episodes }}</td>
-                    </tr>
-                    <tr v-if="data.secondary.startDate !== undefined">
-                        <td class="label">Start date</td>
-                        <td>{{ data.secondary.startDate }}</td>
-                    </tr>
-                    <tr v-if="data.secondary.endDate !== undefined">
-                        <td class="label">End date</td>
-                        <td>{{ data.secondary.endDate }}</td>
-                    </tr>
-                    <tr v-if="data.secondary.startSeason !== undefined">
-                        <td class="label">Start season</td>
-                        <td>{{ `${capitlizeFirstLetter(data.secondary.startSeason.season)} ${data.secondary.startSeason.year}` }}</td>
-                    </tr>
-                    <tr v-if="data.secondary.studios !== undefined">
-                        <td class="label">Studios</td>
-                        <td>{{ data.secondary.studios.map(s => s.name).join(', ') }}</td>
-                    </tr>
-                </table>
+                <div id="moreInfo">
+                    <div class="infoSection">
+                        <h3>More info</h3>
+                        <table class="tableOptions">
+                            <tr v-if="data.secondary.episodes !== undefined && data.secondary.episodes > 0">
+                                <td class="label">Episodes</td>
+                                <td>{{ data.secondary.episodes }}</td>
+                            </tr>
+                            <tr v-if="data.secondary.startDate !== undefined">
+                                <td class="label">Start date</td>
+                                <td>{{ data.secondary.startDate }}</td>
+                            </tr>
+                            <tr v-if="data.secondary.endDate !== undefined">
+                                <td class="label">End date</td>
+                                <td>{{ data.secondary.endDate }}</td>
+                            </tr>
+                            <tr v-if="data.secondary.startSeason !== undefined">
+                                <td class="label">Start season</td>
+                                <td>{{ `${capitlizeFirstLetter(data.secondary.startSeason.season)} ${data.secondary.startSeason.year}` }}</td>
+                            </tr>
+                            <tr v-if="data.secondary.studios !== undefined">
+                                <td class="label">Studios</td>
+                                <td>{{ data.secondary.studios.map(s => s.name).join(', ') }}</td>
+                            </tr>
+                        </table>
+                    </div>
 
-                <h3>Scores</h3>
-                <Scores :scores="anime.scores" />
+                    <div class="infoSection">
+                        <h3>Titles</h3>
+                        <table class="tableOptions">
+                            <tr>
+                                <td class="label">Romanji title</td>
+                                <td>{{ anime.titles.original }}</td>
+                            </tr>
+                            <tr v-if="anime.titles.en !== undefined">
+                                <td class="label">English title</td>
+                                <td>{{ anime.titles.en }}</td>
+                            </tr>
+                            <tr v-if="anime.titles.ja !== undefined">
+                                <td class="label">Japanese title</td>
+                                <td lang="ja">{{ anime.titles.ja }}</td>
+                            </tr>
+                            <tr v-if="anime.titles.synonyms !== undefined && anime.titles.synonyms.length !== 0">
+                                <td class="label">Alternative {{ pluralize(anime.titles.synonyms.length, 'name', 'names') }}</td>
+                                <td>{{ anime.titles.synonyms.join(', ') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="infoSection">
+                        <h3>Scores</h3>
+                        <div id="scoresDisplay"><Scores :scores="anime.scores" /></div>
+                    </div>
+                </div>
             </div>
         </div>
     </dialog>
@@ -171,6 +200,18 @@ function capitlizeFirstLetter(string) {
     margin-left: 5px;
 }
 
+#moreInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.infoSection {
+    margin-bottom: 15px;
+    margin-right: 30px;
+}
+
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
     #coverContainer {
         margin-right: 0px;
@@ -190,6 +231,25 @@ function capitlizeFirstLetter(string) {
 
     #coverHeading {
         display: block;
+    }
+
+    #moreInfo {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+    }
+
+    #moreInfo table, .infoSection, #moreInfo, #seeMoreDialogBody {
+        width: 100%;
+    }
+
+    #scoresDisplay {
+        display: flex;
+        justify-content: center;
+    }
+
+    #scoresDisplay > table {
+        width: fit-content;
     }
 }
 </style>
