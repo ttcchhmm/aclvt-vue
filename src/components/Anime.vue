@@ -3,8 +3,9 @@
 import Song from './Song.vue';
 import Scores from './Scores.vue';
 import { computed, onMounted, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
+import { getTitle, getLangCode, getType } from '../utils/AnimeLabels';
+import { useSeeMoreStore } from '../stores/SeeMoreStore';
 import { useSettingsStore } from '../stores/SettingsStore';
 
 /**
@@ -16,6 +17,16 @@ const props = defineProps({
      */
     anime: Object,
 });
+
+/**
+ * The store for the "See More" dialog.
+ */
+const seeMoreStore = useSeeMoreStore();
+
+/**
+ * The settings store.
+ */
+const settingsStore = useSettingsStore();
 
 /**
  * The openings of the anime.
@@ -42,8 +53,6 @@ const showBackground = ref(false);
  */
 const backgroundRef = ref(null);
 
-const { animeLanguage } = storeToRefs(useSettingsStore());
-
 /**
  * CSS code for the background.
  */
@@ -58,24 +67,7 @@ const coverRule = computed(() => {
 /**
  * Contains the label for the type of anime.
  */
-const typeLabel = computed(() => {
-    switch(props.anime.type) {
-        case 'tv':
-            return 'Series';
-        case 'movie':
-            return 'Movie';
-        case 'ova':
-            return 'Original Video Animation';
-        case 'ona':
-            return 'Original Net Animation';
-        case 'special':
-            return 'Special';
-        case 'music':
-            return 'Music';
-        default:
-            return '';
-    }
-});
+const typeLabel = computed(() => getType(props.anime.value));
 
 /**
  * Contains the label for the state of the anime.
@@ -93,25 +85,15 @@ const stateLabel = computed(() => {
     }
 });
 
-const title = computed(() => {
-    switch(animeLanguage.value) {
-        case 'original':
-            return props.anime?.titles.original || props.anime?.titles.original;
-        case 'en':
-            return props.anime?.titles.en || props.anime?.titles.original;
-        case 'ja':
-            return props.anime?.titles.ja || props.anime?.titles.original;
-        default:
-            return props.title.original;
-    }
-});
+/**
+ * The title of the anime.
+ */
+const title = computed(() => getTitle(props.anime));
 
 /**
  * The title language used.
  */
-const titleLanguage = computed(() => {
-    return animeLanguage.value === 'ja' ? 'ja' : 'en';
-});
+const titleLanguage = computed(() => getLangCode());
 
 /**
  * Lazy load the background image if needed.
@@ -137,7 +119,7 @@ onMounted(() => {
 <template>
     <div class="background-target" ref="backgroundRef" :style="coverRule">
         <section class="anime">
-            <h2 :lang="titleLanguage"><a :href="`https://myanimelist.net/anime/${props.anime.mal_id}`" target="_blank">{{ title }}</a></h2>
+            <h2 @click="seeMoreStore.$patch({ anime: props.anime, visible: true })" :lang="titleLanguage" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: white'">{{ title }}</h2>
 
             <div class="labels">
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
@@ -209,6 +191,8 @@ onMounted(() => {
     margin: 0px;
     max-width: 300px;
     text-align: center;
+
+    cursor: pointer;
 }
 
 .songsDisplay {

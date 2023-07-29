@@ -5,6 +5,7 @@ import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import Settings from './components/Settings.vue';
+import SeeMoreDialog from './components/SeeMoreDialog.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
 import { getFilterAnimes } from './utils/SearchFilter';
@@ -164,6 +165,7 @@ onMounted(async () => {
   </header>
 
   <VideoPlayer />
+  <SeeMoreDialog />
 
   <LoadingIcon v-if="data === null" />
   <main v-else id="loadedData">
