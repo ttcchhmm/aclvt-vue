@@ -124,7 +124,7 @@ function capitlizeFirstLetter(string) {
                                 <td>{{ `${capitlizeFirstLetter(data.secondary.startSeason.season)} ${data.secondary.startSeason.year}` }}</td>
                             </tr>
                             <tr v-if="data.secondary.studios !== undefined">
-                                <td class="label">Studios</td>
+                                <td class="label">{{ pluralize(data.secondary.studios.length, 'Studio', 'Studios') }}</td>
                                 <td>{{ data.secondary.studios.map(s => s.name).join(', ') }}</td>
                             </tr>
                         </table>
