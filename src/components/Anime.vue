@@ -1,6 +1,7 @@
 <script setup>
 
 import Song from './Song.vue';
+import Scores from './Scores.vue';
 import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
@@ -145,17 +146,7 @@ onMounted(() => {
                 <small class="songCount">{{ `${props.anime?.music.length} ${pluralize(props.anime?.music.length, 'entry', 'entries')}` }}</small>
             </div>
 
-            <table class="watchedTable">
-                <tbody>
-                    <tr>
-                        <td class="cursorHelp" :class="props.anime.scores.A !== undefined ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="props.anime.scores.A !== undefined && props.anime?.scores.A !== 0">{{ props.anime?.scores['A'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.scores.C !== undefined ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="props.anime.scores.C !== undefined && props.anime?.scores.C !== 0">{{ props.anime?.scores['C'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.scores.L !== undefined ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="props.anime.scores.L !== undefined && props.anime?.scores.L !== 0">{{ props.anime?.scores['L'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.scores.V !== undefined ? 'watched' : 'notWatched'" title="Victor">V <span v-if="props.anime.scores.V !== undefined && props.anime?.scores.V !== 0">{{ props.anime?.scores['V'] }}</span></td>
-                        <td class="cursorHelp" :class="props.anime.scores.T !== undefined ? 'watched' : 'notWatched'" title="Tom">T <span v-if="props.anime.scores.T !== undefined && props.anime?.scores.T !== 0">{{ props.anime?.scores['T'] }}</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <Scores :scores="props.anime.scores" />
 
             <div class="mobile-fill-width songsDisplay">
                 <div v-if="props.anime?.music?.length === 0" class="noSongs">
@@ -218,23 +209,6 @@ onMounted(() => {
     margin: 0px;
     max-width: 300px;
     text-align: center;
-}
-
-.watched {
-    background-color: lightgreen;
-}
-
-.notWatched {
-    background-color: lightcoral;
-}
-
-.watchedTable tbody tr td {
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.watchedTable * {
-    color: black;
 }
 
 .songsDisplay {
