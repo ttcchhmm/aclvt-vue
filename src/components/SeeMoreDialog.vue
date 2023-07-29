@@ -85,7 +85,7 @@ function capitlizeFirstLetter(string) {
     <dialog ref="dialogRef">
         <div class="dialogHeader">
             <div>
-                <h2 :lang="titleLanguage"><a :href="`https://myanimelist.net/anime/${anime.id}`" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ title }}</a></h2>
+                <h2 :lang="titleLanguage" id="animeTitle"><a :href="`https://myanimelist.net/anime/${anime.id}`" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ title }} <img src="@/assets/open-external.svg" height="20" width="20"></a></h2>
                 <small>{{ type }}</small>
             </div>
             <img @click="visible = false" src="@/assets/close.svg" alt="Close" height="30" width="30" role="button">
@@ -160,6 +160,15 @@ function capitlizeFirstLetter(string) {
     align-self: flex-start;
     
     margin-top: 0px;
+}
+
+#animeTitle a {
+    display: flex;
+    align-items: flex-start;
+}
+
+#animeTitle a img {
+    margin-left: 5px;
 }
 
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
