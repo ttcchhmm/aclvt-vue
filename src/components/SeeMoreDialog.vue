@@ -85,7 +85,7 @@ function capitlizeFirstLetter(string) {
     <dialog ref="dialogRef">
         <div class="dialogHeader">
             <div>
-                <h2 :lang="titleLanguage" id="animeTitle"><a :href="`https://myanimelist.net/anime/${anime.id}`" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ title }} <img src="@/assets/open-external.svg" height="20" width="20"></a></h2>
+                <h2 :lang="titleLanguage" id="animeTitle"><a :href="`https://myanimelist.net/anime/${anime.id}`" target="_blank" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ title }} <img src="@/assets/open-external.svg" height="20" width="20"></a></h2>
                 <small>{{ type }}</small>
             </div>
             <img @click="visible = false" src="@/assets/close.svg" alt="Close" height="30" width="30" role="button">
