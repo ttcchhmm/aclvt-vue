@@ -3,7 +3,7 @@
 import { storeToRefs } from 'pinia';
 import { useSeeMoreStore } from '../stores/SeeMoreStore';
 import { onMounted, watch, ref, computed } from 'vue';
-import { getTitle, getLangCode, getType } from '../utils/AnimeLabels';
+import { getTitle, getLangCode, getType, getRating } from '../utils/AnimeLabels';
 import LoadingIcon from './LoadingIcon.vue';
 import Scores from './Scores.vue';
 import { useSettingsStore } from '../stores/SettingsStore';
@@ -148,6 +148,10 @@ function capitlizeFirstLetter(string) {
                             <tr v-if="anime.titles.synonyms !== undefined && anime.titles.synonyms.length !== 0">
                                 <td class="label">Alternative {{ pluralize(anime.titles.synonyms.length, 'name', 'names') }}</td>
                                 <td>{{ anime.titles.synonyms.join(', ') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Age rating</td>
+                                <td>{{ getRating(anime.rating) }}</td>
                             </tr>
                         </table>
                     </div>
