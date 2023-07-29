@@ -67,7 +67,7 @@ const coverRule = computed(() => {
 /**
  * Contains the label for the type of anime.
  */
-const typeLabel = computed(() => getType(props.anime.value));
+const typeLabel = computed(() => getType(props.anime));
 
 /**
  * Contains the label for the state of the anime.
