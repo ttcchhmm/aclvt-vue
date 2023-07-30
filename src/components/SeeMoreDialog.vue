@@ -123,9 +123,9 @@ function capitlizeFirstLetter(string) {
                                 <td class="label">Airing season</td>
                                 <td>{{ `${capitlizeFirstLetter(data.secondary.startSeason.season)} ${data.secondary.startSeason.year}` }}</td>
                             </tr>
-                            <tr v-if="data.secondary.studios !== undefined">
-                                <td class="label">{{ pluralize(data.secondary.studios.length, 'Studio', 'Studios') }}</td>
-                                <td>{{ data.secondary.studios.map(s => s.name).join(', ') }}</td>
+                            <tr v-if="anime.studios.length !== 0">
+                                <td class="label">{{ pluralize(anime.studios.length, 'Studio', 'Studios') }}</td>
+                                <td>{{ anime.studios.join(', ') }}</td>
                             </tr>
                         </table>
                     </div>

@@ -213,7 +213,7 @@ async function generateApiV2() {
                     startDate: anime.node.start_date,
                     endDate: anime.node.end_date,
                     startSeason: anime.node.start_season,
-                    studios: anime.node.studios,
+                    studios: anime.node.studios.map(s => s.name),
                     episodes: anime.node.num_episodes,
                     rating: ratingToValue(anime.node.rating),
                     music: tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien, number: m.numero } }),
@@ -272,6 +272,7 @@ async function generateApiV2() {
             wasWatched: anime.wasWatched,
             music: anime.music === undefined ? [] : anime.music,
             rating: anime.rating,
+            studios: anime.studios,
         });
 
         // Generate the secondary file
@@ -280,7 +281,6 @@ async function generateApiV2() {
             startDate: anime.startDate,
             endDate: anime.endDate,
             startSeason: anime.startSeason,
-            studios: anime.studios,
             episodes: anime.episodes,
         }));
 
