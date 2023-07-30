@@ -191,7 +191,7 @@ function reset() {
                             <label for="genres">Genres: </label>
                         </td>
                         <td>
-                            <VueSelect v-model="selectedGenres" :options="dataStore.data.genres" multiple/>
+                            <VueSelect v-model="selectedGenres" :options="dataStore.data?.genres" multiple/>
                         </td>
                     </tr>
 
@@ -200,7 +200,7 @@ function reset() {
                             <label for="studios">Studios: </label>
                         </td>
                         <td>
-                            <VueSelect v-model="selectedStudios" :options="dataStore.data.studios" multiple/>
+                            <VueSelect v-model="selectedStudios" :options="dataStore.data?.studios" multiple/>
                         </td>
                     </tr>
 
