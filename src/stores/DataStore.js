@@ -49,7 +49,7 @@ if(localStorage.getItem('data') !== null) {
         localStorage.removeItem('data');
     } else {
         // Check if the data has the required keys
-        for(const key of ['animes', 'genres', 'updatedAt']) {
+        for(const key of ['animes', 'genres', 'updatedAt', 'studios']) {
             // If the data doesn't have the key, remove it and wait for the next update
             if(!data.hasOwnProperty(key)) {
                 localStorage.removeItem('data');

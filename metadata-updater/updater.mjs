@@ -303,6 +303,15 @@ async function generateApiV2() {
 
             return acc;
         }, []).sort(),
+        studios: animes.reduce((acc, anime) => {
+            for(const studio of anime.studios) {
+                if(!acc.includes(studio)) {
+                    acc.push(studio);
+                }
+            }
+
+            return acc;
+        }, []).sort(),
         updatedAt: new Date().toISOString(),
     }));
     promises.push(gzipFile('api/v2/index.json', 'api/v2/index.json.gz'));
