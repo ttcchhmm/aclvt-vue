@@ -110,6 +110,7 @@ function reset() {
             <ul>
                 <li><a href="https://vuejs.org/" target="_blank">Vue.js</a></li>
                 <li><a href="https://pinia.vuejs.org/" target="_blank">Pinia</a></li>
+                <li><a href="https://vue-select.org/" target="_blank">Vue Select</a></li>
             </ul>
 
             <p>The source code for this website is available on <a href="https://github.com/ttcchhmm/aclvt-vue" target="_blank">GitHub</a>.</p>

@@ -5,6 +5,10 @@ import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
 import { useSearchStore } from '../stores/SearchStore';
 import { getRating } from '../utils/AnimeLabels';
+import { useDataStore } from '../stores/DataStore';
+
+import VueSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
 /**
  * The props for this component.
@@ -19,12 +23,15 @@ const props = defineProps({
 
 const searchStore = useSearchStore();
 
+const dataStore = useDataStore();
+
 const {
     search,
     searchType,
     searchAiringFilter,
     listFilterType,
     maxAgeRating,
+    selectedGenres,
 } = storeToRefs(searchStore);
 
 /**
@@ -123,6 +130,7 @@ function reset() {
         special: true
     };
     maxAgeRating.value = '4';
+    selectedGenres.value = [];
 }
 
 </script>
@@ -175,6 +183,16 @@ function reset() {
                             </select>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>
+                            <label for="genres">Genres: </label>
+                        </td>
+                        <td>
+                            <VueSelect v-model="selectedGenres" :options="dataStore.data.genres" multiple/>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>
                             <label for="searchAiringFilter">Airing state: </label>
@@ -236,6 +254,10 @@ function reset() {
 </template>
 
 <style>
+    :root {
+        --vs-dropdown-max-height: 200px;
+    }
+
     #mobileSearchIcon {
         height: 30px;
     }

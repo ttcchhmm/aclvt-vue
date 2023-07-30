@@ -86,5 +86,10 @@ export const useSearchStore = defineStore('search', {
          * The search age rating filter.
          */
         maxAgeRating: 4,
+
+        /**
+         * The searched genres.
+         */
+        selectedGenres: [],
     }),
 });
