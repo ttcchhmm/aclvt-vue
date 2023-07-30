@@ -32,6 +32,7 @@ const {
     listFilterType,
     maxAgeRating,
     selectedGenres,
+    selectedStudios,
 } = storeToRefs(searchStore);
 
 /**
@@ -131,6 +132,7 @@ function reset() {
     };
     maxAgeRating.value = '4';
     selectedGenres.value = [];
+    selectedStudios.value = [];
 }
 
 </script>
@@ -190,6 +192,15 @@ function reset() {
                         </td>
                         <td>
                             <VueSelect v-model="selectedGenres" :options="dataStore.data.genres" multiple/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="studios">Studios: </label>
+                        </td>
+                        <td>
+                            <VueSelect v-model="selectedStudios" :options="dataStore.data.studios" multiple/>
                         </td>
                     </tr>
 

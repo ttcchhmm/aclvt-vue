@@ -91,5 +91,10 @@ export const useSearchStore = defineStore('search', {
          * The searched genres.
          */
         selectedGenres: [],
+
+        /**
+         * The searched studios.
+         */
+        selectedStudios: [],
     }),
 });

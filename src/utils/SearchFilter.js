@@ -14,10 +14,11 @@
  * @param {boolean} checkqgWolf Whether to display animes from QGWolfWarrior's list.
  * @param {number} maxAgeRating The maximum age rating to display.
  * @param {string[]} genres The genres to display.
+ * @param {string[]} studios The studios to display.
  * @param {Object} alternativeTitles The alternative titles of the animes.
  * @returns A function that takes an anime as a parameter and returns whether it should be displayed or not.
  */
-export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, maxAgeRating, genres, alternativeTitles) {
+export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, maxAgeRating, genres, studios, alternativeTitles) {
     return (a) => {
         // Check the age rating.
         if(a.rating > maxAgeRating) {
@@ -30,6 +31,13 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 if(!a.genres.includes(genre)) {
                     return false;
                 }
+            }
+        }
+
+        // Check the studios.
+        if(studios.length !== 0) {
+            if(!studios.some(s => a.studios.includes(s))) {
+                return false;
             }
         }
 

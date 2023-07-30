@@ -28,6 +28,7 @@ const {
   searchTypeFilter,
   maxAgeRating,
   selectedGenres,
+  selectedStudios,
 } = storeToRefs(useSearchStore());
 
 const dataStore = useDataStore();
@@ -52,7 +53,7 @@ const animeDatabase = computed(() => {
  * The animes to display.
  */
 const animes = computed(() => {
-  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, maxAgeRating.value, selectedGenres.value, alternativeTitles.value));
+  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, maxAgeRating.value, selectedGenres.value, selectedStudios.value, alternativeTitles.value));
 
   return orderByMAL.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
     switch(animeLanguage.value) {
