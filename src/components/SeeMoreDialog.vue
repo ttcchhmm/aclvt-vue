@@ -127,6 +127,10 @@ function capitlizeFirstLetter(string) {
                                 <td class="label">{{ pluralize(anime.studios.length, 'Studio', 'Studios') }}</td>
                                 <td>{{ anime.studios.join(', ') }}</td>
                             </tr>
+                            <tr v-if="anime.genres.length !== 0">
+                                <td class="label">{{ pluralize(anime.genres.length, 'Genre', 'Genres') }}</td>
+                                <td>{{ anime.genres.join(', ') }}</td>
+                            </tr>
                         </table>
                     </div>
 
