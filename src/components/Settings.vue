@@ -2,6 +2,7 @@
 import { watch, ref, onMounted, computed } from 'vue';
 import { useSettingsStore } from '../stores/SettingsStore';
 import { storeToRefs } from 'pinia';
+import { useDataStore } from '../stores/DataStore';
 
 /**
  * Whether or not the search dialog is open.
@@ -19,6 +20,18 @@ const dialogRef = ref(null);
 const settingsStore = useSettingsStore();
 
 const { headerColor, colorizeLinks, animeLanguage, orderByMAL } = storeToRefs(settingsStore);
+
+const { data } = storeToRefs(useDataStore());
+
+/**
+ * The date of the last database update.
+ */
+const dbUpdate = computed(() => new Date(data.value?.updatedAt ?? 0));
+
+/**
+ * The date of the next database update.
+ */
+const nextDbUpdate = computed(() => new Date(dbUpdate.value.getTime() + 30 * 60000));
 
 watch(dialogOpen, (value) => {
     if (value) {
