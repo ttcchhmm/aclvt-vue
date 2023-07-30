@@ -180,6 +180,7 @@ onMounted(() => {
     min-width: 250px;
 
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .anime:hover {

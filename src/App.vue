@@ -205,6 +205,7 @@ header {
   /* background-color: rgba(0, 191, 255, 0.5); */
   background-color: v-bind(headerColorWithAlpha);
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 
   display: flex;
   align-items: center;
