@@ -114,6 +114,12 @@ function reset() {
 
             <p>The source code for this website is available on <a href="https://github.com/ttcchhmm/aclvt-vue" target="_blank">GitHub</a>.</p>
         </div>
+
+        <small>
+            Last database update: {{ dbUpdate.toLocaleString() }}
+            <br>
+            Next database update: {{ nextDbUpdate.toLocaleString() }}
+        </small>
     </dialog>
 </template>
 
