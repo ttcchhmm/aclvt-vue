@@ -44,7 +44,7 @@ const linksCss = computed(() => {
 const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
 
 const animeDatabase = computed(() => {
-  return data.value === null ? [] : data.value.filter(a => a.wasWatched === true);
+  return data.value === null ? [] : data.value?.animes.filter(a => a.wasWatched === true);
 });
 
 /**
@@ -90,7 +90,7 @@ const alternativeTitles = computed(() => {
   } else {
     const titles = {};
 
-    data.value.forEach((a) => {
+    animeDatabase.value.forEach((a) => {
       titles[a.id] = getAlternativeTitles(a);
     })
 
@@ -99,10 +99,10 @@ const alternativeTitles = computed(() => {
 });
 
 const songsCount = computed(() => {
-  if(data.value === null) {
+  if(animeDatabase.value.length === 0) {
     return 0;
   } else {
-    return data.value.reduce((acc, anime) => acc + anime.music?.length, 0);
+    return data.value.animes.reduce((acc, anime) => acc + anime.music.length, 0);
   }
 });
 

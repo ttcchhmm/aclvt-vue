@@ -258,12 +258,12 @@ async function generateApiV2() {
     }
 
     // Generate a file for each anime and an index file
-    const index = [];
+    const animes = [];
     const promises = [];
 
     for(const anime of mergedData) {
         // Add the anime to the index
-        index.push({
+        animes.push({
             id: anime.id,
             scores: anime.scores,
             cover: anime.cover,
@@ -292,13 +292,30 @@ async function generateApiV2() {
     }
 
     // Generate the index file
-    await fsPromise.writeFile('api/v2/index.json', JSON.stringify(index));
+    await fsPromise.writeFile('api/v2/index.json', JSON.stringify({
+        animes,
+        genres: animes.reduce((acc, anime) => {
+            for(const genre of anime.genres) {
+                if(!acc.includes(genre)) {
+                    acc.push(genre);
+                }
+            }
+
+            return acc;
+        }, []).sort(),
+        updatedAt: new Date().toISOString(),
+    }));
     promises.push(gzipFile('api/v2/index.json', 'api/v2/index.json.gz'));
     promises.push(brotliFile('api/v2/index.json', 'api/v2/index.json.br'));
 
     await Promise.all(promises);
 
     console.log('Generated API v2.');
+
+    console.log('\nSome stats:');
+    console.log(`- ${animes.length} animes`);
+    console.log(`- ${animes.filter(a => a.wasWatched).length} animes were watched`);
+    console.log(`- ${animes.reduce((acc, a) => acc + a.music.length, 0)} music entries`);
 }
 
 await Promise.all([

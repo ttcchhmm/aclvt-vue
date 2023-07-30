@@ -40,3 +40,21 @@ if(localStorage.getItem('data:primary') !== null) {
 if(localStorage.getItem('data:secondary') !== null) {
     localStorage.removeItem('data:secondary');
 }
+
+// Check if the data is still valid
+if(localStorage.getItem('data') !== null) {
+    let data = tryParseJSON(localStorage.getItem('data'));
+
+    if(data === null) {
+        localStorage.removeItem('data');
+    } else {
+        // Check if the data has the required keys
+        for(const key of ['animes', 'genres', 'updatedAt']) {
+            // If the data doesn't have the key, remove it and wait for the next update
+            if(!data.hasOwnProperty(key)) {
+                localStorage.removeItem('data');
+                break;
+            }
+        }
+    }
+}
