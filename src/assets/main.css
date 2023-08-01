@@ -104,7 +104,7 @@ button, select, input::placeholder, dialog *, input, option {
   display: none;
 }
 
-@media screen and ((max-width: 450px) or (orientation: portrait)) {
+@media screen and ((max-width: 1005px) or (orientation: portrait)) {
   .mobile-hide {
     display: none;
   }

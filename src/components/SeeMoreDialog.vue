@@ -237,7 +237,7 @@ function capitlizeFirstLetter(string) {
     text-decoration: underline;
 }
 
-@media screen and ((max-width: 450px) or (orientation: portrait)) {
+@media screen and ((max-width: 1005px) or (orientation: portrait)) {
     #coverContainer {
         margin-right: 0px;
         margin-top: 1rem;

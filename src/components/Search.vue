@@ -378,7 +378,7 @@ function reset() {
         margin-right: 0px;
     }
 
-    @media screen and ((max-width: 450px) or (orientation: portrait)) {
+    @media screen and ((max-width: 1005px) or (orientation: portrait)) {
         #advancedSearchTypes {
             flex-direction: column;
         }
