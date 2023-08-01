@@ -146,7 +146,7 @@ function reset() {
                 <option value="artist">Artist</option>
             </select>
             <input v-model="search" type="text" id="search" placeholder="Type here to search..." role="searchbox">
-            <img role="button" @click="toggleDialog" class="svgFix" src="@/assets/more.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
+            <img id="advancedSearchButton" role="button" @click="toggleDialog" src="@/assets/dropdown-white.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
         </div>
     </div>
 
@@ -269,6 +269,67 @@ function reset() {
         --vs-dropdown-max-height: 200px;
     }
 
+    header div#desktopSearchFieldContent select {
+        appearance: none;
+
+        height: 34px;
+
+        color: white;
+        font-weight: bold;
+
+        background-color: transparent;
+        border: 1px solid white;
+        border-right: unset;
+        border-radius: 5px 0px 0px 5px;
+
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+
+        cursor: pointer;
+        
+        text-align: center;
+    }
+
+    header div#desktopSearchFieldContent select:focus {
+        outline: none;
+    }
+
+    header div#desktopSearchFieldContent input[type=text]#search {
+        appearance: none;
+
+        height: 30px;
+
+        color: white;
+
+        background-color: transparent;
+        border: 1px solid white;
+
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    header div#desktopSearchFieldContent input[type=text]#search::placeholder {
+        color: white;
+        font-style: italic;
+        opacity: 0.5;
+    }
+
+    header div#desktopSearchFieldContent input[type=text]#search:focus {
+        outline: none;
+    }
+
+    header div#desktopSearchFieldContent img#advancedSearchButton {
+        border: 1px solid white;
+        border-left: unset;
+        border-radius: 0px 5px 5px 0px;
+
+        height: 32px;
+
+        cursor: pointer;
+    }
+
     #mobileSearchIcon {
         height: 30px;
     }
@@ -290,10 +351,6 @@ function reset() {
     #desktopSearchFieldContent {
         display: flex;
         align-items: center;
-    }
-
-    #desktopSearchFieldContent select {
-        margin-right: 10px;
     }
 
     #advancedSearchDialog {

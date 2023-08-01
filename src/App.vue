@@ -153,19 +153,19 @@ onMounted(async () => {
       <Settings />
     </div>
 
-    <div>
+    <div id="listFilterComponent">
       <select class="mobile-hide" id="listFilterType" v-model="listFilterType">
         <option value="union">Union</option>
         <option value="intersect">Intersect</option>
         <option value="strict">Strict</option>
       </select>
 
-      <span class="cursorHelp listFilter" title="Alexis"><label for="checkTiralex">A</label> <input v-model="checkTiralex" type="checkbox" id="checkTiralex"></span>
-      <span class="cursorHelp listFilter" title="Cyprien"><label for="checkCycy">C</label> <input v-model="checkCycy" type="checkbox" id="checkCycy"></span>
-      <span class="cursorHelp listFilter" title="Léonard"><label for="checkLeo">L</label> <input v-model="checkLeo" type="checkbox" id="checkLeo"></span>
-      <span class="cursorHelp listFilter" title="Victor"><label for="checkGyrehio">V</label> <input v-model="checkGyrehio" type="checkbox" id="checkGyrehio"></span>
-      <span class="cursorHelp listFilter" title="Tom"><label for="checktchm">T</label> <input v-model="checktchm" type="checkbox" id="checktchm"></span>
-      <span class="cursorHelp listFilter" title="Quentin"><label for="checkqgWolf">Q</label> <input v-model="checkqgWolf" type="checkbox" id="checkqgWolf"></span>
+      <div class="cursorHelp listFilter" title="Alexis"><label for="checkTiralex">A</label> <input v-model="checkTiralex" type="checkbox" id="checkTiralex"></div>
+      <div class="cursorHelp listFilter" title="Cyprien"><label for="checkCycy">C</label> <input v-model="checkCycy" type="checkbox" id="checkCycy"></div>
+      <div class="cursorHelp listFilter" title="Léonard"><label for="checkLeo">L</label> <input v-model="checkLeo" type="checkbox" id="checkLeo"></div>
+      <div class="cursorHelp listFilter" title="Victor"><label for="checkGyrehio">V</label> <input v-model="checkGyrehio" type="checkbox" id="checkGyrehio"></div>
+      <div class="cursorHelp listFilter" title="Tom"><label for="checktchm">T</label> <input v-model="checktchm" type="checkbox" id="checktchm"></div>
+      <div class="cursorHelp listFilter" title="Quentin"><label for="checkqgWolf">Q</label> <input v-model="checkqgWolf" type="checkbox" id="checkqgWolf"></div>
     </div>
   </header>
 
@@ -222,14 +222,65 @@ header h1 {
   font-size: 1.75em;
 }
 
-.listFilter {
-  border-left: 1px solid black;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
+#headerCenter, #listFilterComponent {
+  display: flex;
+  align-items: center;
 }
 
-#listFilterType {
-  margin-right: 10px;
+#listFilterComponent select {
+  appearance: none;
+
+  height: 34px;
+
+  color: white;
+  font-weight: bold;
+
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 5px 0px 0px 5px;
+
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+
+  cursor: pointer;
+
+  text-align: center;
+}
+
+#listFilterComponent select:focus {
+  outline: none;
+}
+
+#listFilterComponent > div.listFilter {
+  border: 1px solid white;
+  border-left: unset;
+  height: 32px;
+
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#listFilterComponent > div.listFilter:last-child {
+  border-radius: 0px 5px 5px 0px;
+}
+
+#listFilterComponent > div.listFilter > label {
+  margin-right: 6px;
+}
+
+#listFilterComponent > div.listFilter > input {
+  width: 15px;
+  height: 15px;
+
+  margin: 0px;
+}
+
+.listFilter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #animes {
@@ -280,6 +331,16 @@ header h1 {
     align-items: center;
 
     width: 100%;
+  }
+
+  #listFilterComponent > div.listFilter {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  #listFilterComponent > div.listFilter:first-of-type {
+    border-left: 1px solid white;
+    border-radius: 5px 0px 0px 5px;
   }
 }
 
