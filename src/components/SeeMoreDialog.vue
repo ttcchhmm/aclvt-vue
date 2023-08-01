@@ -98,7 +98,9 @@ function capitlizeFirstLetter(string) {
         <div id="seeMoreDialogBody">
             <div id="coverContainer">
                 <h3 id="coverHeading">Cover art</h3>
-                <img :src="anime.cover" height="600" width="424">
+                <a :href="anime.cover" target="_blank" title="Open in a new tab">
+                    <img :src="anime.cover" height="600" width="424">
+                </a>
             </div>
 
             <LoadingIcon v-if="data.secondary === null" :light-mode="true" />
