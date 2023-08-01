@@ -40,7 +40,10 @@ function playVideo() {
 h4, h5 {
     margin: 0;
     max-width: 250px;
+
     hyphens: auto;
+    -webkit-hyphens: auto;
+
     word-wrap: break-word;
 }
 
