@@ -7,6 +7,7 @@ import { getTitle, getLangCode, getType, getRating } from '../utils/AnimeLabels'
 import LoadingIcon from './LoadingIcon.vue';
 import Scores from './Scores.vue';
 import { useSettingsStore } from '../stores/SettingsStore';
+import { useSearchStore } from '../stores/SearchStore';
 import { pluralize } from '../utils/Pluralize';
 
 /**
@@ -15,6 +16,8 @@ import { pluralize } from '../utils/Pluralize';
 const settingsStore = useSettingsStore();
 
 const { anime, visible } = storeToRefs(useSeeMoreStore());
+
+const { selectedGenres, selectedStudios } = storeToRefs(useSearchStore());
 
 /**
  * Additional data for the dialog.
@@ -125,11 +128,15 @@ function capitlizeFirstLetter(string) {
                             </tr>
                             <tr v-if="anime.studios.length !== 0">
                                 <td class="label">{{ pluralize(anime.studios.length, 'Studio', 'Studios') }}</td>
-                                <td>{{ anime.studios.join(', ') }}</td>
+                                <td class="commaList">
+                                    <span v-for="studio in anime.studios" @click="() => { if(!selectedStudios.some(s => s === studio)) { selectedStudios.push(studio) } }"><span class="searchEdit" title="Add to search">{{ studio }}</span><span class="comma">, </span></span>
+                                </td>
                             </tr>
                             <tr v-if="anime.genres.length !== 0">
                                 <td class="label">{{ pluralize(anime.genres.length, 'Genre', 'Genres') }}</td>
-                                <td>{{ anime.genres.join(', ') }}</td>
+                                <td class="commaList">
+                                    <span v-for="genre in anime.genres" @click="() => { if(!selectedGenres.some(g => g === genre)) { selectedGenres.push(genre) } }"><span class="searchEdit" title="Add to search">{{ genre }}</span><span class="comma">, </span></span>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -218,6 +225,14 @@ function capitlizeFirstLetter(string) {
 .infoSection {
     margin-bottom: 15px;
     margin-right: 30px;
+}
+
+.searchEdit {
+    cursor: pointer;
+}
+
+.searchEdit:hover {
+    text-decoration: underline;
 }
 
 @media screen and ((max-width: 450px) or (orientation: portrait)) {
