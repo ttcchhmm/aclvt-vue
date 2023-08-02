@@ -164,10 +164,6 @@ function clear() {
  * Resets the search fields.
  */
 function reset() {
-    search.value = '';
-    searchType.value = 'anime';
-    searchAiringFilter.value = 'any';
-    listFilterType.value = 'union';
     searchTypeFilter.value = {
         tv: true,
         movie: true,
@@ -176,12 +172,19 @@ function reset() {
         special: true,
         music: true,
     };
-    maxAgeRating.value = '4';
-    selectedGenres.value = [];
-    selectedStudios.value = [];
-    sortType.value = 'mal';
-    minSongsCount.value = 0;
-    maxSongsCount.value = upperSongsLimit.value;
+
+    searchStore.$patch({
+        search: '',
+        searchType: 'anime',
+        searchAiringFilter: 'any',
+        listFilterType: 'union',
+        maxAgeRating: '4',
+        selectedGenres: [],
+        selectedStudios: [],
+        sortType: 'mal',
+        minSongsCount: 0,
+        maxSongsCount: upperSongsLimit.value,
+    });
 }
 
 </script>
