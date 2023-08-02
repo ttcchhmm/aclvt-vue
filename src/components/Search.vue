@@ -266,6 +266,7 @@ function reset() {
                                 <option value="start-date">Start date</option>
                                 <option value="watch-count">Watch count</option>
                                 <option value="add-date">Added date</option>
+                                <option value="song-count">Number of songs</option>
                             </select>
                         </td>
                     </tr>

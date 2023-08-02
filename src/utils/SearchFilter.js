@@ -264,6 +264,15 @@ export function sortAnimes(sortType) {
                 return aDate - bDate;
             }
 
+        // Song count order.
+        case 'song-count':
+            return (a, b) => {
+                const aCount = a.music.length;
+                const bCount = b.music.length;
+
+                return bCount - aCount;
+            }
+
     }
 }
 

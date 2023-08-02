@@ -100,7 +100,7 @@ export const useSearchStore = defineStore('search', {
         /**
          * The sort type.
          * 
-         * @type { 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' }
+         * @type { 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' | 'song-count' }
          */
         sortType: 'mal',
     }),
