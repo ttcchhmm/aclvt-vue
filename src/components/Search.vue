@@ -24,6 +24,7 @@ const props = defineProps({
 const searchStore = useSearchStore();
 
 const dataStore = useDataStore();
+const { data } = storeToRefs(dataStore);
 
 const {
     search,
@@ -34,6 +35,8 @@ const {
     selectedGenres,
     selectedStudios,
     sortType,
+    minSongsCount,
+    maxSongsCount,
 } = storeToRefs(searchStore);
 
 /**
@@ -58,7 +61,20 @@ const dialogOpen = ref(false);
  */
 const dialogRef = ref(null);
 
+/**
+ * Maximum number of songs in an anime.
+ */
+const upperSongsLimit = computed(() => data.value?.animes.reduce((acc, cur) => {
+    if(cur.music?.length > acc) {
+        return cur.music.length;
+    }
+
+    return acc;
+}, 0));
+
 onMounted(() => {
+    maxSongsCount.value = upperSongsLimit.value;
+
     // Support closing the dialog by pressing the escape key.
     dialogRef.value.addEventListener('close', () => {
         dialogOpen.value = false;
@@ -101,6 +117,29 @@ watch(searchTypeFilterArray, () => {
     });
 });
 
+watch(upperSongsLimit, () => {
+    searchStore.$patch({
+        maxSongsCount: upperSongsLimit.value,
+    });
+});
+
+// Watch for changes in the min/max songs count.
+watch(maxSongsCount, () => {
+    if(maxSongsCount.value > upperSongsLimit.value) {
+        maxSongsCount.value = upperSongsLimit.value;
+    } else if(maxSongsCount.value < minSongsCount.value) {
+        minSongsCount.value = maxSongsCount.value | 0;
+    }
+});
+
+watch(minSongsCount, () => {
+    if(minSongsCount.value > maxSongsCount.value) {
+        maxSongsCount.value = minSongsCount.value | 0;
+    } else if(minSongsCount.value < 0) {
+        minSongsCount.value = 0;
+    }
+});
+
 /**
  * Toggles the dialog.
  */
@@ -141,6 +180,8 @@ function reset() {
     selectedGenres.value = [];
     selectedStudios.value = [];
     sortType.value = 'mal';
+    minSongsCount.value = 0;
+    maxSongsCount.value = upperSongsLimit.value;
 }
 
 </script>
@@ -268,6 +309,34 @@ function reset() {
                                 <option value="add-date">Added date</option>
                                 <option value="song-count">Number of songs</option>
                             </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Number of songs
+                        </td>
+
+                        <td>
+                            <table id="songsFilter">
+                                <tr>
+                                    <td>
+                                        <label for="songsMin">Min: </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="songsMin" step="1" min="0" :max="upperSongsLimit" v-model="minSongsCount">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label for="songsMax">Max: </label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="songsMax" step="1" :min="minSongsCount" :max="upperSongsLimit" v-model="maxSongsCount">
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
 
@@ -402,6 +471,14 @@ function reset() {
     #advancedSearchTypes div input {
         margin-left: 0px;
         margin-right: 0px;
+    }
+
+    #songsFilter {
+        width: 100%;
+    }
+
+    #songsFilter input {
+        width: 100%;
     }
 
     @media screen and ((max-width: 1005px) or (orientation: portrait)) {

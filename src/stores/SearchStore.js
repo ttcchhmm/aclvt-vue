@@ -103,5 +103,15 @@ export const useSearchStore = defineStore('search', {
          * @type { 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' | 'song-count' }
          */
         sortType: 'mal',
+
+        /**
+         * The minimum number of songs.
+         */
+        minSongsCount: 0,
+
+        /**
+         * The maximum number of songs.
+         */
+        maxSongsCount: 0,
     }),
 });

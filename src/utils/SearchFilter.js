@@ -17,13 +17,20 @@ import { useSettingsStore } from '../stores/SettingsStore';
  * @param {number} maxAgeRating The maximum age rating to display.
  * @param {string[]} genres The genres to display.
  * @param {string[]} studios The studios to display.
+ * @param {number} minSongsCount The minimum number of songs to display.
+ * @param {number} maxSongsCount The maximum number of songs to display.
  * @param {Object} alternativeTitles The alternative titles of the animes.
  * @returns A function that takes an anime as a parameter and returns whether it should be displayed or not.
  */
-export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, maxAgeRating, genres, studios, alternativeTitles) {
+export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, maxAgeRating, genres, studios, minSongsCount, maxSongsCount, alternativeTitles) {
     return (a) => {
         // Check the age rating.
         if(a.rating > maxAgeRating) {
+            return false;
+        }
+
+        // Check the number of songs.
+        if(a.music?.length < minSongsCount || a.music?.length > maxSongsCount) {
             return false;
         }
 

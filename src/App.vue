@@ -30,6 +30,8 @@ const {
   selectedGenres,
   selectedStudios,
   sortType,
+  minSongsCount,
+  maxSongsCount,
 } = storeToRefs(useSearchStore());
 
 const dataStore = useDataStore();
@@ -54,7 +56,7 @@ const animeDatabase = computed(() => {
  * The animes to display.
  */
 const animes = computed(() => {
-  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, maxAgeRating.value, selectedGenres.value, selectedStudios.value, alternativeTitles.value));
+  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, maxAgeRating.value, selectedGenres.value, selectedStudios.value, minSongsCount.value, maxSongsCount.value, alternativeTitles.value));
 
   return filteredAnimes.sort(sortAnimes(sortType.value));
 });
