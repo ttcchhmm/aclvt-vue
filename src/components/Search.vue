@@ -43,7 +43,8 @@ const searchTypeFilter = ref({
     movie: true,
     ova: true,
     ona: true,
-    special: true
+    special: true,
+    music: true,
 });
 
 /**
@@ -84,6 +85,10 @@ const searchTypeFilterArray = computed(() => {
 
     if(searchTypeFilter.value.special) {
         searchTypeFilterArray.push('special');
+    }
+
+    if(searchTypeFilter.value.music) {
+        searchTypeFilterArray.push('music');
     }
 
     return searchTypeFilterArray;
@@ -128,7 +133,8 @@ function reset() {
         movie: true,
         ova: true,
         ona: true,
-        special: true
+        special: true,
+        music: true,
     };
     maxAgeRating.value = '4';
     selectedGenres.value = [];
@@ -256,6 +262,7 @@ function reset() {
                             <div><input v-model="searchTypeFilter.ova" type="checkbox" id="ova"> <label for="ova">OVA</label></div>
                             <div><input v-model="searchTypeFilter.ona" type="checkbox" id="ona"> <label for="ona">ONA</label></div>
                             <div><input v-model="searchTypeFilter.special" type="checkbox" id="special"> <label for="special">Special</label></div>
+                            <div><input v-model="searchTypeFilter.music" type="checkbox" id="music"> <label for="music">Music</label></div>
                         </td>
                     </tr>
                 </tbody>
