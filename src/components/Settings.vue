@@ -19,7 +19,7 @@ const dialogRef = ref(null);
  */
 const settingsStore = useSettingsStore();
 
-const { headerColor, colorizeLinks, animeLanguage, orderByMAL } = storeToRefs(settingsStore);
+const { headerColor, colorizeLinks, animeLanguage } = storeToRefs(settingsStore);
 
 const { data } = storeToRefs(useDataStore());
 
@@ -53,7 +53,6 @@ function reset() {
         headerColor: '#00bfff',
         colorizeLinks: false,
         animeLanguage: 'original',
-        orderByMAL: true,
     });
 }
 
@@ -83,14 +82,6 @@ function reset() {
                             <option value="en">English</option>
                             <option value="ja">Japanese</option>
                         </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="orderByMAL">Use the same ordering as MyAnimeList: </label>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="orderByMAL" v-model="orderByMAL">
                     </td>
                 </tr>
                 <tr>
