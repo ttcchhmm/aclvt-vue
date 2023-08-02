@@ -203,7 +203,7 @@ onMounted(() => {
 }
 
 .songs {
-    border-bottom: 1px dotted lightslategray;
+    border-bottom: 1px dotted white;
     margin-top: 5px;
     padding-bottom: 5px;
 }
