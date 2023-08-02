@@ -32,7 +32,7 @@ function playVideo() {
         <h5>{{ props.song.artist }}</h5>
     </div>
 
-    <img @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix" height="30" width="30" role="button">
+    <img @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" height="30" width="30" role="button">
 </div>
 </template>
 
@@ -56,5 +56,9 @@ h4, h5 {
 
 .songDetails img {
     margin-left: 10px;
+}
+
+.playButton {
+    cursor: pointer;
 }
 </style>
