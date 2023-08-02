@@ -1,3 +1,5 @@
+import { useSettingsStore } from '../stores/SettingsStore';
+
 /**
  * Get a function that filters animes based on the search query, the search type, the airing filter, the type filter and the list filter.
  * 
@@ -182,10 +184,109 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
 }
 
 /**
+ * Get a sorting function for animes.
+ * @param { 'mal' | 'title' | 'score' | 'start-date' } sortType The type of sorting to apply.
+ */
+export function sortAnimes(sortType) {
+    switch(sortType) {
+        // MyAnimeList order.
+        default:
+        case 'mal':
+            return () => 0;
+
+        // Title order.
+        case 'title':
+            switch(useSettingsStore().animeLanguage) {
+                case 'en': // English
+                    return (a, b) => {
+                        const aTitle = a.titles.en || a.titles.original;
+                        const bTitle = b.titles.en || b.titles.original;
+                
+                        return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
+                    }
+
+                case 'ja': // Japanese
+                    return (a, b) => {
+                        const aTitle = a.titles.ja || a.titles.original;
+                        const bTitle = b.titles.ja || b.titles.original;
+                
+                        return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
+                    }
+
+                default:
+                case 'original': // Romaji
+                    return (a, b) => {
+                        const aTitle = a.titles.original;
+                        const bTitle = b.titles.original;
+                
+                        return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
+                    }
+            }
+
+        // Score order.
+        case 'score':
+            return (a, b) => {
+                const aScore = getAverageScore(a);
+                const bScore = getAverageScore(b);
+
+                if(aScore === undefined) {
+                    return 1;
+                } else if(bScore === undefined) {
+                    return -1;
+                } else {
+                    return bScore - aScore;
+                }
+            }
+
+        // Start date order.
+        case 'start-date':
+            return (a, b) => {
+                const aDate = new Date(a.startDate);
+                const bDate = new Date(b.startDate);
+
+                return aDate - bDate;
+            }
+
+        // Watch count order.
+        case 'watch-count':
+            return (a, b) => {
+                const aWatchCount = Object.values(a.scores).filter(s => s !== undefined).length;
+                const bWatchCount = Object.values(b.scores).filter(s => s !== undefined).length;
+
+                return bWatchCount - aWatchCount;
+            }
+
+        case 'add-date':
+            return (a, b) => {
+                const aDate = new Date(a.oldestUpdate);
+                const bDate = new Date(b.oldestUpdate);
+
+                return aDate - bDate;
+            }
+
+    }
+}
+
+/**
  * Check whether an anime has been watched by a user.
  * @param {number | undefined} score The score given by a user.
  * @returns True if the anime has been watched by the user, false otherwise.
  */
 function watched(score) {
     return score !== undefined;
+}
+
+/**
+ * Return the average score of an anime.
+ * @param {Object} a An anime.
+ */
+function getAverageScore(a) {
+    // Get an array of all the scores. Remove undefined and 0 values as they either mean the anime has not been watched or not scored.
+    const scores = Object.values(a.scores).filter(s => s !== undefined).filter(s => s !== 0);
+
+    if(scores.length === 0) {
+        return undefined;
+    } else {
+        return scores.reduce((a, b) => a + b) / scores.length;
+    }
 }

@@ -218,9 +218,15 @@ async function generateApiV2() {
                     episodes: anime.node.num_episodes,
                     rating: ratingToValue(anime.node.rating),
                     music: tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien, number: m.numero } }),
+                    oldestUpdate: anime.list_status.updated_at,
                 };
 
                 mergedData.push(currentState);
+            } else {
+                // Update the oldest update
+                if(anime.list_status.updated_at < currentState.oldestUpdate) {
+                    currentState.oldestUpdate = anime.list_status.updated_at;
+                }
             }
 
             // Check if the anime was watched
@@ -275,12 +281,13 @@ async function generateApiV2() {
             rating: anime.rating,
             genres: anime.genres,
             studios: anime.studios,
+            startDate: anime.startDate,
+            oldestUpdate: anime.oldestUpdate,
         });
 
         // Generate the secondary file
         await fsPromise.writeFile(`api/v2/animes/${anime.id}.json`, JSON.stringify({
             synopsis: anime.synopsis,
-            startDate: anime.startDate,
             endDate: anime.endDate,
             startSeason: anime.startSeason,
             episodes: anime.episodes,

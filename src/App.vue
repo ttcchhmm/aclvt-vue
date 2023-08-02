@@ -8,7 +8,7 @@ import Settings from './components/Settings.vue';
 import SeeMoreDialog from './components/SeeMoreDialog.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
-import { getFilterAnimes } from './utils/SearchFilter';
+import { getFilterAnimes, sortAnimes } from './utils/SearchFilter';
 import { setupSettings, useSettingsStore } from './stores/SettingsStore';
 import { storeToRefs } from 'pinia';
 import { useSearchStore } from './stores/SearchStore';
@@ -29,6 +29,7 @@ const {
   maxAgeRating,
   selectedGenres,
   selectedStudios,
+  sortType,
 } = storeToRefs(useSearchStore());
 
 const dataStore = useDataStore();
@@ -55,32 +56,7 @@ const animeDatabase = computed(() => {
 const animes = computed(() => {
   const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, maxAgeRating.value, selectedGenres.value, selectedStudios.value, alternativeTitles.value));
 
-  return orderByMAL.value ? filteredAnimes : filteredAnimes.sort((a, b) => {
-    switch(animeLanguage.value) {
-      case 'en': {
-        const aTitle = a.titles.en || a.titles.original;
-        const bTitle = b.titles.en || b.titles.original;
-
-        return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
-      }
-
-      case 'ja': {
-        const aTitle = a.titles.ja || a.titles.original;
-        const bTitle = b.titles.ja || b.titles.original;
-
-        return aTitle.localeCompare(bTitle, 'ja', { ignorePunctuation: true, numeric: true });
-      }
-
-      case 'original':
-        const aTitle = a.titles.original;
-        const bTitle = b.titles.original;
-
-        return aTitle.localeCompare(bTitle, 'en', { ignorePunctuation: true, numeric: true });
-
-      default:
-        return 0; // Should never happen, but keep the default case to avoid warnings.
-    }
-  });
+  return filteredAnimes.sort(sortAnimes(sortType.value));
 });
 
 /**

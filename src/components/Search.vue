@@ -33,6 +33,7 @@ const {
     maxAgeRating,
     selectedGenres,
     selectedStudios,
+    sortType,
 } = storeToRefs(searchStore);
 
 /**
@@ -139,6 +140,7 @@ function reset() {
     maxAgeRating.value = '4';
     selectedGenres.value = [];
     selectedStudios.value = [];
+    sortType.value = 'mal';
 }
 
 </script>
@@ -248,6 +250,22 @@ function reset() {
                                 <option value="3">{{ getRating(3) }}</option>
                                 <option value="4">{{ getRating(4) }}</option>
                                 <option value="5">{{ getRating(5) }}</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="sortType">Sort by: </label>
+                        </td>
+                        <td>
+                            <select id="sortType" v-model="sortType">
+                                <option value="mal">MyAnimeList ordering</option>
+                                <option value="title">Title</option>
+                                <option value="score">Average score</option>
+                                <option value="start-date">Start date</option>
+                                <option value="watch-count">Watch count</option>
+                                <option value="add-date">Added date</option>
                             </select>
                         </td>
                     </tr>

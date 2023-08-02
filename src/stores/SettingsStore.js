@@ -26,11 +26,6 @@ export const useSettingsStore = defineStore('settings', {
          * @type {'original' | 'en' | 'jp'}
          */
         animeLanguage: localStorage.getItem('animeLanguage') || 'original',
-
-        /**
-         * Whether to order anime using the default MyAnimeList order
-         */
-        orderByMAL: localStorage.getItem('orderByMAL') === 'true',
     }),
 });
 
@@ -39,12 +34,11 @@ export const useSettingsStore = defineStore('settings', {
  */
 export function setupSettings() {
     const settingsStore = useSettingsStore();
-    const { headerColor, colorizeLinks, animeLanguage, orderByMAL } = storeToRefs(settingsStore);
+    const { headerColor, colorizeLinks, animeLanguage } = storeToRefs(settingsStore);
     
     watch(headerColor, save);
     watch(colorizeLinks, save);
     watch(animeLanguage, save);
-    watch(orderByMAL, save);
 }
 
 /**
@@ -56,10 +50,13 @@ function save() {
     localStorage.setItem('headerColor', settingsStore.headerColor);
     localStorage.setItem('colorizeLinks', settingsStore.colorizeLinks);
     localStorage.setItem('animeLanguage', settingsStore.animeLanguage);
-    localStorage.setItem('orderByMAL', settingsStore.orderByMAL);
 }
 
 // Clear the old settings
 if(localStorage.getItem('orderByOriginalName') !== null) {
     localStorage.removeItem('orderByOriginalName');
+}
+
+if(localStorage.getItem('sortByMAL') !== null) {
+    localStorage.removeItem('sortByMAL');
 }
