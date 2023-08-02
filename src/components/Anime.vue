@@ -179,6 +179,8 @@ onMounted(() => {
     width: fit-content;
     min-width: 250px;
 
+    border-radius: 5px;
+
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
 }
