@@ -132,7 +132,7 @@ onMounted(() => {
 
             <div class="mobile-fill-width songsDisplay">
                 <div v-if="props.anime?.music?.length === 0" class="noSongs">
-                    <img src="@/assets/error.svg" class="svgFix">
+                    <img src="@/assets/error.svg" class="svgFix" height="48" width="48">
                     <p>No songs found.</p>
                 </div>
 

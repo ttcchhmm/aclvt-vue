@@ -173,7 +173,7 @@ onMounted(() => {
   <LoadingIcon v-if="data === null && dataLoadingFailed === false" />
 
   <div v-else-if="data === null && dataLoadingFailed === true" class="errorMsg">
-    <img src="@/assets/offline.svg" class="svgFix">
+    <img src="@/assets/offline.svg" class="svgFix" height="48" width="48">
 
     <h2>Failed to download the database.</h2>
     <p>Please check your Internet connectivity and refresh the page.</p>
