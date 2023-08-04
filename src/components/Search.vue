@@ -191,18 +191,18 @@ function reset() {
 
 <template>
     <div id="desktopSearchField" class="mobile-hide">
-        <div id="desktopSearchFieldContent" role="search">
+        <div id="desktopSearchFieldContent">
             <select v-model="searchType">
                 <option value="anime">Anime</option>
                 <option value="song">Song</option>
                 <option value="artist">Artist</option>
             </select>
-            <input v-model="search" type="text" id="search" placeholder="Type here to search..." role="searchbox">
-            <img id="advancedSearchButton" role="button" @click="toggleDialog" src="@/assets/dropdown-white.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
+            <input v-model="search" type="text" id="search" placeholder="Type here to search...">
+            <img id="advancedSearchButton" @click="toggleDialog" src="@/assets/dropdown-white.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
         </div>
     </div>
 
-    <img role="button" class="mobile-show svgFix" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
+    <img class="mobile-show svgFix" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
 
     <dialog ref="dialogRef" id="advancedSearchDialog">
         <div class="dialogHeader">
@@ -212,15 +212,15 @@ function reset() {
             </div>
 
             <div>
-                <img role="button" @click="reset" src="@/assets/reset.svg" alt="Clear all" height="30" width="30">
-                <img role="button" @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
+                <img @click="reset" src="@/assets/reset.svg" alt="Clear all" height="30" width="30">
+                <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
             </div>
         </div>
 
-        <div role="search">
+        <div>
             <div id="searchField">
-                <input v-model="search" type="text" id="search" placeholder="Type here to search..." role="searchbox">
-                <img role="button" src="@/assets/backspace.svg" alt="Clear" @click="clear" height="30" width="30">
+                <input v-model="search" type="text" id="search" placeholder="Type here to search...">
+                <img src="@/assets/backspace.svg" alt="Clear" @click="clear" height="30" width="30">
             </div>
 
             <table class="tableOptions">

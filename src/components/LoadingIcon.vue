@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="loadingIcon" aria-hidden="true">
+    <div class="loadingIcon">
         <div>
             <div class="lds-ripple" :class="lightMode === true ? 'light' : ''"><div></div><div></div></div>
         </div>

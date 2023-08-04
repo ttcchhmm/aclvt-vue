@@ -32,7 +32,7 @@ function playVideo() {
         <h5>{{ props.song.artist }}</h5>
     </div>
 
-    <img @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" height="30" width="30" role="button">
+    <img @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" height="30" width="30">
 </div>
 </template>
 

@@ -181,7 +181,7 @@ onMounted(() => {
   </div>
 
   <main v-else id="loadedData">
-    <div class="stats" role="status" aria-label="Current statistics">
+    <div class="stats">
       <div>Loaded {{ songsCount }} entries across {{ animeDatabase.length }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
       <img v-if="data !== null && dataLoadingFailed === true" @click="offlineAlert" src="@/assets/offline.svg" class="svgFix errorIcon" height="30" width="30">
