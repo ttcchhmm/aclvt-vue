@@ -14,6 +14,11 @@ import { storeToRefs } from 'pinia';
 import { useSearchStore } from './stores/SearchStore';
 import { useDataStore } from './stores/DataStore';
 
+/**
+ * True if the data failed to load.
+ */
+const dataLoadingFailed = ref(false);
+
 const {
   checkTiralex,
   checkCycy,
@@ -112,12 +117,27 @@ function getAlternativeTitles(anime) {
   return titles;
 }
 
-onMounted(async () => {
+/**
+ * Displays an alert when the database failed to download but the website is still accessible.
+ */
+function offlineAlert() {
+  alert('Failed to download the database.\n\nCheck your Internet connectivity and refresh the page.\n\nYou currently are viewing an offline version of the website.');
+}
+
+onMounted(() => {
   setupSettings();
 
   // Load the data.
-  const data = await fetch('/api/v2/index.json').then(response => response.json());
-  dataStore.setData(data)
+  fetch('/api/v2/index.json')
+    .then(response => response.json())
+    .then((data) => {
+      dataStore.setData(data);
+    })
+    .catch((error) => {
+      console.error(error);
+
+      dataLoadingFailed.value = true;
+    });
 });
 
 </script>
@@ -150,11 +170,21 @@ onMounted(async () => {
   <VideoPlayer />
   <SeeMoreDialog />
 
-  <LoadingIcon v-if="data === null" />
+  <LoadingIcon v-if="data === null && dataLoadingFailed === false" />
+
+  <div v-else-if="data === null && dataLoadingFailed === true" class="errorMsg">
+    <img src="@/assets/offline.svg" class="svgFix">
+
+    <h2>Failed to download the database.</h2>
+    <p>Please check your Internet connectivity and refresh the page.</p>
+    <p>If you think this is a bug, feel free to open an issue on the <a href="https://github.com/ttcchhmm/aclvt-vue/issues" target="_blank" class="colorizeLinks">bug tracker</a>.</p>
+  </div>
+
   <main v-else id="loadedData">
     <div class="stats" role="status" aria-label="Current statistics">
       <div>Loaded {{ songsCount }} entries across {{ animeDatabase.length }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
+      <img v-if="data !== null && dataLoadingFailed === true" @click="offlineAlert" src="@/assets/offline.svg" class="svgFix errorIcon" height="30" width="30">
     </div>
 
     <div id="animes">
@@ -284,11 +314,28 @@ header h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  text-align: center;
 }
 
 #headerCenter {
   display: flex;
   align-items: center;
+}
+
+.errorMsg {
+  padding-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.errorIcon {
+  margin-top: 10px;
 }
 
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
