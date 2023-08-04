@@ -104,6 +104,10 @@ button, select, input::placeholder, dialog *, input, option {
   display: none;
 }
 
+.colorizeLinks, .colorizeLinks a {
+  color: #0076d1;
+}
+
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
   .mobile-hide {
     display: none;
