@@ -6,6 +6,7 @@ import Search from './components/Search.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import Settings from './components/Settings.vue';
 import SeeMoreDialog from './components/SeeMoreDialog.vue';
+import ReloadPrompt from './components/ReloadPrompt.vue';
 import { computed, onMounted, ref } from 'vue';
 import { pluralize } from './utils/Pluralize';
 import { getFilterAnimes, sortAnimes } from './utils/SearchFilter';
@@ -169,6 +170,7 @@ onMounted(() => {
 
   <VideoPlayer />
   <SeeMoreDialog />
+  <ReloadPrompt />
 
   <LoadingIcon v-if="data === null && dataLoadingFailed === false" />
 

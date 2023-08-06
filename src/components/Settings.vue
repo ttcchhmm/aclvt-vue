@@ -15,6 +15,21 @@ import { useDataStore } from '../stores/DataStore';
 const dialogRef = ref(null);
 
 /**
+ * Whether or not the database is currently downloading.
+ */
+const downloading = ref(false);
+
+/**
+ * Whether or not an error occurred while downloading the database.
+ */
+const errorDownloading = ref(false);
+
+/**
+ * The current number of downloaded entries.
+ */
+const currentDownloaded = ref(0);
+
+/**
  * The settings store.
  */
 const settingsStore = useSettingsStore();
@@ -22,6 +37,10 @@ const settingsStore = useSettingsStore();
 const { headerColor, colorizeLinks, animeLanguage } = storeToRefs(settingsStore);
 
 const { data } = storeToRefs(useDataStore());
+
+const viewedAnimes = computed(() => {
+    return data.value?.animes.filter(a => a.wasWatched === true);
+});
 
 /**
  * The date of the last database update.
@@ -54,6 +73,68 @@ function reset() {
         colorizeLinks: false,
         animeLanguage: 'original',
     });
+}
+
+async function downloadMetadata() {
+    downloading.value = true;
+    errorDownloading.value = false;
+    currentDownloaded.value = 0;
+
+    let promises = [fetch('/api/v2/index.json')];
+
+    let i = 0;
+    for(const a of viewedAnimes.value) {
+        promises.push(fetch(`/api/v2/animes/${a.id}.json`)
+        .then(() => {
+            currentDownloaded.value++;
+            console.log(`Downloaded ${currentDownloaded.value} of ${viewedAnimes.value.length} entries.`);
+        }).catch((e) => {
+            errorDownloading.value = true;
+            console.error(e);
+        }));
+
+        i++;
+
+        if(i >= 50) {
+            await Promise.all(promises);
+            i = 0;
+            promises = [];
+        }
+    }
+
+    await Promise.all(promises);
+    downloading.value = false;
+}
+
+async function downloadPictures() {
+    downloading.value = true;
+    errorDownloading.value = false;
+    currentDownloaded.value = 0;
+    
+    let promises = [];
+
+    let i = 0;
+    for(const a of viewedAnimes.value) {
+        promises.push(fetch(a.cover)
+        .then(() => {
+            currentDownloaded.value++;
+            console.log(`Downloaded ${currentDownloaded.value} of ${viewedAnimes.value.length} entries.`);
+        }).catch((e) => {
+            errorDownloading.value = true;
+            console.error(e);
+        }));
+
+        i++;
+
+        if(i >= 50) {
+            await Promise.all(promises);
+            i = 0;
+            promises = [];
+        }
+    }
+
+    await Promise.all(promises);
+    downloading.value = false;
 }
 
 </script>
@@ -104,6 +185,22 @@ function reset() {
             </tbody>
         </table>
 
+        <h3>Offline mode</h3>
+        <p>You can choose to download part of the database to make it available while offline.</p>
+        <p><strong>Metadata :</strong> names, scores, studios, genres and more.</p>
+        <p><strong>Pictures :</strong> cover art.</p>
+
+        <div id="downloadButtons" v-if="!downloading">
+            <button @click="downloadMetadata">Download metadata</button>
+            <button @click="downloadPictures">Download pictures</button>
+        </div>
+        <div v-else id="downloadProgress">
+            <p>Downloading... {{ currentDownloaded }} / {{ viewedAnimes.length }}</p>
+            <progress :value="currentDownloaded" :max="viewedAnimes.length"></progress>
+        </div>
+
+        <p v-if="errorDownloading">An error occurred while downloading the database.</p>
+
         <h3>About</h3>
         <div class="colorizeLinks">
             <p>This website was initially made as a remake of <a href="https://tiralex1.github.io/ACLV/" target="_blank">the original AMQ ACLVT</a> by <a href="https://github.com/Tiralex1/" target="_blank">Tiralex1</a> as a way for me to learn <a href="https://vuejs.org/" target="_blank">Vue.js</a>. Since then, this project became a bit larger in scope and I added some stuff not in the original website.</p>
@@ -115,6 +212,7 @@ function reset() {
                 <li><a href="https://vuejs.org/" target="_blank">Vue.js</a></li>
                 <li><a href="https://pinia.vuejs.org/" target="_blank">Pinia</a></li>
                 <li><a href="https://vue-select.org/" target="_blank">Vue Select</a></li>
+                <li><a href="https://vite-pwa-org.netlify.app/" target="_blank">Vite PWA</a></li>
             </ul>
 
             <p>The source code for this website is available on <a href="https://github.com/ttcchhmm/aclvt-vue" target="_blank">GitHub</a>.</p>
@@ -134,6 +232,20 @@ function reset() {
 }
 
 #settingsContent {
+    width: 100%;
+}
+
+#downloadButtons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#downloadProgress {
+    text-align: center;
+    width: 100%;
+}
+
+#downloadProgress progress {
     width: 100%;
 }
 

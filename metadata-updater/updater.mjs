@@ -217,7 +217,7 @@ async function generateApiV2() {
                     genres: anime.node.genres.map(g => g.name),
                     episodes: anime.node.num_episodes,
                     rating: ratingToValue(anime.node.rating),
-                    music: tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien, number: m.numero } }),
+                    music: tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien.replace('https://nl.catbox.moe/', 'https://nl.catbox.video/'), number: m.numero } }),
                     oldestUpdate: anime.list_status.updated_at,
                 };
 

@@ -33,3 +33,6 @@ metadata-updater/additional-data.json.gz
 metadata-updater/api
 public/additional-data.json
 public/api/
+
+dev-dist/
+public/registerSW.js
