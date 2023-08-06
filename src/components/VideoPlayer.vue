@@ -2,7 +2,7 @@
 
 import { storeToRefs } from 'pinia';
 import { useVideoStore } from '../stores/VideoStore';
-import { watch, ref, onMounted } from 'vue';
+import { watch, ref, onMounted, computed } from 'vue';
 
 /**
  * The video player state.
@@ -20,6 +20,11 @@ const dialogRef = ref(null);
  * A reference to the video element.
  */
 const videoRef = ref(null);
+
+/**
+ * True if the video is coming from a known CORS-compatible source.
+ */
+const isCorsCompatible = computed(() => url.value.startsWith('https://nl.catbox.video/'));
 
 /*
  * Watch for changes to the visible state, and open/close the dialog accordingly.
@@ -84,7 +89,7 @@ onMounted(() => {
         </div>
 
         <div id="videoDialogContent">
-            <video id="videoPlayer" controls :src="url" ref="videoRef"></video>
+            <video id="videoPlayer" controls :src="url" ref="videoRef" :crossorigin="isCorsCompatible ? 'anonymous' : undefined"></video>
         </div>
     </dialog>
 </template>

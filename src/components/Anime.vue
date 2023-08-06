@@ -103,6 +103,10 @@ const titleLanguage = computed(() => getLangCode());
 function lazyBackground(entries, observer) {
     entries.forEach((e) => {
         if(e.isIntersecting) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = props.anime?.cover;
+
             showBackground.value = true;
             observer.unobserve(e.target);
         }
