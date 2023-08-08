@@ -196,6 +196,9 @@ onMounted(() => {
 
 .anime h2 {
     margin: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+
     max-width: 300px;
     text-align: center;
 
