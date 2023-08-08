@@ -303,6 +303,6 @@ function getAverageScore(a) {
     if(scores.length === 0) {
         return undefined;
     } else {
-        return scores.reduce((a, b) => a + b) / scores.length;
+        return (scores.reduce((a, b) => a + b) / scores.length) + Object.values(a.scores).filter(s => s !== undefined).length / 1000;
     }
 }
