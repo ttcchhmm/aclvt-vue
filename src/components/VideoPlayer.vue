@@ -42,7 +42,9 @@ watch(visible, (newVal) => {
 onMounted(() => {
     // When the video is ready to play, start playing it.
     videoRef.value.addEventListener('canplay', () => {
-        videoRef.value.play();
+        if(visible.value) {
+            videoRef.value.play();
+        }
     });
 
     // When the dialog is closed, hide the video player.
