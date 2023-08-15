@@ -96,4 +96,4 @@ export const useSearchStore = defineStore('search', {
 /**
  * The sort type.
  */
-export type SortType = 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' | 'song-count';
+export type SortType = 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' | 'song-count' | 'score-list';

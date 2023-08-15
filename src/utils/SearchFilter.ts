@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia';
 import { type SortType, useSearchStore } from '../stores/SearchStore';
 import { useSettingsStore } from '../stores/SettingsStore';
-import { type AnimeBase } from '../Types';
+import { type AnimeBase, type Scores } from '../Types';
 
 /**
  * Get a function that filters animes based on the search query, the search type, the airing filter, the type filter and the list filter.
@@ -244,8 +244,8 @@ export function sortAnimes(sortType: SortType) {
         // Score order.
         case 'score':
             return (a: AnimeBase, b: AnimeBase) => {
-                const aScore = getAverageScore(a);
-                const bScore = getAverageScore(b);
+                const aScore = getAverageScore(a.scores);
+                const bScore = getAverageScore(b.scores);
 
                 if(aScore === undefined) {
                     return 1;
@@ -291,6 +291,30 @@ export function sortAnimes(sortType: SortType) {
                 return bCount - aCount;
             }
 
+        // Score (selected users) order.
+        case 'score-list':
+            const {
+                checkTiralex,
+                checkCycy,
+                checkLeo,
+                checkGyrehio,
+                checktchm,
+                checkqgWolf,
+            } = storeToRefs(useSearchStore());
+            
+            return (a: AnimeBase, b: AnimeBase) => {
+                const aScore = getAverageScore(keepScoresPerUser(a.scores, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value));
+                const bScore = getAverageScore(keepScoresPerUser(b.scores, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value));
+
+                if(aScore === undefined) {
+                    return 1;
+                } else if(bScore === undefined) {
+                    return -1;
+                } else {
+                    return bScore - aScore;
+                }
+            }
+
     }
 }
 
@@ -305,15 +329,36 @@ function watched(score: number | undefined): boolean {
 
 /**
  * Return the average score of an anime.
- * @param a An anime.
+ * @param s A score object.
  */
-function getAverageScore(a: AnimeBase) {
+function getAverageScore(s: Scores) {
     // Get an array of all the scores. Remove undefined and 0 values as they either mean the anime has not been watched or not scored.
-    const scores = Object.values(a.scores).filter(s => s !== undefined).filter(s => s !== 0);
+    const scores = Object.values(s).filter(s => s !== undefined).filter(s => s !== 0);
 
     if(scores.length === 0) {
         return undefined;
     } else {
-        return (scores.reduce((a, b) => a + b) / scores.length) + Object.values(a.scores).filter(s => s !== undefined).length / 1000;
+        return (scores.reduce((a, b) => a + b) / scores.length) + Object.values(s).filter(sa => sa !== undefined).length / 1000;
     }
+}
+
+/**
+ * Keep only the scores of the users that are checked.
+ * @param scores The score object to keep scores from.
+ * @param a Whether to keep the scores of Tiralex.
+ * @param c Whether to keep the scores of Cycy.
+ * @param l Whether to keep the scores of Leo.
+ * @param v Whether to keep the scores of Gyrehio.
+ * @param t Whether to keep the scores of tchm.
+ * @param q Whether to keep the scores of QGWolfWarrior.
+ */
+function keepScoresPerUser(scores: Scores, a: boolean, c: boolean, l: boolean, v: boolean, t: boolean, q: boolean): Scores {
+    return {
+        A: a ? scores.A : undefined,
+        C: c ? scores.C : undefined,
+        L: l ? scores.L : undefined,
+        V: v ? scores.V : undefined,
+        T: t ? scores.T : undefined,
+        Q: q ? scores.Q : undefined,
+    };
 }

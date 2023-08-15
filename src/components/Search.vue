@@ -314,7 +314,8 @@ function reset() {
                             <select id="sortType" v-model="sortType">
                                 <option value="mal">MyAnimeList ordering</option>
                                 <option value="title">Title</option>
-                                <option value="score">Average score</option>
+                                <option value="score">Average score (everyone)</option>
+                                <option value="score-list">Average score (selected lists)</option>
                                 <option value="start-date">Start date</option>
                                 <option value="watch-count">Watch count</option>
                                 <option value="add-date">Added date</option>
