@@ -26,6 +26,11 @@ const videoRef = ref<HTMLVideoElement | null>(null);
  */
 const isCorsCompatible = computed(() => url.value.startsWith('https://nl.catbox.video/'));
 
+/**
+ * True if the browser supports picture-in-picture mode.
+ */
+const isPipSupported = computed(() => 'exitPictureInPicture' in document);
+
 /*
  * Watch for changes to the visible state, and open/close the dialog accordingly.
  */
@@ -35,6 +40,10 @@ watch(visible, (newVal) => {
             dialogRef.value.showModal();
             videoRef.value.play();
         } else {
+            if(document.pictureInPictureElement) {
+                document.exitPictureInPicture();
+            }
+
             dialogRef.value.close();
             videoRef.value.pause();
         }
@@ -83,6 +92,19 @@ onMounted(() => {
     });
 });
 
+/**
+ * Toggles picture-in-picture mode.
+ */
+function togglePictureInPicture() {
+    if(isPipSupported && videoRef.value !== null) {
+        if(document.pictureInPictureElement) {
+            document.exitPictureInPicture();
+        } else {
+            videoRef.value.requestPictureInPicture();
+        }
+    }
+}
+
 </script>
 
 <template>
@@ -93,7 +115,10 @@ onMounted(() => {
                 <small>{{ artist }}</small>
             </div>
 
-            <img @click="videoStore.$patch({ visible: false })" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            <div class="buttons">
+                <img @click="() => togglePictureInPicture()" v-if="isPipSupported" src="@/assets/picture-in-picture.svg" alt="Toggle picture-in-picture mode" height="30" width="30">
+                <img @click="videoStore.$patch({ visible: false })" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            </div>
         </div>
 
         <div id="videoDialogContent">
