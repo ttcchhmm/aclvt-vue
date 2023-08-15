@@ -116,6 +116,34 @@ button, select, input::placeholder, dialog *, input, option {
   color: #0076d1;
 }
 
+.toast {
+  position: fixed;
+  top: 10px;
+  right: calc(50% - 150px);
+
+  width: 300px;
+  height: 40px;
+  background-color: rgb(112, 0, 160);
+
+  border: 1px solid lightslategray;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadein 0.75s;
+
+  z-index: 99999;
+}
+
+.toast > p {
+  color: white;
+  font-weight: bold;
+
+  margin: 0px;
+}
+
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
   .mobile-hide {
     display: none;

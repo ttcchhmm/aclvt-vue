@@ -31,6 +31,11 @@ const data = ref<{ secondary: AnimeExtended | null }>({
     secondary: null,
 });
 
+/**
+ * Whether the copy to clipboard action is done.
+ */
+const clipboardCopyDone = ref(false);
+
 const dialogRef = ref<HTMLDialogElement | null>(null);
 
 onMounted(() => {
@@ -68,6 +73,14 @@ watch(visible, (newVal) => {
     }
 });
 
+watch(clipboardCopyDone, (newVal) => {
+    if(newVal) {
+        setTimeout(() => {
+            clipboardCopyDone.value = false;
+        }, 2000);
+    }
+});
+
 /**
  * The title of the anime.
  */
@@ -92,16 +105,49 @@ function capitlizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+/**
+ * Share a link to the anime.
+ */
+function share(e: MouseEvent) {
+    e.preventDefault();
+
+    // The data to share.
+    const data: ShareData = {
+        title: getTitle(anime.value),
+        text: `Check out ${getTitle(anime.value)} on ACLVTQ!`,
+        url: `https://aclvt.tchm.dev/?id=${anime.value.id}`,
+    };
+
+    // Check if the browser supports the Web Share API.
+    if('share' in navigator && 'canShare' in navigator && navigator.canShare(data)) {
+        try {
+            navigator.share(data);
+        } catch(e) {
+            // Do nothing. If the user cancels the share, an error will be thrown.
+        }
+    } else { // Use the clipboard API as a fallback.
+        navigator.clipboard.writeText(data.url as string);
+        clipboardCopyDone.value = true;
+    }
+}
+
 </script>
 
 <template>
     <dialog ref="dialogRef">
+        <div class="toast" v-if="clipboardCopyDone">
+            <p>Link copied to the clipboard !</p>
+        </div>
+
         <div class="dialogHeader">
             <div>
                 <h2 :lang="titleLanguage" id="animeTitle"><a :href="`https://myanimelist.net/anime/${anime.id}`" target="_blank" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ title }} <img src="@/assets/open-external.svg" height="20" width="20"></a></h2>
                 <small>{{ type }}</small>
             </div>
-            <img @click="visible = false" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            <div class="buttons">
+                <a @click="(e) => share(e)" :href="`https://aclvt.tchm.dev/?id=${anime.id}`"><img src="@/assets/share.svg" alt="Share" height="30" width="30"></a>
+                <img @click="visible = false" src="@/assets/close.svg" alt="Close" height="30" width="30">
+            </div>
         </div>
 
         <div id="seeMoreDialogBody">

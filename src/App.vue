@@ -21,6 +21,11 @@ import { type AnimeBase } from './Types';
  */
 const dataLoadingFailed = ref(false);
 
+/**
+ * The search store.
+ */
+const searchStore = useSearchStore();
+
 const {
   checkTiralex,
   checkCycy,
@@ -30,7 +35,7 @@ const {
   checkqgWolf,
   listFilterType,
   sortType,
-} = storeToRefs(useSearchStore());
+} = storeToRefs(searchStore);
 
 const dataStore = useDataStore();
 
@@ -132,6 +137,19 @@ onMounted(() => {
 
       dataLoadingFailed.value = true;
     });
+
+  // Check for a shared link.
+  const urlParams = new URLSearchParams(window.location.search);
+  if(urlParams.has('id')) {
+    const id = parseInt(urlParams.get('id')!);
+
+    if(!isNaN(id)) {
+      searchStore.$patch({
+        searchType: 'id',
+        search: id.toString(),
+      });
+    }
+  }
 });
 
 </script>

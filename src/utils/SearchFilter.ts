@@ -30,6 +30,11 @@ export function getFilterAnimes(alternativeTitles: Map<number, string[]>) {
     } = storeToRefs(useSearchStore());
 
     return (a: AnimeBase) => {
+        // ID search.
+        if(searchType.value === 'id') {
+            return a.id === parseInt(search.value);
+        }
+
         // Check the age rating.
         if(a.rating > maxAgeRating.value) {
             return false;

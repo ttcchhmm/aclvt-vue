@@ -49,7 +49,7 @@ export const useSearchStore = defineStore('search', {
         /**
          * The search type.
          */
-        searchType: 'anime' as 'anime' | 'song' | 'artist',
+        searchType: 'anime' as 'anime' | 'song' | 'artist' | 'id',
 
         /**
          * The search airing filter.

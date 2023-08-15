@@ -202,6 +202,7 @@ function reset() {
                 <option value="anime">Anime</option>
                 <option value="song">Song</option>
                 <option value="artist">Artist</option>
+                <option value="id" v-if="searchType === 'id'">ID</option>
             </select>
             <input v-model="search" type="text" id="search" placeholder="Type here to search...">
             <img id="advancedSearchButton" @click="toggleDialog" src="@/assets/dropdown-white.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
@@ -240,6 +241,7 @@ function reset() {
                                 <option value="anime">Anime</option>
                                 <option value="song">Song</option>
                                 <option value="artist">Artist</option>
+                                <option value="id" v-if="searchType === 'id'">ID</option>
                             </select>
                         </td>
                     </tr>
