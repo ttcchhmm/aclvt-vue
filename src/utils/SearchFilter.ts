@@ -291,6 +291,18 @@ export function sortAnimes(sortType: SortType) {
                 return bCount - aCount;
             }
 
+        // Score (MyAnimeList) order.
+        case 'score-mal':
+            return (a: AnimeBase, b: AnimeBase) => {
+                if(a.malMeanScore === undefined) {
+                    return 1;
+                } else if(b.malMeanScore === undefined) {
+                    return -1;
+                }
+
+                return b.malMeanScore - a.malMeanScore;
+            }
+
         // Score (selected users) order.
         case 'score-list':
             const {
