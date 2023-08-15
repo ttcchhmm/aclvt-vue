@@ -137,52 +137,52 @@ const [tiralex, cycy, leo, gyrehio, tchm, qgWolf] = await Promise.all([
  */
 async function generateApiV1() {
     // Create a map of anime id to additional data
-    const additionalData = new Map<number, AnimeAPIv1>();
+    const additionalData: Record<number, AnimeAPIv1> = {};
 
     // Add the data for each user
     for(const user of [tiralex, cycy, leo, gyrehio, tchm, qgWolf]) {
         // Add the data for each anime
         for(const anime of user) {
             // Check if the anime is already in the map
-            if(!additionalData.has(anime.node.id)) {
-                additionalData.set(anime.node.id, {
+            if(additionalData[anime.node.id] === undefined) {
+                additionalData[anime.node.id] = {
                     scores: {},
                     cover: anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium,
                     titles: { original: anime.node.title , ...anime.node.alternative_titles },
                     status: anime.node.status,
                     type: anime.node.media_type,
                     wasWatched: false,
-                });
+                };
             }
 
             // Check if the anime was watched
             if(anime.list_status.status === 'completed' || anime.list_status.status === 'watching') {
-                (additionalData.get(anime.node.id) as AnimeAPIv1).wasWatched = true;
+                (additionalData[anime.node.id] as AnimeAPIv1).wasWatched = true;
 
                 // Add the score
                 switch(user) {
                     case tiralex:
-                        (additionalData.get(anime.node.id) as AnimeAPIv1).scores.A = anime.list_status.score;
+                        (additionalData[anime.node.id] as AnimeAPIv1).scores.A = anime.list_status.score;
                         break;
 
                     case cycy:
-                        (additionalData.get(anime.node.id) as AnimeAPIv1).scores.C = anime.list_status.score;
+                        (additionalData[anime.node.id] as AnimeAPIv1).scores.C = anime.list_status.score;
                         break;
 
                     case leo:
-                        (additionalData.get(anime.node.id) as AnimeAPIv1).scores.L = anime.list_status.score;
+                        (additionalData[anime.node.id] as AnimeAPIv1).scores.L = anime.list_status.score;
                         break;
 
                     case gyrehio:
-                        (additionalData.get(anime.node.id) as AnimeAPIv1).scores.V = anime.list_status.score;
+                        (additionalData[anime.node.id] as AnimeAPIv1).scores.V = anime.list_status.score;
                         break;
 
                     case tchm:
-                        (additionalData.get(anime.node.id) as AnimeAPIv1).scores.T = anime.list_status.score;
+                        (additionalData[anime.node.id] as AnimeAPIv1).scores.T = anime.list_status.score;
                         break;
 
                     case qgWolf:
-                        (additionalData.get(anime.node.id) as AnimeAPIv1).scores.Q = anime.list_status.score;
+                        (additionalData[anime.node.id] as AnimeAPIv1).scores.Q = anime.list_status.score;
                         break;
                 }
             }
