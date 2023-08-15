@@ -71,6 +71,14 @@ button, select, input::placeholder, dialog *, input, option {
   padding: 0px;
 }
 
+.dialogHeader .buttons > * {
+  margin-right: 10px;
+}
+
+.dialogHeader .buttons > *:last-child {
+  margin-right: 0px;
+}
+
 .cursorHelp, .cursorHelp label {
   cursor: help;
 }

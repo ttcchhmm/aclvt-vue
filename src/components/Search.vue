@@ -217,7 +217,7 @@ function reset() {
                 <small>{{ `${props.searchResultCount} ${pluralize(props.searchResultCount, 'result', 'results')}` }}</small>
             </div>
 
-            <div>
+            <div class="buttons">
                 <img @click="reset" src="@/assets/reset.svg" alt="Clear all" height="30" width="30">
                 <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
             </div>
