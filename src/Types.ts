@@ -108,6 +108,13 @@ export type AnimeBase = {
     music: Music[];
 
     /**
+     * The mean score on MyAnimeList.
+     * 
+     * Can be undefined if the anime is not rated on MyAnimeList.
+     */
+    malMeanScore?: number;
+
+    /**
      * The oldest update about this anime in a list from the users.
      * Should be in ISO 8601 format.
      */

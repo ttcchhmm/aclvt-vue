@@ -183,6 +183,10 @@ function share(e: MouseEvent) {
                                 <td class="label">Airing season</td>
                                 <td>{{ `${capitlizeFirstLetter(data.secondary.startSeason.season)} ${data.secondary.startSeason.year}` }}</td>
                             </tr>
+                            <tr v-if="anime.malMeanScore !== undefined">
+                                <td class="label">MyAnimeList score</td>
+                                <td>{{ anime.malMeanScore }} / 10</td>
+                            </tr>
                             <tr v-if="anime.studios.length !== 0">
                                 <td class="label">{{ pluralize(anime.studios.length, 'Studio', 'Studios') }}</td>
                                 <td class="commaList">

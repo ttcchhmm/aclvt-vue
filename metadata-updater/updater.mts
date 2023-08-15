@@ -66,7 +66,7 @@ async function fetchUserList(username: string) {
         console.log(`Fetching ${username} offset ${offset}`);
 
         // @ts-ignore - The fetch type definition is missing for Node
-        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status,alternative_titles,media_type,status,synopsis,start_date,end_date,num_episodes,start_season,studios,rating,genres&offset=${offset}&nsfw=true`, {
+        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status,alternative_titles,media_type,status,synopsis,start_date,end_date,num_episodes,start_season,studios,rating,genres,mean&offset=${offset}&nsfw=true`, {
             headers: {
                 'X-MAL-CLIENT-ID': process.env.MAL_CLIENT_ID, // Authenticate with the MAL API
             }
@@ -268,6 +268,7 @@ async function generateApiV2() {
                     episodes: anime.node.num_episodes,
                     rating: ratingToValue(anime.node.rating),
                     music: music === undefined ? [] : music,
+                    malMeanScore: anime.node.mean,
                     oldestUpdate: anime.list_status.updated_at,
                 };
 
@@ -332,6 +333,7 @@ async function generateApiV2() {
             genres: anime.genres,
             studios: anime.studios,
             startDate: anime.startDate,
+            malMeanScore: anime.malMeanScore,
             oldestUpdate: anime.oldestUpdate,
         });
 
