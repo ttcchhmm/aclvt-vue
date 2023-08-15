@@ -179,6 +179,9 @@ export type Music = {
     number: number;
 }
 
+/**
+ * Defines scores given by users.
+ */
 export type Scores = {
     /**
      * Tiralex's score.
