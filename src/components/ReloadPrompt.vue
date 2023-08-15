@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
 
-import { useRegisterSW } from 'virtual:pwa-register/vue'
+import { useRegisterSW } from 'virtual:pwa-register/vue';
 import { watch } from 'vue';
 
 const {
@@ -27,7 +27,7 @@ watch(offlineReady, () => {
             <span v-else>New version available.</span>
         </div>
 
-        <button v-if="needRefresh" @click="updateServiceWorker">Reload</button>
+        <button v-if="needRefresh" @click="() => updateServiceWorker()">Reload</button>
         <button @click="close">Close</button>
     </div>
 </template>

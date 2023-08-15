@@ -1,11 +1,12 @@
 import { useSettingsStore } from '../stores/SettingsStore';
+import { type AnimeBase, type Rating } from '../Types';
 
 /**
  * Get the anime title, depending on the language setting.
- * @param {Object} anime The anime object.
+ * @param anime The anime object.
  * @returns The anime title, depending on the language setting.
  */
-export function getTitle(anime) {
+export function getTitle(anime: AnimeBase) {
     const settings = useSettingsStore();
 
     switch(settings.animeLanguage) {
@@ -16,7 +17,7 @@ export function getTitle(anime) {
         case 'ja':
             return anime.titles.ja || anime.titles.original;
         default:
-            return anime.title.original;
+            return anime.titles.original;
     }
 }
 
@@ -32,10 +33,10 @@ export function getLangCode() {
 
 /**
  * Get the anime type.
- * @param {Object} anime The anime object.
+ * @param anime The anime object.
  * @returns The anime type.
  */
-export function getType(anime) {
+export function getType(anime: AnimeBase) {
     if(anime === undefined || anime.type === undefined) return '';
 
     switch(anime.type) {
@@ -58,10 +59,10 @@ export function getType(anime) {
 
 /**
  * Get the age rating of the anime.
- * @param {number} rating The age rating of the anime.
+ * @param rating The age rating of the anime.
  * @returns A string representing the age rating of the anime.
  */
-export function getRating(rating) {
+export function getRating(rating: Rating) {
     switch(rating) {
         case 0:
             return 'All Ages';

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import { storeToRefs } from 'pinia';
 import { useVideoStore } from '../stores/VideoStore';
@@ -14,12 +14,12 @@ const { visible, url, title, artist } = storeToRefs(videoStore);
 /**
  * The dialog reference.
  */
-const dialogRef = ref(null);
+const dialogRef = ref<HTMLDialogElement | null>(null);
 
 /**
  * A reference to the video element.
  */
-const videoRef = ref(null);
+const videoRef = ref<HTMLVideoElement | null>(null);
 
 /**
  * True if the video is coming from a known CORS-compatible source.
@@ -30,32 +30,38 @@ const isCorsCompatible = computed(() => url.value.startsWith('https://nl.catbox.
  * Watch for changes to the visible state, and open/close the dialog accordingly.
  */
 watch(visible, (newVal) => {
-    if(newVal) {
-        dialogRef.value.showModal();
-        videoRef.value.play();
-    } else {
-        dialogRef.value.close();
-        videoRef.value.pause();
+    if(dialogRef.value !== null && videoRef.value !== null) {
+        if(newVal) {
+            dialogRef.value.showModal();
+            videoRef.value.play();
+        } else {
+            dialogRef.value.close();
+            videoRef.value.pause();
+        }
     }
 });
 
 onMounted(() => {
     // When the video is ready to play, start playing it.
-    videoRef.value.addEventListener('canplay', () => {
-        if(visible.value) {
-            videoRef.value.play();
-        }
-    });
+    if(videoRef.value !== null) {
+        videoRef.value.addEventListener('canplay', () => {
+            if(visible.value && videoRef.value !== null) {
+                videoRef.value.play();
+            }
+        });
+    }
 
     // When the dialog is closed, hide the video player.
-    dialogRef.value.addEventListener('close', (e) => {
-        videoStore.$patch({ visible: false });
-    });
+    if(dialogRef.value !== null) {
+        dialogRef.value.addEventListener('close', (e) => {
+            videoStore.$patch({ visible: false });
+        });
+    }
 
     // When the user presses the 'F' key, toggle fullscreen.
     // When the user presses the 'Space' key, toggle play/pause.
     document.addEventListener('keydown', (e) => {
-        if(!visible.value) return;
+        if(!visible.value || videoRef.value === null) return;
 
         if(e.key.toLowerCase() === 'f') {
             if(!document.fullscreenElement) {

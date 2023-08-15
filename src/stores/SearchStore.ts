@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { type Rating } from '../Types';
 
 /**
  * Search store.
@@ -7,102 +8,78 @@ export const useSearchStore = defineStore('search', {
     state: () => ({
         /**
          * Whether or not Tiralex's list should be displayed.
-         * 
-         * @type {boolean}
          */
         checkTiralex: true,
 
         /**
          * Whether or not the Cycy's list should be displayed.
-         * 
-         * @type {boolean}
          */
         checkCycy: true,
 
         /**
          * Whether or not Leo's list should be displayed.
-         * 
-         * @type {boolean}
          */
         checkLeo: true,
 
         /**
          * Whether or not Gyrehio's list should be displayed.
-         * 
-         * @type {boolean}
          */
         checkGyrehio: true,
 
         /**
          * Whether or not tchm's list should be displayed.
-         * 
-         * @type {boolean}
          */
         checktchm: true,
 
         /**
          * Whether or not QGWolfWarrior's list should be displayed.
-         * 
-         * @type {boolean}
          */
         checkqgWolf: true,
 
         /**
          * The type of list filter.
-         * 
-         * @type {'union' | 'intersect' | 'strict'}
          */
-        listFilterType: 'union',
+        listFilterType: 'union' as 'union' | 'intersect' | 'strict',
 
         /**
          * The search query.
-         * 
-         * @type {string}
          */
         search: '',
 
         /**
          * The search type.
-         * 
-         * @type {'anime' | 'song' | 'artist'}
          */
-        searchType: 'anime',
+        searchType: 'anime' as 'anime' | 'song' | 'artist',
 
         /**
          * The search airing filter.
-         * 
-         * @type {'any' | 'airing' | 'finished'}
          */
-        searchAiringFilter: 'any',
+        searchAiringFilter: 'any' as 'any' | 'airing' | 'finished',
 
         /**
          * The search type filter.
-         * 
-         * @type {string[]}
          */
-        searchTypeFilter: [],
+        searchTypeFilter: [] as string[],
 
         /**
          * The search age rating filter.
          */
-        maxAgeRating: 4,
+        maxAgeRating: 4 as Rating,
 
         /**
          * The searched genres.
          */
-        selectedGenres: [],
+        selectedGenres: [] as string[],
 
         /**
          * The searched studios.
          */
-        selectedStudios: [],
+        selectedStudios: [] as string[],
 
         /**
          * The sort type.
-         * 
-         * @type { 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' | 'song-count' }
          */
-        sortType: 'mal',
+        sortType: 'mal' as SortType,
 
         /**
          * The minimum number of songs.
@@ -115,3 +92,8 @@ export const useSearchStore = defineStore('search', {
         maxSongsCount: 0,
     }),
 });
+
+/**
+ * The sort type.
+ */
+export type SortType = 'mal' | 'title' | 'score' | 'start-date' | 'watch-count' | 'add-date' | 'song-count';

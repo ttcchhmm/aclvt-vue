@@ -1,14 +1,16 @@
-<script setup>
+<script setup lang="ts">
+
+import { type Scores } from '../Types';
 
 /**
  * The props for this component.
  */
-const props = defineProps({
+const props = defineProps<{
     /**
      * The scores to display.
      */
-    scores: Object,
-});
+    scores: Scores;
+}>();
 
 </script>
 

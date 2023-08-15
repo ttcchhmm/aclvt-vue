@@ -1,0 +1,17 @@
+{
+    "include": [
+        "updater.mts",
+        "../src/Types.ts"
+    ],
+    "exclude": [
+        "../node_modules"
+    ],
+    "compilerOptions": {
+        "module": "NodeNext",
+        "target": "ESNext",
+        "lib": [
+            "ESNext"
+        ],
+        "strict": true
+    }
+}

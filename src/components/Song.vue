@@ -1,16 +1,17 @@
-<script setup>
+<script setup lang="ts">
 
+import { type Music } from '../Types';
 import { useVideoStore } from '../stores/VideoStore';
 
 /**
  * The props for this component.
  */
-const props = defineProps({
+const props = defineProps<{
     /**
      * The song to display.
      */
-    song: Object,
-});
+    song: Music;
+}>();
 
 const videoStore = useVideoStore();
 

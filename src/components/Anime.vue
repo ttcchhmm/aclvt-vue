@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import Song from './Song.vue';
 import Scores from './Scores.vue';
@@ -7,16 +7,17 @@ import { pluralize } from '../utils/Pluralize';
 import { getTitle, getLangCode, getType } from '../utils/AnimeLabels';
 import { useSeeMoreStore } from '../stores/SeeMoreStore';
 import { useSettingsStore } from '../stores/SettingsStore';
+import { type AnimeBase } from '../Types';
 
 /**
  * The props for this component.
  */
-const props = defineProps({
+const props = defineProps<{
     /**
      * The anime to display.
      */
-    anime: Object,
-});
+    anime: AnimeBase;
+}>();
 
 /**
  * The store for the "See More" dialog.
@@ -31,17 +32,17 @@ const settingsStore = useSettingsStore();
 /**
  * The openings of the anime.
  */
-const openings = computed(() => props.anime.music?.filter(m => m.type === 'Opening'));
+const openings = computed(() => props.anime?.music?.filter(m => m.type === 'Opening'));
 
 /**
  * The endings of the anime.
  */
-const endings = computed(() => props.anime.music?.filter(m => m.type === 'Ending'));
+const endings = computed(() => props.anime?.music?.filter(m => m.type === 'Ending'));
 
 /**
  * The insert songs of the anime.
  */
-const inserts = computed(() => props.anime.music?.filter(m => m.type === 'Insert Song'));
+const inserts = computed(() => props.anime?.music?.filter(m => m.type === 'Insert Song'));
 
 /**
  * Whether or not the background should be shown.
@@ -51,7 +52,7 @@ const showBackground = ref(false);
 /**
  * The background reference.
  */
-const backgroundRef = ref(null);
+const backgroundRef = ref<HTMLDivElement | null>(null);
 
 /**
  * CSS code for the background.
@@ -68,6 +69,11 @@ const coverRule = computed(() => {
  * Contains the label for the type of anime.
  */
 const typeLabel = computed(() => getType(props.anime));
+
+/**
+ * The number of songs in the anime.
+ */
+const songCount = computed(() => props.anime?.music?.length === undefined ? 0 : props.anime?.music?.length);
 
 /**
  * Contains the label for the state of the anime.
@@ -97,10 +103,10 @@ const titleLanguage = computed(() => getLangCode());
 
 /**
  * Lazy load the background image if needed.
- * @param {IntersectionObserverEntry[]} entries 
- * @param {IntersectionObserver} observer 
+ * @param entries 
+ * @param observer 
  */
-function lazyBackground(entries, observer) {
+function lazyBackground(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
     entries.forEach((e) => {
         if(e.isIntersecting) {
             const img = new Image();
@@ -114,8 +120,10 @@ function lazyBackground(entries, observer) {
 }
 
 onMounted(() => {
-    const observer = new IntersectionObserver(lazyBackground, { root: null, rootMargin: '20px' });
-    observer.observe(backgroundRef.value);
+    if(backgroundRef.value !== null) {
+        const observer = new IntersectionObserver(lazyBackground, { root: null, rootMargin: '20px' });
+        observer.observe(backgroundRef.value);
+    }
 });
 
 </script>
@@ -129,7 +137,7 @@ onMounted(() => {
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
                 <small v-if="stateLabel.length !== 0">{{ stateLabel }}</small>
 
-                <small class="songCount">{{ `${props.anime?.music.length} ${pluralize(props.anime?.music.length, 'entry', 'entries')}` }}</small>
+                <small class="songCount">{{ `${props.anime.music.length} ${pluralize(props.anime.music.length, 'entry', 'entries')}` }}</small>
             </div>
 
             <Scores :scores="props.anime.scores" />
@@ -142,17 +150,17 @@ onMounted(() => {
 
                 <div v-if="openings.length !== 0" class="songs">
                     <h3>{{ pluralize(openings.length, 'Opening', 'Openings') }}</h3>
-                    <Song v-for="song in openings" :key="song.nom" :song="song" />
+                    <Song v-for="song in openings" :key="song.name" :song="song" />
                 </div>
 
                 <div v-if="endings.length !== 0" class="songs">
                     <h3>{{ pluralize(endings.length, 'Ending', 'Endings') }}</h3>
-                    <Song v-for="song in endings" :key="song.nom" :song="song" />
+                    <Song v-for="song in endings" :key="song.name" :song="song" />
                 </div>
 
                 <div v-if="inserts.length !== 0" class="songs">
                     <h3>{{ pluralize(inserts.length, 'Insert', 'Inserts') }}</h3>
-                    <Song v-for="song in inserts" :key="song.nom" :song="song" />
+                    <Song v-for="song in inserts" :key="song.name" :song="song" />
                 </div>
             </div>
         </section>

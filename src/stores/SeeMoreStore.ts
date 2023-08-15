@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { type AnimeBase } from '../Types';
 
 /**
  * "See more" dialog state.
@@ -16,13 +17,17 @@ export const useSeeMoreStore = defineStore('seeMore', {
             },
             cover: '',
             id: -1,
-            type: '',
-            status: '',
-            type: '',
+            type: 'tv',
+            status: 'currently_airing',
             wasWatched: false,
             scores: {},
             rating: 0,
-        },
+            studios: [],
+            genres: [],
+            music: [],
+            oldestUpdate: '',
+            startDate: '',
+        } as AnimeBase,
 
         /**
          * Whether or not the dialog is visible.

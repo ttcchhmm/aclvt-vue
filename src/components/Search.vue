@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
@@ -13,12 +13,12 @@ import 'vue-select/dist/vue-select.css';
 /**
  * The props for this component.
  */
-const props = defineProps({
+const props = defineProps<{
     /**
-     * The search result count.
+     * The number of search results.
      */
-   searchResultCount: Number,
-});
+    searchResultCount: number;
+}>();
 
 
 const searchStore = useSearchStore();
@@ -59,13 +59,13 @@ const dialogOpen = ref(false);
 /**
  * The dialog reference.
  */
-const dialogRef = ref(null);
+const dialogRef = ref<HTMLDialogElement | null>(null);
 
 /**
  * Maximum number of songs in an anime.
  */
 const upperSongsLimit = computed(() => data.value?.animes.reduce((acc, cur) => {
-    if(cur.music?.length > acc) {
+    if(cur.music !== undefined && cur.music.length > acc) {
         return cur.music.length;
     }
 
@@ -73,12 +73,16 @@ const upperSongsLimit = computed(() => data.value?.animes.reduce((acc, cur) => {
 }, 0));
 
 onMounted(() => {
-    maxSongsCount.value = upperSongsLimit.value;
+    if(upperSongsLimit.value !== undefined) { // Should always be true, but this is just to make TypeScript happy.
+        maxSongsCount.value = upperSongsLimit.value;
+    }
 
     // Support closing the dialog by pressing the escape key.
-    dialogRef.value.addEventListener('close', () => {
-        dialogOpen.value = false;
-    });
+    if(dialogRef.value !== null) {
+        dialogRef.value.addEventListener('close', () => {
+            dialogOpen.value = false;
+        });
+    }
 });
 
 const searchTypeFilterArray = computed(() => {
@@ -125,7 +129,7 @@ watch(upperSongsLimit, () => {
 
 // Watch for changes in the min/max songs count.
 watch(maxSongsCount, () => {
-    if(maxSongsCount.value > upperSongsLimit.value) {
+    if(upperSongsLimit.value !== undefined && maxSongsCount.value > upperSongsLimit.value && upperSongsLimit.value !== undefined) {
         maxSongsCount.value = upperSongsLimit.value;
     } else if(maxSongsCount.value < minSongsCount.value) {
         minSongsCount.value = maxSongsCount.value | 0;
@@ -144,13 +148,15 @@ watch(minSongsCount, () => {
  * Toggles the dialog.
  */
 function toggleDialog() {
-    if(dialogOpen.value) {
-        dialogRef.value.close();
-    } else {
-        dialogRef.value.showModal();
-    }
+    if(dialogRef.value !== null) {
+        if(dialogOpen.value) {
+            dialogRef.value.close();
+        } else {
+            dialogRef.value.showModal();
+        }
 
-    dialogOpen.value = !dialogOpen.value;
+        dialogOpen.value = !dialogOpen.value;
+    }
 }
 
 /**
@@ -178,7 +184,7 @@ function reset() {
         searchType: 'anime',
         searchAiringFilter: 'any',
         listFilterType: 'union',
-        maxAgeRating: '4',
+        maxAgeRating: 4,
         selectedGenres: [],
         selectedStudios: [],
         sortType: 'mal',

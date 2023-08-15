@@ -1,42 +1,48 @@
+import { storeToRefs } from 'pinia';
+import { type SortType, useSearchStore } from '../stores/SearchStore';
 import { useSettingsStore } from '../stores/SettingsStore';
+import { type AnimeBase } from '../Types';
 
 /**
  * Get a function that filters animes based on the search query, the search type, the airing filter, the type filter and the list filter.
  * 
- * @param {string} search The search query.
- * @param {string} searchType The search type, either 'anime', 'song' or 'artist'.
- * @param {string} searchAiringFilter The airing filter, either 'any', 'airing' or 'finished'.
- * @param {string[]} searchTypeFilter The type filter, either 'any', 'tv', 'ova', 'movie', 'special' or 'ona'.
- * @param {string} listFilterType The list filter type, either 'strict', 'union' or 'intersect'. 
- * @param {boolean} checkTiralex Whether to display animes from Tiralex's list.
- * @param {boolean} checkCycy Whether to display animes from Cycy's list.
- * @param {boolean} checkLeo Whether to display animes from Leo's list.
- * @param {boolean} checkGyrehio Whether to display animes from Gyrehio's list.
- * @param {boolean} checktchm Whether to display animes from tchm's list.
- * @param {boolean} checkqgWolf Whether to display animes from QGWolfWarrior's list.
- * @param {number} maxAgeRating The maximum age rating to display.
- * @param {string[]} genres The genres to display.
- * @param {string[]} studios The studios to display.
- * @param {number} minSongsCount The minimum number of songs to display.
- * @param {number} maxSongsCount The maximum number of songs to display.
- * @param {Object} alternativeTitles The alternative titles of the animes.
+ * @param alternativeTitles The alternative titles of the animes.
  * @returns A function that takes an anime as a parameter and returns whether it should be displayed or not.
  */
-export function getFilterAnimes(search, searchType, searchAiringFilter, searchTypeFilter, listFilterType, checkTiralex, checkCycy, checkLeo, checkGyrehio, checktchm, checkqgWolf, maxAgeRating, genres, studios, minSongsCount, maxSongsCount, alternativeTitles) {
-    return (a) => {
+export function getFilterAnimes(alternativeTitles: Map<number, string[]>) {
+    const {
+        search,
+        searchType,
+        searchAiringFilter,
+        searchTypeFilter,
+        listFilterType,
+        checkTiralex,
+        checkCycy,
+        checkLeo,
+        checkGyrehio,
+        checktchm,
+        checkqgWolf,
+        maxAgeRating,
+        selectedGenres,
+        selectedStudios,
+        minSongsCount,
+        maxSongsCount, 
+    } = storeToRefs(useSearchStore());
+
+    return (a: AnimeBase) => {
         // Check the age rating.
-        if(a.rating > maxAgeRating) {
+        if(a.rating > maxAgeRating.value) {
             return false;
         }
 
         // Check the number of songs.
-        if(a.music?.length < minSongsCount || a.music?.length > maxSongsCount) {
+        if(a.music.length < minSongsCount.value || a.music.length > maxSongsCount.value) {
             return false;
         }
 
         // Check the genres.
-        if(genres.length !== 0) {
-            for(const genre of genres) {
+        if(selectedGenres.value.length !== 0) {
+            for(const genre of selectedGenres.value) {
                 if(!a.genres.includes(genre)) {
                     return false;
                 }
@@ -44,31 +50,31 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
         }
 
         // Check the studios.
-        if(studios.length !== 0) {
-            if(!studios.some(s => a.studios.includes(s))) {
+        if(selectedStudios.value.length !== 0) {
+            if(!selectedStudios.value.some(s => a.studios.includes(s))) {
                 return false;
             }
         }
 
         // If a search query is present, filter based on it.
-        if(search.trim().length > 0) {
-            switch(searchType) {
+        if(search.value.trim().length > 0) {
+            switch(searchType.value) {
                 case 'anime':
-                    if(!alternativeTitles[a.id].some(t => t.toLowerCase().includes(search.toLowerCase()))) {
+                    if(!alternativeTitles.get(a.id)?.some(t => t.toLowerCase().includes(search.value.toLowerCase()))) {
                         return false;
                     }
 
                     break;
                 
                 case 'song':
-                    if(!a.music?.some(m => m.name.toLowerCase().includes(search.toLowerCase()))) {
+                    if(!a.music?.some(m => m.name.toLowerCase().includes(search.value.toLowerCase()))) {
                         return false;
                     }
 
                     break;
                 
                 case 'artist':
-                    if(!a.music?.some(m => m.artist?.toLowerCase().includes(search.toLowerCase()))) {
+                    if(!a.music?.some(m => m.artist?.toLowerCase().includes(search.value.toLowerCase()))) {
                         return false;
                     }
 
@@ -77,8 +83,8 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
         }
 
         // If an airing filter is present, filter based on it.
-        if(searchAiringFilter !== 'any') {
-            switch(searchAiringFilter) {
+        if(searchAiringFilter.value !== 'any') {
+            switch(searchAiringFilter.value) {
                 case 'airing':
                     if(a.status !== 'currently_airing') {
                         return false;
@@ -96,18 +102,18 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
         }
 
         // If a type filter is present, filter based on it.
-        if(searchTypeFilter.length !== 0) {
-            if(!searchTypeFilter.includes(a.type)) {
+        if(searchTypeFilter.value.length !== 0) {
+            if(!searchTypeFilter.value.includes(a.type)) {
                 return false;
             }
         }
 
         // Checkboxes filter.
-        if(listFilterType !== 'strict') {
-            let display = listFilterType === 'intersect';
+        if(listFilterType.value !== 'strict') {
+            let display = listFilterType.value === 'intersect';
 
-            if(checkTiralex) {
-                if(listFilterType === 'union') {
+            if(checkTiralex.value) {
+                if(listFilterType.value === 'union') {
                     if(watched(a.scores.A)) {
                         display = true;
                     }
@@ -118,8 +124,8 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 }
             }
 
-            if(checkCycy) {
-                if(listFilterType === 'union') {
+            if(checkCycy.value) {
+                if(listFilterType.value === 'union') {
                     if(watched(a.scores.C)) {
                         display = true;
                     }
@@ -130,8 +136,8 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 }
             }
 
-            if(checkLeo) {
-                if(listFilterType === 'union') {
+            if(checkLeo.value) {
+                if(listFilterType.value === 'union') {
                     if(watched(a.scores.L)) {
                         display = true;
                     }
@@ -142,8 +148,8 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 }
             }
 
-            if(checkGyrehio) {
-                if(listFilterType === 'union') {
+            if(checkGyrehio.value) {
+                if(listFilterType.value === 'union') {
                     if(watched(a.scores.V)) {
                         display = true;
                     }
@@ -154,8 +160,8 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 }
             }
 
-            if(checktchm) {
-                if(listFilterType === 'union') {
+            if(checktchm.value) {
+                if(listFilterType.value === 'union') {
                     if(watched(a.scores.T)) {
                         display = true;
                     }
@@ -166,8 +172,8 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
                 }
             }
 
-            if(checkqgWolf) {
-                if(listFilterType === 'union') {
+            if(checkqgWolf.value) {
+                if(listFilterType.value === 'union') {
                     if(watched(a.scores.Q)) {
                         display = true;
                     }
@@ -180,21 +186,21 @@ export function getFilterAnimes(search, searchType, searchAiringFilter, searchTy
 
             return display;
         } else { // Strict match
-            return checkTiralex === watched(a.scores.A) &&
-                    checkCycy === watched(a.scores.C) &&
-                    checkLeo === watched(a.scores.L) &&
-                    checkGyrehio === watched(a.scores.V) &&
-                    checktchm === watched(a.scores.T) &&
-                    checkqgWolf === watched(a.scores.Q);
+            return checkTiralex.value === watched(a.scores.A) &&
+                    checkCycy.value === watched(a.scores.C) &&
+                    checkLeo.value === watched(a.scores.L) &&
+                    checkGyrehio.value === watched(a.scores.V) &&
+                    checktchm.value === watched(a.scores.T) &&
+                    checkqgWolf.value === watched(a.scores.Q);
         }
     };
 }
 
 /**
  * Get a sorting function for animes.
- * @param { 'mal' | 'title' | 'score' | 'start-date' } sortType The type of sorting to apply.
+ * @param sortType The type of sorting to apply.
  */
-export function sortAnimes(sortType) {
+export function sortAnimes(sortType: SortType) {
     switch(sortType) {
         // MyAnimeList order.
         default:
@@ -205,7 +211,7 @@ export function sortAnimes(sortType) {
         case 'title':
             switch(useSettingsStore().animeLanguage) {
                 case 'en': // English
-                    return (a, b) => {
+                    return (a: AnimeBase, b: AnimeBase) => {
                         const aTitle = a.titles.en || a.titles.original;
                         const bTitle = b.titles.en || b.titles.original;
                 
@@ -213,7 +219,7 @@ export function sortAnimes(sortType) {
                     }
 
                 case 'ja': // Japanese
-                    return (a, b) => {
+                    return (a: AnimeBase, b: AnimeBase) => {
                         const aTitle = a.titles.ja || a.titles.original;
                         const bTitle = b.titles.ja || b.titles.original;
                 
@@ -222,7 +228,7 @@ export function sortAnimes(sortType) {
 
                 default:
                 case 'original': // Romaji
-                    return (a, b) => {
+                    return (a: AnimeBase, b: AnimeBase) => {
                         const aTitle = a.titles.original;
                         const bTitle = b.titles.original;
                 
@@ -232,7 +238,7 @@ export function sortAnimes(sortType) {
 
         // Score order.
         case 'score':
-            return (a, b) => {
+            return (a: AnimeBase, b: AnimeBase) => {
                 const aScore = getAverageScore(a);
                 const bScore = getAverageScore(b);
 
@@ -247,16 +253,16 @@ export function sortAnimes(sortType) {
 
         // Start date order.
         case 'start-date':
-            return (a, b) => {
+            return (a: AnimeBase, b: AnimeBase) => {
                 const aDate = new Date(a.startDate);
                 const bDate = new Date(b.startDate);
 
-                return aDate - bDate;
+                return (aDate as unknown as number) - (bDate as unknown as number); // Cast to number to avoid TS errors.
             }
 
         // Watch count order.
         case 'watch-count':
-            return (a, b) => {
+            return (a: AnimeBase, b: AnimeBase) => {
                 const aWatchCount = Object.values(a.scores).filter(s => s !== undefined).length;
                 const bWatchCount = Object.values(b.scores).filter(s => s !== undefined).length;
 
@@ -264,16 +270,16 @@ export function sortAnimes(sortType) {
             }
 
         case 'add-date':
-            return (a, b) => {
+            return (a: AnimeBase, b: AnimeBase) => {
                 const aDate = new Date(a.oldestUpdate);
                 const bDate = new Date(b.oldestUpdate);
 
-                return aDate - bDate;
+                return (aDate as unknown as number) - (bDate as unknown as number); // Cast to number to avoid TS errors.
             }
 
         // Song count order.
         case 'song-count':
-            return (a, b) => {
+            return (a: AnimeBase, b: AnimeBase) => {
                 const aCount = a.music.length;
                 const bCount = b.music.length;
 
@@ -285,18 +291,18 @@ export function sortAnimes(sortType) {
 
 /**
  * Check whether an anime has been watched by a user.
- * @param {number | undefined} score The score given by a user.
+ * @param score The score given by a user.
  * @returns True if the anime has been watched by the user, false otherwise.
  */
-function watched(score) {
+function watched(score: number | undefined): boolean {
     return score !== undefined;
 }
 
 /**
  * Return the average score of an anime.
- * @param {Object} a An anime.
+ * @param a An anime.
  */
-function getAverageScore(a) {
+function getAverageScore(a: AnimeBase) {
     // Get an array of all the scores. Remove undefined and 0 values as they either mean the anime has not been watched or not scored.
     const scores = Object.values(a.scores).filter(s => s !== undefined).filter(s => s !== 0);
 

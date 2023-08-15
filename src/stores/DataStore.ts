@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { type Index } from "../Types";
 
 /**
  * Data state
@@ -8,10 +9,10 @@ export const useDataStore = defineStore("data", {
         /**
          * The data loaded from the API
          */
-        data: null
+        data: null as Index | null,
     }),
     actions: {
-        setData(data) {
+        setData(data: Index) {
             this.data = data;
         }
     }

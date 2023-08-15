@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import { storeToRefs } from 'pinia';
 import { useSeeMoreStore } from '../stores/SeeMoreStore';
@@ -9,6 +9,7 @@ import Scores from './Scores.vue';
 import { useSettingsStore } from '../stores/SettingsStore';
 import { useSearchStore } from '../stores/SearchStore';
 import { pluralize } from '../utils/Pluralize';
+import { type AnimeExtended } from '../Types';
 
 /**
  * Settings store.
@@ -22,21 +23,22 @@ const { selectedGenres, selectedStudios } = storeToRefs(useSearchStore());
 /**
  * Additional data for the dialog.
  */
-const data = ref({
+const data = ref<{ secondary: AnimeExtended | null }>({
     /**
      * Nested object containing the additional data.
      * Needed because of the way refs work.
-     * @type {Object}
      */
     secondary: null,
 });
 
-const dialogRef = ref(null);
+const dialogRef = ref<HTMLDialogElement | null>(null);
 
 onMounted(() => {
-    dialogRef.value.addEventListener('close', () => {
-        visible.value = false;
-    });
+    if(dialogRef.value !== null) {
+        dialogRef.value.addEventListener('close', () => {
+            visible.value = false;
+        });
+    }
 });
 
 // Fetch the additional data when the anime changes.
@@ -57,10 +59,12 @@ watch(anime, () => {
  * Watch for changes to the visible state, and open/close the dialog accordingly.
  */
 watch(visible, (newVal) => {
-    if(newVal) {
-        dialogRef.value.showModal();
-    } else {
-        dialogRef.value.close();
+    if(dialogRef.value !== null) {
+        if(newVal) {
+            dialogRef.value.showModal();
+        } else {
+            dialogRef.value.close();
+        }
     }
 });
 
@@ -79,7 +83,12 @@ const titleLanguage = computed(() => getLangCode());
  */
 const type = computed(() => getType(anime.value));
 
-function capitlizeFirstLetter(string) {
+/**
+ * Capitalizes the first letter of a string.
+ * @param string The string to capitalize.
+ * @returns The capitalized string.
+ */
+function capitlizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 

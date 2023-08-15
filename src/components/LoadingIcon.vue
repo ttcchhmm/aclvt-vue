@@ -1,14 +1,14 @@
-<script setup>
+<script setup lang="ts">
 
 /**
  * The props for this component.
  */
-const props = defineProps({
+const props = defineProps<{
   /**
    * Whether or not the light mode is enabled.
    */
-  lightMode: Boolean,
-});
+  lightMode: boolean;
+}>();
 
 </script>
 

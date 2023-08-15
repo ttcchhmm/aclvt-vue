@@ -1,4 +1,5 @@
-<script setup>
+<script setup lang="ts">
+
 import { watch, ref, onMounted, computed } from 'vue';
 import { useSettingsStore } from '../stores/SettingsStore';
 import { storeToRefs } from 'pinia';
@@ -12,7 +13,7 @@ import { useDataStore } from '../stores/DataStore';
 /**
  * The dialog reference.
  */
-const dialogRef = ref(null);
+const dialogRef = ref<HTMLDialogElement | null>(null);
 
 /**
  * Whether or not the database is currently downloading.
@@ -53,18 +54,22 @@ const dbUpdate = computed(() => new Date(data.value?.updatedAt ?? 0));
 const nextDbUpdate = computed(() => new Date(dbUpdate.value.getTime() + 30 * 60000));
 
 watch(dialogOpen, (value) => {
-    if (value) {
-        dialogRef.value.showModal();
-    } else {
-        dialogRef.value.close();
+    if(dialogRef.value !== null) {
+        if(value) {
+            dialogRef.value.showModal();
+        } else {
+            dialogRef.value.close();
+        }
     }
 });
 
 onMounted(() => {
     // Support closing the dialog by pressing the escape key.
-    dialogRef.value.addEventListener('close', () => {
-        dialogOpen.value = false;
-    });
+    if(dialogRef.value !== null) {
+        dialogRef.value.addEventListener('close', () => {
+            dialogOpen.value = false;
+        });
+    }
 });
 
 function reset() {
@@ -80,25 +85,29 @@ async function downloadMetadata() {
     errorDownloading.value = false;
     currentDownloaded.value = 0;
 
-    let promises = [fetch('/api/v2/index.json')];
+    let promises: Promise<any>[] = [fetch('/api/v2/index.json')];
 
-    let i = 0;
-    for(const a of viewedAnimes.value) {
-        promises.push(fetch(`/api/v2/animes/${a.id}.json`)
-        .then(() => {
-            currentDownloaded.value++;
-            console.log(`Downloaded ${currentDownloaded.value} of ${viewedAnimes.value.length} entries.`);
-        }).catch((e) => {
-            errorDownloading.value = true;
-            console.error(e);
-        }));
+    if(viewedAnimes.value !== undefined) {
+        const length = viewedAnimes.value.length;
 
-        i++;
+        let i = 0;
+        for(const a of viewedAnimes.value) {
+            promises.push(fetch(`/api/v2/animes/${a.id}.json`)
+            .then(() => {
+                currentDownloaded.value++;
+                console.log(`Downloaded ${currentDownloaded.value} of ${length} entries.`);
+            }).catch((e) => {
+                errorDownloading.value = true;
+                console.error(e);
+            }));
 
-        if(i >= 50) {
-            await Promise.all(promises);
-            i = 0;
-            promises = [];
+            i++;
+
+            if(i >= 50) {
+                await Promise.all(promises);
+                i = 0;
+                promises = [];
+            }
         }
     }
 
@@ -113,23 +122,27 @@ async function downloadPictures() {
     
     let promises = [];
 
-    let i = 0;
-    for(const a of viewedAnimes.value) {
-        promises.push(fetch(a.cover)
-        .then(() => {
-            currentDownloaded.value++;
-            console.log(`Downloaded ${currentDownloaded.value} of ${viewedAnimes.value.length} entries.`);
-        }).catch((e) => {
-            errorDownloading.value = true;
-            console.error(e);
-        }));
+    if(viewedAnimes.value !== undefined) {
+        const length = viewedAnimes.value.length;
 
-        i++;
+        let i = 0;
+        for(const a of viewedAnimes.value) {
+            promises.push(fetch(a.cover)
+            .then(() => {
+                currentDownloaded.value++;
+                console.log(`Downloaded ${currentDownloaded.value} of ${length} entries.`);
+            }).catch((e) => {
+                errorDownloading.value = true;
+                console.error(e);
+            }));
 
-        if(i >= 50) {
-            await Promise.all(promises);
-            i = 0;
-            promises = [];
+            i++;
+
+            if(i >= 50) {
+                await Promise.all(promises);
+                i = 0;
+                promises = [];
+            }
         }
     }
 
@@ -195,8 +208,8 @@ async function downloadPictures() {
             <button @click="downloadPictures">Download pictures</button>
         </div>
         <div v-else id="downloadProgress">
-            <p>Downloading... {{ currentDownloaded }} / {{ viewedAnimes.length }}</p>
-            <progress :value="currentDownloaded" :max="viewedAnimes.length"></progress>
+            <p>Downloading... {{ currentDownloaded }} / {{ viewedAnimes?.length }}</p>
+            <progress :value="currentDownloaded" :max="viewedAnimes?.length"></progress>
         </div>
 
         <p v-if="errorDownloading">An error occurred while downloading the database.</p>
@@ -213,6 +226,7 @@ async function downloadPictures() {
                 <li><a href="https://pinia.vuejs.org/" target="_blank">Pinia</a></li>
                 <li><a href="https://vue-select.org/" target="_blank">Vue Select</a></li>
                 <li><a href="https://vite-pwa-org.netlify.app/" target="_blank">Vite PWA</a></li>
+                <li><a href="https://www.typescriptlang.org/" target="_blank">TypeScript</a></li>
             </ul>
 
             <p>The source code for this website is available on <a href="https://github.com/ttcchhmm/aclvt-vue" target="_blank">GitHub</a>.</p>

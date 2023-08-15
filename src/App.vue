@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 
 import LoadingIcon from './components/LoadingIcon.vue';
 import Anime from './components/Anime.vue';
@@ -14,6 +14,7 @@ import { setupSettings, useSettingsStore } from './stores/SettingsStore';
 import { storeToRefs } from 'pinia';
 import { useSearchStore } from './stores/SearchStore';
 import { useDataStore } from './stores/DataStore';
+import { type AnimeBase } from './Types';
 
 /**
  * True if the data failed to load.
@@ -28,16 +29,7 @@ const {
   checktchm,
   checkqgWolf,
   listFilterType,
-  search,
-  searchType,
-  searchAiringFilter,
-  searchTypeFilter,
-  maxAgeRating,
-  selectedGenres,
-  selectedStudios,
   sortType,
-  minSongsCount,
-  maxSongsCount,
 } = storeToRefs(useSearchStore());
 
 const dataStore = useDataStore();
@@ -46,7 +38,7 @@ const { data } = storeToRefs(dataStore);
 
 const settingsStore = useSettingsStore();
 
-const { headerColor, colorizeLinks, animeLanguage, orderByMAL } = storeToRefs(settingsStore);
+const { headerColor, colorizeLinks } = storeToRefs(settingsStore);
 
 const linksCss = computed(() => {
   return colorizeLinks.value ? '#0091FF' : 'white';
@@ -62,7 +54,7 @@ const animeDatabase = computed(() => {
  * The animes to display.
  */
 const animes = computed(() => {
-  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(search.value, searchType.value, searchAiringFilter.value, searchTypeFilter.value, listFilterType.value, checkTiralex.value, checkCycy.value, checkLeo.value, checkGyrehio.value, checktchm.value, checkqgWolf.value, maxAgeRating.value, selectedGenres.value, selectedStudios.value, minSongsCount.value, maxSongsCount.value, alternativeTitles.value));
+  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(alternativeTitles.value));
 
   return filteredAnimes.sort(sortAnimes(sortType.value));
 });
@@ -71,13 +63,13 @@ const animes = computed(() => {
  * A map of alternative titles for each anime.
  */
 const alternativeTitles = computed(() => {
-  if(data.value === null) {
-    return {};
-  } else {
-    const titles = {};
+  const titles: Map<number, string[]> = new Map();
 
+  if(data.value === null) {
+    return titles;
+  } else {
     animeDatabase.value.forEach((a) => {
-      titles[a.id] = getAlternativeTitles(a);
+      titles.set(a.id, getAlternativeTitles(a));
     })
 
     return titles;
@@ -88,15 +80,16 @@ const songsCount = computed(() => {
   if(animeDatabase.value.length === 0) {
     return 0;
   } else {
-    return data.value.animes.reduce((acc, anime) => acc + anime.music.length, 0);
+    return data.value?.animes.reduce((acc, anime) => acc + anime.music.length, 0);
   }
 });
 
 /**
  * Gets the alternative titles for an anime.
- * @param {Object} anime The anime.
+ * @param anime The anime.
+ * @returns The alternative titles.
  */
-function getAlternativeTitles(anime) {
+function getAlternativeTitles(anime: AnimeBase) {
   const titles = [];
 
   if(anime.titles.original !== undefined) {
@@ -172,7 +165,7 @@ onMounted(() => {
   <SeeMoreDialog />
   <ReloadPrompt />
 
-  <LoadingIcon v-if="data === null && dataLoadingFailed === false" />
+  <LoadingIcon v-if="data === null && dataLoadingFailed === false" :lightMode="false" />
 
   <div v-else-if="data === null && dataLoadingFailed === true" class="errorMsg">
     <img src="@/assets/offline.svg" class="svgFix" height="48" width="48">

@@ -8,24 +8,18 @@ export const useSettingsStore = defineStore('settings', {
     state: () => ({
         /**
          * The header color
-         * 
-         * @type {string}
          */
         headerColor: localStorage.getItem('headerColor') || '#00bfff',
 
         /**
          * Whether to colorize links
-         * 
-         * @type {boolean}
          */
         colorizeLinks: localStorage.getItem('colorizeLinks') === 'true',
 
         /**
          * The anime language
-         * 
-         * @type {'original' | 'en' | 'jp'}
          */
-        animeLanguage: localStorage.getItem('animeLanguage') || 'original',
+        animeLanguage: (localStorage.getItem('animeLanguage') || 'original') as 'original' | 'en' | 'ja',
     }),
 });
 
@@ -48,7 +42,7 @@ function save() {
     const settingsStore = useSettingsStore();
 
     localStorage.setItem('headerColor', settingsStore.headerColor);
-    localStorage.setItem('colorizeLinks', settingsStore.colorizeLinks);
+    localStorage.setItem('colorizeLinks', settingsStore.colorizeLinks.toString());
     localStorage.setItem('animeLanguage', settingsStore.animeLanguage);
 }
 
