@@ -1,19 +1,17 @@
 <script setup lang="ts">
 
-import { watch, ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useSettingsStore } from '../stores/SettingsStore';
 import { storeToRefs } from 'pinia';
 import { useDataStore } from '../stores/DataStore';
 
+import Dialog from './Dialog.vue';
+import ResetIcon from '@/assets/reset.svg';
+
 /**
  * Whether or not the search dialog is open.
  */
- const dialogOpen = ref(false);
-
-/**
- * The dialog reference.
- */
-const dialogRef = ref<HTMLDialogElement | null>(null);
+const dialogOpen = ref(false);
 
 /**
  * Whether or not the database is currently downloading.
@@ -52,25 +50,6 @@ const dbUpdate = computed(() => new Date(data.value?.updatedAt ?? 0));
  * The date of the next database update.
  */
 const nextDbUpdate = computed(() => new Date(dbUpdate.value.getTime() + 30 * 60000));
-
-watch(dialogOpen, (value) => {
-    if(dialogRef.value !== null) {
-        if(value) {
-            dialogRef.value.showModal();
-        } else {
-            dialogRef.value.close();
-        }
-    }
-});
-
-onMounted(() => {
-    // Support closing the dialog by pressing the escape key.
-    if(dialogRef.value !== null) {
-        dialogRef.value.addEventListener('close', () => {
-            dialogOpen.value = false;
-        });
-    }
-});
 
 function reset() {
     settingsStore.$patch({
@@ -155,14 +134,17 @@ async function downloadPictures() {
 <template>
     <img @click="dialogOpen = true" src="@/assets/settings.svg" alt="Settings" title="Settings" height="30" width="30" class="svgFix" id="settingsButton">
 
-    <dialog ref="dialogRef" id="settingsDialog">
-        <div class="dialogHeader">
-            <h2>Settings</h2>
-            <div class="buttons">
-                <img @click="reset" src="@/assets/reset.svg" alt="Reset" title="Reset" height="30" width="30">
-                <img @click="dialogOpen = false" src="@/assets/close.svg" alt="Close" title="Close" height="30" width="30">
-            </div>
-        </div>
+    <Dialog
+            :title="'Settings'"
+            :visible="dialogOpen"
+            :hide="() => dialogOpen = false"
+            :buttons="[
+                {
+                    icon: ResetIcon,
+                    alt: 'Reset',
+                    action: reset,
+                }
+            ]">
 
         <table class="tableOptions" id="settingsContent">
             <tbody>
@@ -237,7 +219,7 @@ async function downloadPictures() {
             <br>
             Next database update: {{ nextDbUpdate.toLocaleString() }}
         </small>
-    </dialog>
+    </Dialog>
 </template>
 
 <style>
@@ -262,9 +244,11 @@ async function downloadPictures() {
 #downloadProgress progress {
     width: 100%;
 }
+</style>
 
+<style scoped>
 @media screen and (min-width: 450px) {
-    #settingsDialog {
+    .dialog {
         max-width: 40%;
     }
 }

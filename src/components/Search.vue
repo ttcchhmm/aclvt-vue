@@ -9,6 +9,9 @@ import { useDataStore } from '../stores/DataStore';
 
 import VueSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import Dialog from './Dialog.vue';
+
+import ResetIcon from '@/assets/reset.svg';
 
 /**
  * The props for this component.
@@ -57,11 +60,6 @@ const searchTypeFilter = ref({
 const dialogOpen = ref(false);
 
 /**
- * The dialog reference.
- */
-const dialogRef = ref<HTMLDialogElement | null>(null);
-
-/**
  * Maximum number of songs in an anime.
  */
 const upperSongsLimit = computed(() => data.value?.animes.reduce((acc, cur) => {
@@ -75,13 +73,6 @@ const upperSongsLimit = computed(() => data.value?.animes.reduce((acc, cur) => {
 onMounted(() => {
     if(upperSongsLimit.value !== undefined) { // Should always be true, but this is just to make TypeScript happy.
         maxSongsCount.value = upperSongsLimit.value;
-    }
-
-    // Support closing the dialog by pressing the escape key.
-    if(dialogRef.value !== null) {
-        dialogRef.value.addEventListener('close', () => {
-            dialogOpen.value = false;
-        });
     }
 });
 
@@ -145,21 +136,6 @@ watch(minSongsCount, () => {
 });
 
 /**
- * Toggles the dialog.
- */
-function toggleDialog() {
-    if(dialogRef.value !== null) {
-        if(dialogOpen.value) {
-            dialogRef.value.close();
-        } else {
-            dialogRef.value.showModal();
-        }
-
-        dialogOpen.value = !dialogOpen.value;
-    }
-}
-
-/**
  * Clears the search field.
  */
 function clear() {
@@ -205,24 +181,25 @@ function reset() {
                 <option value="id" v-if="searchType === 'id'">ID</option>
             </select>
             <input v-model="search" type="text" id="search" placeholder="Type here to search...">
-            <img id="advancedSearchButton" @click="toggleDialog" src="@/assets/dropdown-white.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
+            <img id="advancedSearchButton" @click="dialogOpen = true" src="@/assets/dropdown-white.svg" alt="Advanced Search" title="Advanced Search" height="30" width="30">
         </div>
     </div>
 
-    <img class="mobile-show svgFix" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="toggleDialog" height="30" width="30">
+    <img class="mobile-show svgFix" id="mobileSearchIcon" src="@/assets/search.svg" alt="Search" @click="dialogOpen = true" height="30" width="30">
 
-    <dialog ref="dialogRef" id="advancedSearchDialog">
-        <div class="dialogHeader">
-            <div>
-                <h2>Search</h2>
-                <small>{{ `${props.searchResultCount} ${pluralize(props.searchResultCount, 'result', 'results')}` }}</small>
-            </div>
-
-            <div class="buttons">
-                <img @click="reset" src="@/assets/reset.svg" alt="Clear all" height="30" width="30">
-                <img @click="toggleDialog" src="@/assets/close.svg" alt="Close" height="30" width="30">
-            </div>
-        </div>
+    <Dialog
+            :title="'Search'"
+            :subtitle="`${props.searchResultCount} ${pluralize(props.searchResultCount, 'result', 'results')}`"
+            :visible="dialogOpen"
+            :hide="() => dialogOpen = false"
+            :buttons="[
+                {
+                    icon: ResetIcon,
+                    alt: 'Clear all',
+                    action: reset
+                }
+            ]"
+            :fit-content="true">
 
         <div>
             <div id="searchField">
@@ -369,7 +346,7 @@ function reset() {
                 </tbody>
             </table>
         </div>
-    </dialog>
+    </Dialog>
 </template>
 
 <style>

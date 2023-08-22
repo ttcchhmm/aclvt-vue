@@ -2,7 +2,7 @@
 
 import { storeToRefs } from 'pinia';
 import { useSeeMoreStore } from '../stores/SeeMoreStore';
-import { onMounted, watch, ref, computed } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { getTitle, getLangCode, getType, getRating } from '../utils/AnimeLabels';
 import LoadingIcon from './LoadingIcon.vue';
 import Scores from './Scores.vue';
@@ -10,6 +10,10 @@ import { useSettingsStore } from '../stores/SettingsStore';
 import { useSearchStore } from '../stores/SearchStore';
 import { pluralize } from '../utils/Pluralize';
 import { type AnimeExtended } from '../Types';
+
+import Dialog from './Dialog.vue';
+
+import ShareIcon from '@/assets/share.svg';
 
 /**
  * Settings store.
@@ -36,16 +40,6 @@ const data = ref<{ secondary: AnimeExtended | null }>({
  */
 const clipboardCopyDone = ref(false);
 
-const dialogRef = ref<HTMLDialogElement | null>(null);
-
-onMounted(() => {
-    if(dialogRef.value !== null) {
-        dialogRef.value.addEventListener('close', () => {
-            visible.value = false;
-        });
-    }
-});
-
 // Fetch the additional data when the anime changes.
 watch(anime, () => {
     // Will show the loading indicator.
@@ -57,19 +51,6 @@ watch(anime, () => {
             .then(json => {
                 data.value.secondary = json;
             });
-    }
-});
-
-/*
- * Watch for changes to the visible state, and open/close the dialog accordingly.
- */
-watch(visible, (newVal) => {
-    if(dialogRef.value !== null) {
-        if(newVal) {
-            dialogRef.value.showModal();
-        } else {
-            dialogRef.value.close();
-        }
     }
 });
 
@@ -134,20 +115,23 @@ function share(e: MouseEvent) {
 </script>
 
 <template>
-    <dialog ref="dialogRef">
+    <Dialog
+            :title="title"
+            :title-link="`https://myanimelist.net/anime/${anime.id}`"
+            :title-lang="titleLanguage"
+            :subtitle="type"
+            :visible="visible"
+            :hide="() => visible = false"
+            :buttons="[
+                {
+                    icon: ShareIcon,
+                    alt: 'Share',
+                    action: share,
+                    link: `https://aclvt.tchm.dev/?id=${anime.id}`
+                },
+            ]">
         <div class="toast" v-if="clipboardCopyDone">
             <p>Link copied to the clipboard !</p>
-        </div>
-
-        <div class="dialogHeader">
-            <div>
-                <h2 :lang="titleLanguage" id="animeTitle"><a :href="`https://myanimelist.net/anime/${anime.id}`" target="_blank" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ title }} <img src="@/assets/open-external.svg" height="20" width="20"></a></h2>
-                <small>{{ type }}</small>
-            </div>
-            <div class="buttons">
-                <a @click="(e) => share(e)" :href="`https://aclvt.tchm.dev/?id=${anime.id}`"><img src="@/assets/share.svg" alt="Share" height="30" width="30"></a>
-                <img @click="visible = false" src="@/assets/close.svg" alt="Close" height="30" width="30">
-            </div>
         </div>
 
         <div id="seeMoreDialogBody">
@@ -235,7 +219,7 @@ function share(e: MouseEvent) {
                 </div>
             </div>
         </div>
-    </dialog>
+    </Dialog>
 </template>
 
 <style>

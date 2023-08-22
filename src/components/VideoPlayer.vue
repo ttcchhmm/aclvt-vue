@@ -2,7 +2,10 @@
 
 import { storeToRefs } from 'pinia';
 import { useVideoStore } from '../stores/VideoStore';
-import { watch, ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import Dialog from './Dialog.vue';
+
+import PiPIcon from '@/assets/picture-in-picture.svg';
 
 /**
  * The video player state.
@@ -10,11 +13,6 @@ import { watch, ref, onMounted, computed } from 'vue';
 const videoStore = useVideoStore();
 
 const { visible, url, title, artist } = storeToRefs(videoStore);
-
-/**
- * The dialog reference.
- */
-const dialogRef = ref<HTMLDialogElement | null>(null);
 
 /**
  * A reference to the video element.
@@ -31,25 +29,6 @@ const isCorsCompatible = computed(() => url.value.startsWith('https://nl.catbox.
  */
 const isPipSupported = computed(() => 'exitPictureInPicture' in document);
 
-/*
- * Watch for changes to the visible state, and open/close the dialog accordingly.
- */
-watch(visible, (newVal) => {
-    if(dialogRef.value !== null && videoRef.value !== null) {
-        if(newVal) {
-            dialogRef.value.showModal();
-            videoRef.value.play();
-        } else {
-            if(document.pictureInPictureElement) {
-                document.exitPictureInPicture();
-            }
-
-            dialogRef.value.close();
-            videoRef.value.pause();
-        }
-    }
-});
-
 onMounted(() => {
     // When the video is ready to play, start playing it.
     if(videoRef.value !== null) {
@@ -57,13 +36,6 @@ onMounted(() => {
             if(visible.value && videoRef.value !== null) {
                 videoRef.value.play();
             }
-        });
-    }
-
-    // When the dialog is closed, hide the video player.
-    if(dialogRef.value !== null) {
-        dialogRef.value.addEventListener('close', (e) => {
-            videoStore.$patch({ visible: false });
         });
     }
 
@@ -105,26 +77,46 @@ function togglePictureInPicture() {
     }
 }
 
+/**
+ * Called when the dialog is shown.
+ */
+function shown() {
+    videoRef.value?.play();
+}
+
+/**
+ * Called when the dialog is hidden.
+ */
+function hidden() {
+    if(document.pictureInPictureElement) {
+        document.exitPictureInPicture();
+    }
+
+    videoRef.value?.pause();
+}
+
 </script>
 
 <template>
-    <dialog ref="dialogRef" id="videoDialog">
-        <div class="dialogHeader">
-            <div>
-                <h2>{{ title }}</h2>
-                <small>{{ artist }}</small>
-            </div>
-
-            <div class="buttons">
-                <img @click="() => togglePictureInPicture()" v-if="isPipSupported" src="@/assets/picture-in-picture.svg" alt="Toggle picture-in-picture mode" height="30" width="30">
-                <img @click="videoStore.$patch({ visible: false })" src="@/assets/close.svg" alt="Close" height="30" width="30">
-            </div>
-        </div>
+    <Dialog :title="title"
+            :subtitle="artist"
+            :visible="visible"
+            :hide="() => videoStore.$patch({ visible: false })"
+            :buttons="isPipSupported ? [
+                    {
+                        icon: PiPIcon,
+                        alt: 'Toggle picture-in-picture mode',
+                        action: togglePictureInPicture
+                    }
+                ] : []"
+            :fit-content="true"
+            @shown="shown"
+            @closed="hidden">
 
         <div id="videoDialogContent">
             <video id="videoPlayer" controls :src="url" ref="videoRef" :crossorigin="isCorsCompatible ? 'anonymous' : undefined"></video>
         </div>
-    </dialog>
+    </Dialog>
 </template>
 
 <style>
@@ -140,9 +132,5 @@ function togglePictureInPicture() {
     justify-content: center;
     align-items: center;
     height: 100%;
-}
-
-#videoDialog {
-    width: fit-content;
 }
 </style>
