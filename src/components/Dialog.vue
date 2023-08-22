@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
 import { useSettingsStore } from '@/stores/SettingsStore';
+import { storeToRefs } from 'pinia';
 import { ref, watch, onMounted } from 'vue';
 
-const settingsStore = useSettingsStore();
+const { colorizeLinks } = storeToRefs(useSettingsStore());
 
 /**
  * The props for this component.
@@ -133,8 +134,8 @@ onMounted(() => {
         <div class="dialogHeader">
             <div>
                 <h2 v-if="props.titleLink !== undefined">
-                    <a :href="props.titleLink" target="_blank" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: black'">
-                        <span :lang="props.titleLang === undefined ? 'en' : props.titleLang">{{ props.title }}</span>
+                    <a :href="props.titleLink" target="_blank">
+                        <span :lang="props.titleLang === undefined ? 'en' : props.titleLang" :style="colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ props.title }}</span>
                         <img src="@/assets/open-external.svg" height="20" width="20">
                     </a>
                 </h2>
