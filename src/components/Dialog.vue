@@ -100,9 +100,13 @@ const dialogRef = ref<HTMLDialogElement | null>(null);
 // Watch for changes to the visible property.
 watch(() => props.visible, (newVal) => {
     if(newVal) {
+        document.querySelector('body')?.classList.add('noScroll');
+
         dialogRef.value?.showModal();
         emit('shown');
     } else {
+        document.querySelector('body')?.classList.remove('noScroll');
+
         dialogRef.value?.close();
         emit('closed');
     }

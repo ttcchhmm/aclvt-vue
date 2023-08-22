@@ -104,6 +104,10 @@ button, select, input::placeholder, dialog *, input, option {
   width: fit-content;
 }
 
+.noScroll {
+  overflow: hidden;
+}
+
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
   .mobile-hide {
     display: none;
