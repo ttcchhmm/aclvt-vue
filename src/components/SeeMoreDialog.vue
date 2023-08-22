@@ -267,11 +267,6 @@ function share(e: MouseEvent) {
     margin-top: 0px;
 }
 
-#animeTitle a {
-    display: flex;
-    align-items: flex-start;
-}
-
 #animeTitle a img {
     margin-left: 5px;
 }
