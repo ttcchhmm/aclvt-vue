@@ -156,8 +156,6 @@ onMounted(() => {
 
 <template>
   <header>
-    <h1 class="mobile-hide">AMQ ACLVTQ</h1>
-
     <div id="headerCenter">
       <Search :searchResultCount="animes.length" />
       <Settings />
@@ -241,6 +239,13 @@ header {
 header h1 {
   margin: 0;
   font-size: 1.75em;
+}
+
+#headerCenter {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+
+  width: calc(50% + 145px);
 }
 
 #headerCenter, #listFilterComponent {
@@ -331,11 +336,6 @@ header h1 {
   text-align: center;
 }
 
-#headerCenter {
-  display: flex;
-  align-items: center;
-}
-
 .errorMsg {
   padding-top: 20px;
 
@@ -379,6 +379,16 @@ header h1 {
   #listFilterComponent > div.listFilter:first-of-type {
     border-left: 1px solid white;
     border-radius: 5px 0px 0px 5px;
+  }
+
+  #headerCenter {
+    width: fit-content;
+    
+    flex-direction: row;
+  }
+
+  #headerCenter > img:first-of-type {
+    margin-right: 10px;
   }
 }
 

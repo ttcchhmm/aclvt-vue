@@ -224,7 +224,7 @@ async function downloadPictures() {
 
 <style>
 #settingsButton {
-    margin-left: 10px;
+    cursor: pointer;
 }
 
 #settingsContent {
