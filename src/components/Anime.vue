@@ -227,6 +227,11 @@ onMounted(() => {
     border-bottom: none;
 }
 
+.songs h3 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
 .labels {
     display: flex;
     flex-direction: column;

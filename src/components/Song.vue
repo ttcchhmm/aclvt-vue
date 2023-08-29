@@ -1,7 +1,10 @@
 <script setup lang="ts">
 
+import { storeToRefs } from 'pinia';
 import { type Music } from '../Types';
 import { useVideoStore } from '../stores/VideoStore';
+import { useSearchStore } from '@/stores/SearchStore';
+import { computed } from 'vue';
 
 /**
  * The props for this component.
@@ -15,6 +18,18 @@ const props = defineProps<{
 
 const videoStore = useVideoStore();
 
+const { search, searchType } = storeToRefs(useSearchStore()); 
+
+/**
+ * Whether or not the song should be highlighted.
+ */
+const shouldHighlight = computed(() => {
+    if(search.value.trim().length === 0) return false;
+
+    return (searchType.value === 'artist' && props.song.artist.toLowerCase().includes(search.value.toLowerCase())) ||
+           (searchType.value === 'song' && props.song.name.toLowerCase().includes(search.value.toLowerCase()));
+})
+
 function playVideo() {
     videoStore.$patch({
         visible: true,
@@ -27,7 +42,7 @@ function playVideo() {
 </script>
 
 <template>
-<div class="songDetails">
+<div :class="shouldHighlight ? 'songDetails songHighlight' : 'songDetails'">
     <div>
         <h4>{{ props.song.name }}</h4>
         <h5>{{ props.song.artist }}</h5>
@@ -51,8 +66,11 @@ h4, h5 {
 .songDetails {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     margin-bottom: 10px;
+
+    padding: 5px;
 }
 
 .songDetails img {
@@ -61,5 +79,10 @@ h4, h5 {
 
 .playButton {
     cursor: pointer;
+}
+
+.songHighlight {
+    background-color: rgba(130, 130, 0, 0.5);
+    border-radius: 5px;
 }
 </style>
