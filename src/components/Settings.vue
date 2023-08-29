@@ -82,7 +82,7 @@ async function downloadMetadata() {
 
             i++;
 
-            if(i >= 50) {
+            if(i >= 75) {
                 await Promise.all(promises);
                 i = 0;
                 promises = [];
@@ -117,7 +117,7 @@ async function downloadPictures() {
 
             i++;
 
-            if(i >= 50) {
+            if(i >= 75) {
                 await Promise.all(promises);
                 i = 0;
                 promises = [];
