@@ -13,6 +13,7 @@
   "dependencies": {
     "pinia": "^2.1.4",
     "typescript": "^5.1.6",
+    "vite-plugin-webfont-dl": "^3.7.6",
     "vue": "^3.3.4",
     "vue-select": "^4.0.0-beta.6"
   },

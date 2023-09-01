@@ -5,15 +5,18 @@ import vue from '@vitejs/plugin-vue'
 
 import { VitePWA } from 'vite-plugin-pwa'
 
+import { webfontDownload } from 'vite-plugin-webfont-dl'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    webfontDownload(),
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: [
-          '**/*.{js,css,html,svg,png}',
+          '**/*.{js,css,html,svg,png,woff2}',
         ],
         runtimeCaching: [
           {

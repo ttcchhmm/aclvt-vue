@@ -135,11 +135,11 @@ onMounted(() => {
             <div>
                 <h2 v-if="props.titleLink !== undefined">
                     <a :href="props.titleLink" target="_blank">
-                        <span :lang="props.titleLang === undefined ? 'en' : props.titleLang" :style="colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ props.title }}</span>
+                        <span :lang="props.titleLang === undefined ? 'en' : props.titleLang" :class="props.titleLang === 'ja' ? 'japanese' : ''" :style="colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ props.title }}</span>
                         <img src="@/assets/open-external.svg" height="20" width="20">
                     </a>
                 </h2>
-                <h2 v-else :lang="props.titleLang === undefined ? 'en' : props.titleLang">{{ props.title }}</h2>
+                <h2 v-else :lang="props.titleLang === undefined ? 'en' : props.titleLang" :class="props.titleLang === 'ja' ? 'japanese' : ''">{{ props.title }}</h2>
 
                 <small v-if="props.subtitle !== undefined">{{ props.subtitle }}</small>
             </div>

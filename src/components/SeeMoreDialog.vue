@@ -199,7 +199,7 @@ function share(e: MouseEvent) {
                             </tr>
                             <tr v-if="anime.titles.ja !== undefined">
                                 <td class="label">Japanese title</td>
-                                <td lang="ja">{{ anime.titles.ja }}</td>
+                                <td lang="ja" class="japanese">{{ anime.titles.ja }}</td>
                             </tr>
                             <tr v-if="anime.titles.synonyms !== undefined && anime.titles.synonyms.length !== 0">
                                 <td class="label">Alternative {{ pluralize(anime.titles.synonyms.length, 'name', 'names') }}</td>

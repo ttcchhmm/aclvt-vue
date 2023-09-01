@@ -131,7 +131,7 @@ onMounted(() => {
 <template>
     <div class="background-target" ref="backgroundRef" :style="coverRule">
         <section class="anime">
-            <h2 @click="seeMoreStore.$patch({ anime: props.anime, visible: true })" :lang="titleLanguage" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: white'">{{ title }}</h2>
+            <h2 @click="seeMoreStore.$patch({ anime: props.anime, visible: true })" :lang="titleLanguage" :class="titleLanguage === 'ja' ? 'japanese' : ''" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: white'">{{ title }}</h2>
 
             <div class="labels">
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
@@ -203,14 +203,16 @@ onMounted(() => {
 }
 
 .anime h2 {
-    margin: 0px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 5px;
+    margin-bottom: 10px;
 
     max-width: 300px;
     text-align: center;
 
     cursor: pointer;
+
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
 }
 
 .songsDisplay {

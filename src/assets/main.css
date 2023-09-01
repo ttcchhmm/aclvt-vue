@@ -108,6 +108,10 @@ button, select, input::placeholder, dialog *, input, option {
   overflow: hidden;
 }
 
+.japanese {
+  font-family: 'Noto Sans JP', sans-serif !important;
+}
+
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
   .mobile-hide {
     display: none;
