@@ -249,7 +249,7 @@ async function generateApiV2() {
             let currentState = mergedData.find(a => a.id === anime.node.id);
 
             if(currentState === undefined) {
-                const music = tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien.replace('https://nl.catbox.moe/', 'https://nl.catbox.video/'), number: m.numero } });
+                const music = tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien, number: m.numero } });
 
                 currentState = {
                     id: anime.node.id,
