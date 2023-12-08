@@ -2,6 +2,7 @@
   "name": "aclvt-vue",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "dev-host": "vite --host",
@@ -11,18 +12,18 @@
     "build-updater": "tsc ./metadata-updater/updater.mts -m nodenext -t esnext --outDir ./metadata-updater/dist --removeComments"
   },
   "dependencies": {
-    "pinia": "^2.1.4",
-    "typescript": "^5.1.6",
-    "vite-plugin-webfont-dl": "^3.7.6",
-    "vue": "^3.3.4",
+    "pinia": "^2.1.7",
+    "typescript": "^5.3.3",
+    "vite-plugin-webfont-dl": "^3.9.1",
+    "vue": "^3.3.11",
     "vue-select": "^4.0.0-beta.6"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.0",
+    "@tsconfig/node18": "^18.2.2",
     "@types/vue-select": "^3.16.2",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^4.5.2",
     "@vue/tsconfig": "^0.4.0",
-    "vite": "^4.3.9",
-    "vite-plugin-pwa": "^0.16.4"
+    "vite": "^5.0.6",
+    "vite-plugin-pwa": "^0.17.4"
   }
 }
