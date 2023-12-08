@@ -20,11 +20,6 @@ const { visible, url, title, artist } = storeToRefs(videoStore);
 const videoRef = ref<HTMLVideoElement | null>(null);
 
 /**
- * True if the video is coming from a known CORS-compatible source.
- */
-const isCorsCompatible = computed(() => url.value.startsWith('https://nl.catbox.video/'));
-
-/**
  * True if the browser supports picture-in-picture mode.
  */
 const isPipSupported = computed(() => 'exitPictureInPicture' in document);
@@ -114,7 +109,7 @@ function hidden() {
             @closed="hidden">
 
         <div id="videoDialogContent">
-            <video id="videoPlayer" controls :src="url" ref="videoRef" :crossorigin="isCorsCompatible ? 'anonymous' : undefined"></video>
+            <video id="videoPlayer" controls :src="url" ref="videoRef"></video>
         </div>
     </Dialog>
 </template>
