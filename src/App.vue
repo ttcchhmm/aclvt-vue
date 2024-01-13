@@ -7,7 +7,7 @@ import VideoPlayer from './components/VideoPlayer.vue';
 import Settings from './components/Settings.vue';
 import SeeMoreDialog from './components/SeeMoreDialog.vue';
 import ReloadPrompt from './components/ReloadPrompt.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { pluralize } from './utils/Pluralize';
 import { getFilterAnimes, sortAnimes } from './utils/SearchFilter';
 import { setupSettings, useSettingsStore } from './stores/SettingsStore';
@@ -51,6 +51,8 @@ const linksCss = computed(() => {
 
 const headerColorWithAlpha = computed(() => `${headerColor.value}80`);
 
+const endAnchorRef = ref<HTMLSpanElement | null>(null);
+
 const animeDatabase = computed(() => {
   return data.value === null ? [] : data.value?.animes.filter(a => a.wasWatched === true);
 });
@@ -90,6 +92,16 @@ const songsCount = computed(() => {
 });
 
 /**
+ * The number of additional animes shown each time the end of the page is reached.
+ */
+const virtualListStep = ref(35);
+
+/**
+ * The number of step taken within the virtual list.
+ */
+const virtualListStepCount = ref(1);
+
+/**
  * Gets the alternative titles for an anime.
  * @param anime The anime.
  * @returns The alternative titles.
@@ -123,6 +135,39 @@ function offlineAlert() {
   alert('Failed to download the database.\n\nCheck your Internet connectivity and refresh the page.\n\nYou currently are viewing an offline version of the website.');
 }
 
+/**
+ * Called each time the end of the page is reached. Increment the number of animes to show at a given time.
+ * @param entries 
+ * @param observer 
+ */
+function showMore(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      virtualListStepCount.value++;
+    }
+  });
+}
+
+/**
+ * Called each tile the window is resized. Used to calculate the number of animes to render when reaching the end of the page.
+ */
+function onResize() {
+  // Vertical screen
+  if(window.innerWidth / window.innerHeight < 1) {
+    virtualListStep.value = 3;
+  } else { // Horizontal screen
+    if(window.innerHeight <= 720) {
+      virtualListStep.value = 10
+    } else if(window.innerHeight <= 1080) {
+      virtualListStep.value = 20;
+    } else if(window.innerHeight <= 1440) {
+      virtualListStep.value = 25;
+    } else { // 4K and up
+      virtualListStep.value = 40;
+    }
+  }
+}
+
 onMounted(() => {
   setupSettings();
 
@@ -150,6 +195,31 @@ onMounted(() => {
       });
     }
   }
+
+  // Set up the resize event listener
+  window.addEventListener('resize', onResize);
+  onResize(); // Set initial value. 
+});
+
+// Setup the virtual list
+const observer = new IntersectionObserver(showMore, { root: null, rootMargin: '300px' });
+watch(endAnchorRef, () => {
+  if(endAnchorRef.value !== null) {
+    observer.observe(endAnchorRef.value);
+  }
+});
+
+// Reset the virtual list step count when the dataset changes and go to the top of the page.
+watch(animes, () => {
+  virtualListStepCount.value = 1;
+
+  setTimeout(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }, 10); // Small delay to make sure that the page is properly rendered before scrolling.
 });
 
 </script>
@@ -199,13 +269,15 @@ onMounted(() => {
     </div>
 
     <div id="animes">
-      <Anime v-for="anime in animes" :key="anime.id" :anime="anime"/>
+      <Anime v-for="anime in animes.slice(0, Math.min(animes.length, virtualListStepCount * virtualListStep))" :key="anime.id" :anime="anime"/>
     </div>
 
     <div v-if="animes.length === 0" id="noResults">
       <img src="./assets/no-results.svg" class="svgFix">
       <p>No results found.</p>
     </div>
+
+    <span ref="endAnchorRef" id="endAnchor"></span>
   </main>
 </template>
 
@@ -349,6 +421,11 @@ header h1 {
 
 .errorIcon {
   margin-top: 10px;
+}
+
+#endAnchor {
+  width: 100%;
+  height: 10px;
 }
 
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
