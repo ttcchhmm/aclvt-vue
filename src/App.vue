@@ -168,6 +168,25 @@ function onResize() {
   }
 }
 
+/**
+ * Triggered when right clicking (PC) or by a long touch (mobile) on a list checkbox.
+ * @param e The DOM mouse event.
+ * @param selectedList The selected list.
+ */
+function showOnlyOneList(e: MouseEvent, selectedList: string) {
+  e.preventDefault();
+  navigator.vibrate(10);
+
+  searchStore.$patch({
+    checkTiralex: selectedList === 'A',
+    checkCycy: selectedList === 'C',
+    checkLeo: selectedList === 'L',
+    checkGyrehio: selectedList === 'V',
+    checktchm: selectedList === 'T',
+    checkqgWolf: selectedList === 'Q',
+  });
+}
+
 onMounted(() => {
   setupSettings();
 
@@ -238,12 +257,12 @@ watch(animes, () => {
         <option value="strict">Strict</option>
       </select>
 
-      <div class="cursorHelp listFilter" title="Alexis"><label for="checkTiralex">A</label> <input v-model="checkTiralex" type="checkbox" id="checkTiralex"></div>
-      <div class="cursorHelp listFilter" title="Cyprien"><label for="checkCycy">C</label> <input v-model="checkCycy" type="checkbox" id="checkCycy"></div>
-      <div class="cursorHelp listFilter" title="Léonard"><label for="checkLeo">L</label> <input v-model="checkLeo" type="checkbox" id="checkLeo"></div>
-      <div class="cursorHelp listFilter" title="Victor"><label for="checkGyrehio">V</label> <input v-model="checkGyrehio" type="checkbox" id="checkGyrehio"></div>
-      <div class="cursorHelp listFilter" title="Tom"><label for="checktchm">T</label> <input v-model="checktchm" type="checkbox" id="checktchm"></div>
-      <div class="cursorHelp listFilter" title="Quentin"><label for="checkqgWolf">Q</label> <input v-model="checkqgWolf" type="checkbox" id="checkqgWolf"></div>
+      <div @contextmenu="(e) => showOnlyOneList(e, 'A')" class="cursorHelp listFilter" title="Alexis"><label for="checkTiralex">A</label> <input v-model="checkTiralex" type="checkbox" id="checkTiralex"></div>
+      <div @contextmenu="(e) => showOnlyOneList(e, 'C')" class="cursorHelp listFilter" title="Cyprien"><label for="checkCycy">C</label> <input v-model="checkCycy" type="checkbox" id="checkCycy"></div>
+      <div @contextmenu="(e) => showOnlyOneList(e, 'L')" class="cursorHelp listFilter" title="Léonard"><label for="checkLeo">L</label> <input v-model="checkLeo" type="checkbox" id="checkLeo"></div>
+      <div @contextmenu="(e) => showOnlyOneList(e, 'V')" class="cursorHelp listFilter" title="Victor"><label for="checkGyrehio">V</label> <input v-model="checkGyrehio" type="checkbox" id="checkGyrehio"></div>
+      <div @contextmenu="(e) => showOnlyOneList(e, 'T')" class="cursorHelp listFilter" title="Tom"><label for="checktchm">T</label> <input v-model="checktchm" type="checkbox" id="checktchm"></div>
+      <div @contextmenu="(e) => showOnlyOneList(e, 'Q')" class="cursorHelp listFilter" title="Quentin"><label for="checkqgWolf">Q</label> <input v-model="checkqgWolf" type="checkbox" id="checkqgWolf"></div>
     </div>
   </header>
 
