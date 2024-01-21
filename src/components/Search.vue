@@ -375,6 +375,8 @@ function reset() {
         cursor: pointer;
         
         text-align: center;
+
+        font-family: 'Montserrat', 'Noto Sans', sans-serif;
     }
 
     header div#desktopSearchFieldContent select:focus {

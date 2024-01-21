@@ -15,7 +15,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <table class="watchedTable">
+    <table class="watchedTable" v-once>
         <tbody>
             <tr>
                 <td class="cursorHelp" :class="props.scores.A !== undefined ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="props.scores.A !== undefined && props.scores.A !== 0">{{ props.scores['A'] }}</span></td>

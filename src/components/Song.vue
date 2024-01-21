@@ -43,12 +43,12 @@ function playVideo() {
 
 <template>
 <div :class="shouldHighlight ? 'songDetails songHighlight' : 'songDetails'">
-    <div>
+    <div v-once>
         <h4>{{ props.song.name }}</h4>
         <h5>{{ props.song.artist }}</h5>
     </div>
 
-    <img @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" :title="`Watch ${props.song.name} by ${props.song.artist}`" height="30" width="30">
+    <img v-once @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" :title="`Watch ${props.song.name} by ${props.song.artist}`" height="30" width="30">
 </div>
 </template>
 

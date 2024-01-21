@@ -282,7 +282,7 @@ watch(animes, () => {
 
   <main v-else id="loadedData">
     <div class="stats">
-      <div>Loaded {{ songsCount }} entries across {{ animeDatabase.length }} animes.</div>
+      <div v-memo="[animeDatabase]">Loaded {{ songsCount }} entries across {{ animeDatabase.length }} animes.</div>
       <div>Showing {{ `${animes.length} ${pluralize(animes.length, 'anime', 'animes')}` }}.</div>
       <img v-if="data !== null && dataLoadingFailed === true" @click="offlineAlert" src="@/assets/offline.svg" class="svgFix errorIcon" height="30" width="30">
     </div>
@@ -364,6 +364,8 @@ header h1 {
   cursor: pointer;
 
   text-align: center;
+
+  font-family: 'Montserrat', 'Noto Sans', sans-serif;
 }
 
 #listFilterComponent select:focus {

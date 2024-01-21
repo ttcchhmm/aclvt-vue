@@ -57,23 +57,12 @@ const backgroundRef = ref<HTMLDivElement | null>(null);
 /**
  * CSS code for the background.
  */
-const coverRule = computed(() => {
-    if(props.anime?.cover !== undefined && showBackground.value) {
-        return `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.anime?.cover});`;
-    } else {
-        return 'background: rgb(70, 70, 70);';
-    }
-});
+const coverRule = computed(() => `background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.anime?.cover});`);
 
 /**
  * Contains the label for the type of anime.
  */
 const typeLabel = computed(() => getType(props.anime));
-
-/**
- * The number of songs in the anime.
- */
-const songCount = computed(() => props.anime?.music?.length === undefined ? 0 : props.anime?.music?.length);
 
 /**
  * Contains the label for the state of the anime.
@@ -101,31 +90,6 @@ const title = computed(() => getTitle(props.anime));
  */
 const titleLanguage = computed(() => getLangCode());
 
-/**
- * Lazy load the background image if needed.
- * @param entries 
- * @param observer 
- */
-function lazyBackground(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
-    entries.forEach((e) => {
-        if(e.isIntersecting) {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.src = props.anime?.cover;
-
-            showBackground.value = true;
-            observer.unobserve(e.target);
-        }
-    });
-}
-
-onMounted(() => {
-    if(backgroundRef.value !== null) {
-        const observer = new IntersectionObserver(lazyBackground, { root: null, rootMargin: '20px' });
-        observer.observe(backgroundRef.value);
-    }
-});
-
 </script>
 
 <template>
@@ -133,7 +97,7 @@ onMounted(() => {
         <section class="anime">
             <h2 @click="seeMoreStore.$patch({ anime: props.anime, visible: true })" :lang="titleLanguage" :class="titleLanguage === 'ja' ? 'japanese' : ''" :style="settingsStore.colorizeLinks ? 'color: #0091FF' : 'color: white'">{{ title }}</h2>
 
-            <div class="labels">
+            <div class="labels" v-once>
                 <small v-if="typeLabel.length !== 0">{{ typeLabel }}</small>
                 <small v-if="stateLabel.length !== 0">{{ stateLabel }}</small>
 
@@ -143,7 +107,7 @@ onMounted(() => {
             <Scores :scores="props.anime.scores" />
 
             <div class="mobile-fill-width songsDisplay">
-                <div v-if="props.anime?.music?.length === 0" class="noSongs">
+                <div v-if="props.anime?.music?.length === 0" class="noSongs" v-once>
                     <img src="@/assets/error.svg" class="svgFix" height="48" width="48">
                     <p>No songs found.</p>
                 </div>
