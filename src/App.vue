@@ -5,6 +5,7 @@ import Anime from './components/Anime.vue';
 import Search from './components/Search.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import Settings from './components/Settings.vue';
+import Stats from './components/Stats.vue';
 import SeeMoreDialog from './components/SeeMoreDialog.vue';
 import ReloadPrompt from './components/ReloadPrompt.vue';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -247,7 +248,10 @@ watch(animes, () => {
   <header>
     <div id="headerCenter">
       <Search :searchResultCount="animes.length" />
-      <Settings />
+      <div id="headerIconsNotExpandable">
+        <Settings />
+        <Stats :animes="animes" />
+      </div>
     </div>
 
     <div id="listFilterComponent">
@@ -335,8 +339,16 @@ header h1 {
 #headerCenter {
   flex-direction: row-reverse;
   justify-content: space-between;
-
   width: calc(50% + 145px);
+}
+
+#headerCenter > #headerIconsNotExpandable {
+  display: flex;
+  align-items: center;
+}
+
+#headerCenter > #headerIconsNotExpandable #settingsButton {
+  margin-right: 10px;
 }
 
 #headerCenter, #listFilterComponent {
