@@ -227,7 +227,7 @@ function reset() {
                         <td>
                             <label for="genres">Genres: </label>
                         </td>
-                        <td>
+                        <td class="vueselect">
                             <VueSelect v-model="selectedGenres" :options="dataStore.data?.genres" multiple/>
                         </td>
                     </tr>
@@ -236,7 +236,7 @@ function reset() {
                         <td>
                             <label for="studios">Studios: </label>
                         </td>
-                        <td>
+                        <td class="vueselect">
                             <VueSelect v-model="selectedStudios" :options="dataStore.data?.studios" multiple/>
                         </td>
                     </tr>
@@ -352,35 +352,8 @@ function reset() {
 <style>
     :root {
         --vs-dropdown-max-height: 200px;
-    }
-
-    header div#desktopSearchFieldContent select {
-        appearance: none;
-
-        height: 34px;
-
-        color: white;
-        font-weight: bold;
-
-        background-color: transparent;
-        border: 1px solid white;
-        border-right: unset;
-        border-radius: 5px 0px 0px 5px;
-
-        padding-right: 10px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-left: 10px;
-
-        cursor: pointer;
-        
-        text-align: center;
-
-        font-family: 'Montserrat', 'Noto Sans', sans-serif;
-    }
-
-    header div#desktopSearchFieldContent select:focus {
-        outline: none;
+        --vs-search-input-color: black;
+        --vs-dropdown-color: black;
     }
 
     header div#desktopSearchFieldContent input[type=text]#search {
@@ -473,6 +446,11 @@ function reset() {
         width: 100%;
     }
 
+    .vueselect > * {
+        background-color: white;
+        border-radius: var(--vs-border-radius);
+    }
+
     @media screen and ((max-width: 1005px) or (orientation: portrait)) {
         #advancedSearchTypes {
             flex-direction: column;
@@ -482,6 +460,43 @@ function reset() {
             border-left: none;
             padding-left: 0px;
             margin-left: 0px;
+        }
+    }
+</style>
+
+<style scoped>
+    header div#desktopSearchFieldContent select {
+        appearance: none;
+
+        height: 34px;
+
+        color: white;
+        font-weight: bold;
+
+        background-color: transparent;
+        border: 1px solid white;
+        border-right: unset;
+        border-radius: 5px 0px 0px 5px;
+
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+
+        cursor: pointer;
+        
+        text-align: center;
+
+        font-family: 'Montserrat', 'Noto Sans', sans-serif;
+    }
+
+    header div#desktopSearchFieldContent select:focus {
+        outline: none;
+    }
+
+    @media screen and (prefers-color-scheme: dark) {
+        #searchField img {
+            filter: invert(1);
         }
     }
 </style>

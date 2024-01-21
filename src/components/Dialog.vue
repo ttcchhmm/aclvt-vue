@@ -98,6 +98,11 @@ const emit = defineEmits<{
  */
 const dialogRef = ref<HTMLDialogElement | null>(null);
 
+/**
+ * The font color of the link, if not colorized.
+ */
+const standardLinkColor = ref("black");
+
 // Watch for changes to the visible property.
 watch(() => props.visible, (newVal) => {
     if(newVal) {
@@ -114,6 +119,14 @@ watch(() => props.visible, (newVal) => {
 });
 
 onMounted(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    standardLinkColor.value = mediaQuery.matches ? 'white' : 'black';
+    
+    mediaQuery.addEventListener('change', (e) => {
+        standardLinkColor.value = e.matches ? 'white' : 'black';
+    });
+
     if(dialogRef.value !== null) {
         // When the dialog is closed, hide the video player.
         dialogRef.value.addEventListener('close', () => {
@@ -135,7 +148,7 @@ onMounted(() => {
             <div>
                 <h2 v-if="props.titleLink !== undefined">
                     <a :href="props.titleLink" target="_blank">
-                        <span :lang="props.titleLang === undefined ? 'en' : props.titleLang" :class="props.titleLang === 'ja' ? 'japanese' : ''" :style="colorizeLinks ? 'color: #0091FF' : 'color: black'">{{ props.title }}</span>
+                        <span :lang="props.titleLang === undefined ? 'en' : props.titleLang" :class="props.titleLang === 'ja' ? 'japanese' : ''" :style="colorizeLinks ? 'color: #0091FF' : `color: ${standardLinkColor}`">{{ props.title }}</span>
                         <img src="@/assets/open-external.svg" height="20" width="20">
                     </a>
                 </h2>
@@ -197,6 +210,11 @@ dialog::backdrop {
   padding: 0px;
 }
 
+.dialogHeader h2, .dialogHeader h2 * {
+  font-weight: 700;
+  font-family: 'Montserrat', 'Noto Sans', sans-serif;
+}
+
 .dialogHeader .buttons > * {
   margin-right: 10px;
   cursor: pointer;
@@ -209,5 +227,24 @@ dialog::backdrop {
 .buttons {
   display: flex;
   flex-direction: row;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    dialog {
+        background-color: black;
+        border-color: white;
+    }
+
+    dialog * {
+        color: white;
+    }
+
+    dialog select, dialog input, dialog button {
+        color: black;
+    }
+
+    .dialogHeader img {
+        filter: invert(1);
+    }
 }
 </style>

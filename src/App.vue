@@ -344,34 +344,6 @@ header h1 {
   align-items: center;
 }
 
-#listFilterComponent select {
-  appearance: none;
-
-  height: 34px;
-
-  color: white;
-  font-weight: bold;
-
-  background-color: transparent;
-  border: 1px solid white;
-  border-radius: 5px 0px 0px 5px;
-
-  padding-right: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 10px;
-
-  cursor: pointer;
-
-  text-align: center;
-
-  font-family: 'Montserrat', 'Noto Sans', sans-serif;
-}
-
-#listFilterComponent select:focus {
-  outline: none;
-}
-
 #listFilterComponent > div.listFilter {
   border: 1px solid white;
   border-left: unset;
@@ -490,4 +462,34 @@ header h1 {
   }
 }
 
+</style>
+
+<style scoped>
+#listFilterComponent select {
+  appearance: none;
+
+  height: 34px;
+
+  color: white;
+  font-weight: bold;
+
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 5px 0px 0px 5px;
+
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+
+  cursor: pointer;
+
+  text-align: center;
+
+  font-family: 'Montserrat', 'Noto Sans', sans-serif;
+}
+
+#listFilterComponent select:focus {
+  outline: none;
+}
 </style>
