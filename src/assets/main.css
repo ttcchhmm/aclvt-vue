@@ -31,8 +31,12 @@ header {
   z-index: 9999;
 }
 
-button, select, input::placeholder, dialog *, input, option {
+button, select, input::placeholder, dialog *, input {
   color: black;
+}
+
+option {
+  color:black !important;
 }
 
 .cursorHelp, .cursorHelp label {
