@@ -36,6 +36,7 @@ const {
   checkqgWolf,
   listFilterType,
   sortType,
+  reverseOrder,
 } = storeToRefs(searchStore);
 
 const dataStore = useDataStore();
@@ -62,9 +63,13 @@ const animeDatabase = computed(() => {
  * The animes to display.
  */
 const animes = computed(() => {
-  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(alternativeTitles.value));
+  const filteredAnimes = animeDatabase.value.filter(getFilterAnimes(alternativeTitles.value)).sort(sortAnimes(sortType.value));
 
-  return filteredAnimes.sort(sortAnimes(sortType.value));
+  if(reverseOrder.value) {
+    return filteredAnimes.reverse();
+  } else {
+    return filteredAnimes;
+  }
 });
 
 /**

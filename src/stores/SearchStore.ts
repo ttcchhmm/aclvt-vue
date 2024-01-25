@@ -90,6 +90,11 @@ export const useSearchStore = defineStore('search', {
          * The maximum number of songs.
          */
         maxSongsCount: 0,
+
+        /**
+         * Whether to reverse the display order or not.
+         */
+        reverseOrder: false,
     }),
 });
 

@@ -40,6 +40,7 @@ const {
     sortType,
     minSongsCount,
     maxSongsCount,
+    reverseOrder,
 } = storeToRefs(searchStore);
 
 /**
@@ -166,6 +167,7 @@ function reset() {
         sortType: 'mal',
         minSongsCount: 0,
         maxSongsCount: upperSongsLimit.value,
+        reverseOrder: false,
     });
 }
 
@@ -220,6 +222,15 @@ function reset() {
                                 <option value="artist">Artist</option>
                                 <option value="id" v-if="searchType === 'id'">ID</option>
                             </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="reverse">Reverse order: </label>
+                        </td>
+                        <td>
+                            <input type="checkbox" name="reverse" id="reverse" v-model="reverseOrder">
                         </td>
                     </tr>
 
