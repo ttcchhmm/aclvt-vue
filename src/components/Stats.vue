@@ -166,21 +166,53 @@ const secondsWatched = computed(() => {
         :visible="dialogOpen"
         :hide="() => dialogOpen = false"
         :buttons="[]">
-            <p><strong>Tip</strong>: The statistics displayed here are based on the current search criteria ! Feel free to go back and change a few things to see what changed.</p>
+            <p id="statsTip"><strong>Tip</strong>: The statistics displayed here are based on the current search criteria ! Feel free to go back and change a few things to see what changed.</p>
 
-            <h2>Watch time</h2>
-            <p>The total amount of time spent watching was <strong>{{ new Intl.NumberFormat().format(Math.ceil(((secondsWatched/60)/60)/24)) }} days</strong>, which is <strong>{{ new Intl.NumberFormat().format(Math.ceil((secondsWatched/60)/60)) }} hours</strong>, or <strong>{{ new Intl.NumberFormat().format(Math.ceil(secondsWatched/60)) }} minutes</strong>.</p>
+            <div class="statEntry">
+                <h3>Watch time</h3>
+                <p>The total amount of time spent watching was <strong>{{ new Intl.NumberFormat().format(Math.ceil(((secondsWatched/60)/60)/24)) }} days</strong>, which is <strong>{{ new Intl.NumberFormat().format(Math.ceil((secondsWatched/60)/60)) }} hours</strong>, or <strong>{{ new Intl.NumberFormat().format(Math.ceil(secondsWatched/60)) }} minutes</strong>.</p>
+            </div>
 
-            <h2>By genre</h2>
-            <ChartDisplay v-if="dialogOpen === true" :chart-data="genreChartData" :label="'Genres'"/>
+            <div class="statEntry">
+                <h3>By genre</h3>
+                <ChartDisplay v-if="dialogOpen === true" :chart-data="genreChartData" :label="'Genres'" :first-col-label="'Genres'" :second-col-label="'Number of animes'"/>
+            </div>
 
-            <h2>By users</h2>
-            <ChartDisplay v-if="dialogOpen === true" :chart-data="userChartData" :label="'Watched animes'"/>
+            <div class="statEntry">
+                <h3>By users</h3>
+                <ChartDisplay v-if="dialogOpen === true" :chart-data="userChartData" :label="'Watched animes'" :first-col-label="'Users'" :second-col-label="'Number of animes'"/>
+            </div>
         </Dialog>
 </template>
 
 <style>
 #statsButton {
     cursor: pointer;
+}
+
+.statEntry {
+    margin-bottom: 20px;
+}
+
+#statsTip {
+    margin-bottom: 30px;
+}
+
+@media screen and ((max-width: 1005px) or (orientation: portrait)) {
+    .statEntry {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed lightslategray;
+    }
+
+    .statEntry:last-child {
+        margin-bottom: 0px;
+        padding-bottom: 0px;
+        border-bottom: none;
+    }
+
+    .statEntry > h3 {
+        text-align: center;
+    }
 }
 </style>

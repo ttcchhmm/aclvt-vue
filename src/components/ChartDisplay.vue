@@ -4,6 +4,11 @@ import type { ChartEntry } from '@/Types';
 import { Pie } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, Tooltip, PieController } from 'chart.js';
 
+/**
+ * The number formatter.
+ */
+const formatting = new Intl.NumberFormat();
+
 // Set up ChartJS.
 ChartJS.register(ArcElement, Tooltip, PieController);
 
@@ -17,6 +22,16 @@ const props = defineProps<{
      * The label of the chart.
      */
     label: string,
+
+    /**
+     * The label of the first column.
+     */
+    firstColLabel: string,
+
+    /**
+     * The label of the second column.
+     */
+    secondColLabel: string,
 }>();
 
 </script>
@@ -27,15 +42,15 @@ const props = defineProps<{
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Genre</th>
-                        <th>Number of animes</th>
+                        <th>{{ firstColLabel }}</th>
+                        <th>{{ secondColLabel }}</th>
                         <th>Color</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="g in props.chartData">
                         <td>{{ g.name }}</td>
-                        <td>{{ g.entries }}</td>
+                        <td>{{ formatting.format(g.entries) }}</td>
                         <td :style="`background-color: ${g.color};`"></td>
                     </tr>
                 </tbody>
