@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia';
 import { type SortType, useSearchStore } from '../stores/SearchStore';
 import { useSettingsStore } from '../stores/SettingsStore';
-import { type AnimeBase, type Scores } from '../Types';
+import { type AnimeBase, type Scores, type UserEntry } from '../Types';
 
 /**
  * Get a function that filters animes based on the search query, the search type, the airing filter, the type filter and the list filter.
@@ -335,7 +335,7 @@ export function sortAnimes(sortType: SortType) {
  * @param score The score given by a user.
  * @returns True if the anime has been watched by the user, false otherwise.
  */
-function watched(score: number | undefined): boolean {
+function watched(score: UserEntry | undefined): boolean {
     return score !== undefined;
 }
 
@@ -344,13 +344,13 @@ function watched(score: number | undefined): boolean {
  * @param s A score object.
  */
 function getAverageScore(s: Scores) {
-    // Get an array of all the scores. Remove undefined and 0 values as they either mean the anime has not been watched or not scored.
-    const scores = Object.values(s).filter(s => s !== undefined).filter(s => s !== 0);
+    // Get an array of all the scores. Remove undefined values as they either mean the anime has not been watched or not scored.
+    const scores = Object.values(s).filter(s => s !== undefined).filter(s => s.rating !== undefined).map(entry => entry.rating as number);
 
     if(scores.length === 0) {
         return undefined;
     } else {
-        return (scores.reduce((a, b) => a + b) / scores.length) + Object.values(s).filter(sa => sa !== undefined).length / 1000;
+        return (scores.reduce((a, b) => a + b) / scores.length) + Object.values(s).filter(sa => sa.rating !== undefined).length / 1000;
     }
 }
 

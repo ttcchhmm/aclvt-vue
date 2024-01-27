@@ -18,12 +18,12 @@ const props = defineProps<{
     <table class="watchedTable" v-once>
         <tbody>
             <tr>
-                <td class="cursorHelp" :class="props.scores.A !== undefined ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="props.scores.A !== undefined && props.scores.A !== 0">{{ props.scores['A'] }}</span></td>
-                <td class="cursorHelp" :class="props.scores.C !== undefined ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="props.scores.C !== undefined && props.scores.C !== 0">{{ props.scores['C'] }}</span></td>
-                <td class="cursorHelp" :class="props.scores.L !== undefined ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="props.scores.L !== undefined && props.scores.L !== 0">{{ props.scores['L'] }}</span></td>
-                <td class="cursorHelp" :class="props.scores.V !== undefined ? 'watched' : 'notWatched'" title="Victor">V <span v-if="props.scores.V !== undefined && props.scores.V !== 0">{{ props.scores['V'] }}</span></td>
-                <td class="cursorHelp" :class="props.scores.T !== undefined ? 'watched' : 'notWatched'" title="Tom">T <span v-if="props.scores.T !== undefined && props.scores.T !== 0">{{ props.scores['T'] }}</span></td>
-                <td class="cursorHelp" :class="props.scores.Q !== undefined ? 'watched' : 'notWatched'" title="Quentin">Q <span v-if="props.scores.Q !== undefined && props.scores.Q !== 0">{{ props.scores['Q'] }}</span></td>
+                <td class="cursorHelp" :class="props.scores.A !== undefined ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="props.scores.A !== undefined && props.scores.A.rating !== undefined">{{ props.scores.A.rating }}</span></td>
+                <td class="cursorHelp" :class="props.scores.C !== undefined ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="props.scores.C !== undefined && props.scores.C.rating !== undefined">{{ props.scores.C.rating }}</span></td>
+                <td class="cursorHelp" :class="props.scores.L !== undefined ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="props.scores.L !== undefined && props.scores.L.rating !== undefined">{{ props.scores.L.rating }}</span></td>
+                <td class="cursorHelp" :class="props.scores.V !== undefined ? 'watched' : 'notWatched'" title="Victor">V <span v-if="props.scores.V !== undefined && props.scores.V.rating !== undefined">{{ props.scores.V.rating }}</span></td>
+                <td class="cursorHelp" :class="props.scores.T !== undefined ? 'watched' : 'notWatched'" title="Tom">T <span v-if="props.scores.T !== undefined && props.scores.T.rating !== undefined">{{ props.scores.T.rating }}</span></td>
+                <td class="cursorHelp" :class="props.scores.Q !== undefined ? 'watched' : 'notWatched'" title="Quentin">Q <span v-if="props.scores.Q !== undefined && props.scores.Q.rating !== undefined">{{ props.scores.Q.rating }}</span></td>
             </tr>
         </tbody>
     </table>

@@ -2,7 +2,7 @@ import { promises as fsPromise, createReadStream, createWriteStream, mkdirSync, 
 import { createGzip, createBrotliCompress, constants as zlibConstants } from 'zlib';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
-import { Anime, AnimeBase, MusicType, Rating } from '../src/Types.js';
+import { Anime, AnimeBase, MusicType, Rating, UserEntry } from '../src/Types.js';
 
 /**
  * The anime API v1 type.
@@ -66,14 +66,14 @@ async function fetchUserList(username: string) {
         console.log(`Fetching ${username} offset ${offset}`);
 
         // @ts-ignore - The fetch type definition is missing for Node
-        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status,alternative_titles,media_type,status,synopsis,start_date,end_date,num_episodes,start_season,studios,rating,genres,mean&offset=${offset}&nsfw=true`, {
+        const response = await fetch(`https://api.myanimelist.net/v2/users/${username}/animelist?limit=100&fields=list_status,alternative_titles,media_type,status,synopsis,start_date,end_date,num_episodes,start_season,studios,rating,genres,mean,num_times_rewatched,average_episode_duration,source&offset=${offset}&nsfw=true`, {
             headers: {
                 'X-MAL-CLIENT-ID': process.env.MAL_CLIENT_ID, // Authenticate with the MAL API
-            }
+            } as any,
         });
 
         // Append the data to the array
-        const json = await response.json();
+        const json: any = await response.json();
         data = data.concat(json.data);
 
         // Check if there is more data to fetch
@@ -270,6 +270,8 @@ async function generateApiV2() {
                     music: music === undefined ? [] : music,
                     malMeanScore: anime.node.mean,
                     oldestUpdate: anime.list_status.updated_at,
+                    source: anime.node.source,
+                    averageEpisodeDuration: anime.node.average_episode_duration,
                 };
 
                 mergedData.push(currentState);
@@ -284,30 +286,36 @@ async function generateApiV2() {
             if(anime.list_status.status === 'completed' || anime.list_status.status === 'watching') {
                 currentState.wasWatched = true;
 
+                const entry: UserEntry = {
+                    rating: anime.list_status.score == 0 ? undefined : anime.list_status.score,
+                    status: anime.list_status.status,
+                    watchedEpisodesCount: anime.list_status.num_episodes_watched,
+                };
+
                 // Add the score
                 switch(user) {
                     case tiralex:
-                        currentState.scores.A = anime.list_status.score;
+                        currentState.scores.A = entry;
                         break;
 
                     case cycy:
-                        currentState.scores.C = anime.list_status.score;
+                        currentState.scores.C = entry;
                         break;
 
                     case leo:
-                        currentState.scores.L = anime.list_status.score;
+                        currentState.scores.L = entry;
                         break;
 
                     case gyrehio:
-                        currentState.scores.V = anime.list_status.score;
+                        currentState.scores.V = entry;
                         break;
 
                     case tchm:
-                        currentState.scores.T = anime.list_status.score;
+                        currentState.scores.T = entry;
                         break;
 
                     case qgWolf:
-                        currentState.scores.Q = anime.list_status.score;
+                        currentState.scores.Q = entry;
                         break;
                 }
             }
@@ -335,6 +343,8 @@ async function generateApiV2() {
             startDate: anime.startDate,
             malMeanScore: anime.malMeanScore,
             oldestUpdate: anime.oldestUpdate,
+            source: anime.source,
+            averageEpisodeDuration: anime.averageEpisodeDuration,
         });
 
         // Generate the secondary file
@@ -373,6 +383,7 @@ async function generateApiV2() {
         }, [] as string[]).sort(),
         updatedAt: new Date().toISOString(),
     }));
+    
     promises.push(gzipFile('api/v2/index.json', 'api/v2/index.json.gz'));
     promises.push(brotliFile('api/v2/index.json', 'api/v2/index.json.br'));
 

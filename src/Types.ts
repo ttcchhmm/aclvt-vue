@@ -70,7 +70,7 @@ export type AnimeBase = {
     /**
      * The current airing status of the anime.
      */
-    status: Status;
+    status: AiringStatus;
 
     /**
      * The type of the anime.
@@ -119,6 +119,16 @@ export type AnimeBase = {
      * Should be in ISO 8601 format.
      */
     oldestUpdate: string;
+
+    /**
+     * The source of the anime.
+     */
+    source: Source;
+
+    /**
+     * The average duration of an episode.
+     */
+    averageEpisodeDuration?: number | undefined;
 }
 
 /**
@@ -187,44 +197,64 @@ export type Music = {
 }
 
 /**
+ * Represent the entry of an user about one anime.
+ */
+export type UserEntry = {
+    /**
+     * The rating given by this user. Undefined if not rated.
+     */
+    rating?: number | undefined;
+
+    /**
+     * The number of episodes watched by this user.
+     */
+    watchedEpisodesCount: number;
+
+    /**
+     * The current status for this user.
+     */
+    status: UserStatus;
+};
+
+/**
  * Defines scores given by users.
  */
 export type Scores = {
     /**
      * Tiralex's score.
      */
-    A?: number | undefined;
+    A?: UserEntry | undefined;
 
     /**
      * Cycy's score.
      */
-    C?: number | undefined;
+    C?: UserEntry | undefined;
 
     /**
      * Leo's score.
      */
-    L?: number | undefined;
+    L?: UserEntry | undefined;
 
     /**
      * Gyrehio's score.
      */
-    V?: number | undefined;
+    V?: UserEntry | undefined;
 
     /**
      * tchm's score.
      */
-    T?: number | undefined;
+    T?: UserEntry | undefined;
 
     /**
      * QGWolfWarrior's score.
      */
-    Q?: number | undefined;
+    Q?: UserEntry | undefined;
 }
 
 /**
- * Defines the status of an anime.
+ * Defines the airing status of an anime.
  */
-export type Status = 'finished_airing' | 'currently_airing' | 'not_yet_aired';
+export type AiringStatus = 'finished_airing' | 'currently_airing' | 'not_yet_aired';
 
 /**
  * Defines the type of an anime.
@@ -245,6 +275,16 @@ export type Season = 'winter' | 'spring' | 'summer' | 'fall';
  * Defines the type of a song.
  */
 export type MusicType = 'Opening' | 'Ending' | 'Insert Song';
+
+/**
+ * Defines the source of an anime.
+ */
+export type Source = 'other' | 'original' | 'manga' | '4_koma_manga' | 'web_manga' | 'digital_manga' | 'novel' | 'light_novel' | 'visual_novel' | 'game' | 'card_game' | 'book' | 'picture_book' | 'radio' | 'music';
+
+/**
+ * Defines the status of an anime for a given user.
+ */
+export type UserStatus = 'watching' | 'competed' | 'on_hold' | 'dropped' | 'plan_to_watch';
 
 /**
  * Defines an anime.
