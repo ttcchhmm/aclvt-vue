@@ -1,5 +1,5 @@
 import { useSettingsStore } from '../stores/SettingsStore';
-import { type AnimeBase, type Rating } from '../Types';
+import { type AnimeBase, type Rating, type Source } from '../Types';
 
 /**
  * Get the anime title, depending on the language setting.
@@ -81,5 +81,59 @@ export function getRating(rating: Rating) {
 
         case 5:
             return '18+ - Not Safe for Work';
+    }
+}
+
+/**
+ * Get the source in a displayable string.
+ * @param source The source of the anime.
+ * @returns The source in a displayable string.
+ */
+export function getSource(source: Source) {
+    switch(source) {
+        case 'other':
+            return 'Other';
+        
+        case 'original':
+            return 'Original';
+        
+        case 'manga':
+            return 'Manga';
+        
+        case '4_koma_manga':
+            return 'Yonkoma manga';
+        
+        case 'web_manga':
+            return 'Web manga';
+        
+        case 'digital_manga':
+            return 'Digital manga';
+        
+        case 'novel':
+            return 'Novel';
+        
+        case 'light_novel':
+            return 'Light novel';
+        
+        case 'visual_novel':
+            return 'Visual novel';
+        
+        case 'game':
+            return 'Game';
+        
+        case 'card_game':
+            return 'Card game';
+        
+        case 'book':
+            return 'Book';
+        
+        case 'picture_book':
+            return 'Picture book';
+        
+        case 'radio':
+            return 'Radio';
+        
+        case 'music':
+            return 'Music';
     }
 }

@@ -3,7 +3,7 @@
 import { storeToRefs } from 'pinia';
 import { useSeeMoreStore } from '../stores/SeeMoreStore';
 import { watch, ref, computed } from 'vue';
-import { getTitle, getLangCode, getType, getRating } from '../utils/AnimeLabels';
+import { getTitle, getLangCode, getType, getRating, getSource } from '../utils/AnimeLabels';
 import LoadingIcon from './LoadingIcon.vue';
 import Scores from './Scores.vue';
 import { useSettingsStore } from '../stores/SettingsStore';
@@ -154,6 +154,10 @@ function share(e: MouseEvent) {
                             <tr v-if="data.secondary.episodes !== undefined && data.secondary.episodes > 0 && anime.type !== 'movie'">
                                 <td class="label">Episodes</td>
                                 <td>{{ data.secondary.episodes }}</td>
+                            </tr>
+                            <tr v-if="anime.source !== undefined">
+                                <td class="label">Source</td>
+                                <td>{{ getSource(anime.source) }}</td>
                             </tr>
                             <tr v-if="anime.startDate !== undefined">
                                 <td class="label">Start date</td>
