@@ -181,7 +181,6 @@ dialog {
   padding-left: 10px;
   padding-right: 10px;
 
-  width: 80%;
   max-height: 90%;
 
   animation: fadein 0.75s;
@@ -227,6 +226,18 @@ dialog::backdrop {
 .buttons {
   display: flex;
   flex-direction: row;
+}
+
+@media screen and (orientation: portrait) {
+    dialog {
+        min-width: calc(100% - 20px);
+        width: 100%;
+        max-height: calc(100% - 30px);
+        border: unset;
+        border-top: 2px solid lightslategray;
+        border-bottom: 2px solid lightslategray;
+        border-radius: unset;
+    }
 }
 
 @media screen and (prefers-color-scheme: dark) {

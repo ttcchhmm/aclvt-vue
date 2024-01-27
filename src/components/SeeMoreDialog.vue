@@ -144,8 +144,10 @@ function share(e: MouseEvent) {
 
             <LoadingIcon v-if="data.secondary === null" :light-mode="true" />
             <div v-else class="rightPart">
-                <h3>Synopsis</h3>
-                <p v-for="paragraph in data.secondary.synopsis.split('\n')">{{ paragraph }}</p>
+                <div class="synopsis infoSection">
+                    <h3>Synopsis</h3>
+                    <p v-for="paragraph in data.secondary.synopsis.split('\n').filter(p => p.length > 0)">{{ paragraph }}</p>
+                </div>
 
                 <div id="moreInfo">
                     <div class="infoSection">
@@ -279,10 +281,14 @@ function share(e: MouseEvent) {
     text-decoration: underline;
 }
 
+.synopsis {
+    max-width: 1300px;
+}
+
 @media screen and ((max-width: 1005px) or (orientation: portrait)) {
     #coverContainer {
         margin-right: 0px;
-        margin-top: 1rem;
+        margin-top: 0px;
 
         height: fit-content;
     }
@@ -317,6 +323,20 @@ function share(e: MouseEvent) {
 
     #scoresDisplay > table {
         width: fit-content;
+    }
+
+    .infoSection {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed lightslategray;
+    }
+
+    #coverHeading {
+        width: 100%;
+    }
+
+    #coverHeading, .infoSection > h3 {
+        text-align: center;
     }
 }
 </style>
