@@ -152,7 +152,7 @@ function share(e: MouseEvent) {
                         <h3>More info</h3>
                         <table class="tableOptions">
                             <tr v-if="data.secondary.episodes !== undefined && data.secondary.episodes > 0 && anime.type !== 'movie'">
-                                <td class="label">Episodes</td>
+                                <td class="label">{{ pluralize(data.secondary.episodes, 'Episode', 'Episodes') }}</td>
                                 <td>{{ data.secondary.episodes }}</td>
                             </tr>
                             <tr v-if="anime.source !== undefined">
