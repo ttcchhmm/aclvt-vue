@@ -119,6 +119,37 @@ const userChartData = computed(() => {
 });
 
 /**
+ * An array with data about music types.
+ */
+const musicTypeChartData = computed(() => {
+    const op: ChartEntry = {
+        name: 'Openings',
+        entries: 0,
+        color: 'red',
+    };
+
+    const ed: ChartEntry = {
+        name: 'Endings',
+        entries: 0,
+        color: 'green',
+    };
+
+    const inserts: ChartEntry = {
+        name: 'Inserts',
+        entries: 0,
+        color: 'blue',
+    };
+
+    props.animes.forEach(anime => {
+        op.entries += anime.music.filter(m => m.type === 'Opening').length;
+        ed.entries += anime.music.filter(m => m.type === 'Ending').length;
+        inserts.entries += anime.music.filter(m => m.type === 'Insert Song').length;
+    });
+
+    return [op, ed, inserts].filter(entry => entry.entries > 0).sort((a, b) => b.entries - a.entries);
+});
+
+/**
  * The total amount of seconds watched.
  */
 const secondsWatched = computed(() => {
@@ -182,6 +213,12 @@ const secondsWatched = computed(() => {
                 <h3>By users</h3>
                 <ChartDisplay v-if="dialogOpen === true" :chart-data="userChartData" :label="'Watched animes'" :first-col-label="'Users'" :second-col-label="'Number of animes'"/>
             </div>
+
+            <div class="statEntry">
+                <h3>By songs</h3>
+                <ChartDisplay v-if="dialogOpen === true" :chart-data="musicTypeChartData" :label="'Songs'" :first-col-label="'Song types'" :second-col-label="'Number of songs'"/>
+            </div>
+
         </Dialog>
 </template>
 
