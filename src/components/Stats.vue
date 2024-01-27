@@ -2,34 +2,11 @@
 
 import { ref, computed } from 'vue';
 import Dialog from './Dialog.vue';
-import { Pie } from 'vue-chartjs';
 import type { AnimeBase } from '../Types';
 import { useDataStore } from '@/stores/DataStore';
 import { storeToRefs } from 'pinia';
-import { Chart as ChartJS, ArcElement, Tooltip, PieController } from 'chart.js';
-
-/**
- * Defines an entry within a pie chart.
- */
-type ChartEntry = {
-    /**
-     * The label of this entry.
-     */
-    name: string,
-
-    /**
-     * The weight associated with this entry.
-     */
-    entries: number,
-
-    /**
-     * The CSS color of this entry.
-     */
-    color: string,
-}
-
-// Set up ChartJS.
-ChartJS.register(ArcElement, Tooltip, PieController);
+import ChartDisplay from './ChartDisplay.vue';
+import { type ChartEntry } from '../Types';
 
 /**
  * The props passed to this component.
@@ -154,105 +131,15 @@ const userChartData = computed(() => {
             <p><strong>Tip</strong>: The statistics displayed here are based on the current search criteria ! Feel free to go back and change a few things to see what changed.</p>
 
             <h2>By genre</h2>
-            <div class="statsEntry" v-if="dialogOpen === true">
-                <div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Genre</th>
-                                <th>Number of animes</th>
-                                <th>Color</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="g in genreChartData">
-                                <td>{{ g.name }}</td>
-                                <td>{{ g.entries }}</td>
-                                <td :style="`background-color: ${g.color};`"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="chart">
-                    <Pie v-if="data && data.genres && props.animes" id="genreChart" :options="{
-                        responsive: true,
-                    }"
-                    :data="{
-                        labels: genreChartData.map(e => e.name),
-                        datasets: [ {
-                            label: 'Genres',
-                            data: genreChartData.map(e => e.entries),
-                            backgroundColor: genreChartData.map(e => e.color),
-                        } ]
-                    }"></Pie>
-                </div>
-            </div>
+            <ChartDisplay v-if="dialogOpen === true" :chart-data="genreChartData" :label="'Genres'"/>
 
             <h2>By users</h2>
-            <div class="statsEntry" v-if="dialogOpen === true">
-                <div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Number of animes</th>
-                                <th>Color</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="g in userChartData">
-                                <td>{{ g.name }}</td>
-                                <td>{{ g.entries }}</td>
-                                <td :style="`background-color: ${g.color};`"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="chart">
-                    <Pie v-if="data && data.genres && props.animes" id="genreChart" :options="{
-                        responsive: true,
-                    }"
-                    :data="{
-                        labels: userChartData.map(e => e.name),
-                        datasets: [ {
-                            label: 'Watched animes',
-                            data: userChartData.map(e => e.entries),
-                            backgroundColor: userChartData.map(e => e.color),
-                        } ]
-                    }"></Pie>
-                </div>
-            </div>
+            <ChartDisplay v-if="dialogOpen === true" :chart-data="userChartData" :label="'Watched animes'"/>
         </Dialog>
 </template>
 
 <style>
 #statsButton {
     cursor: pointer;
-}
-
-.statsEntry {
-    display: flex;
-    justify-content: space-around;
-}
-
-.chart {
-    width: 30%;
-}
-
-@media screen and ((max-width: 1005px) or (orientation: portrait)) {
-    .statsEntry {
-        flex-direction: column-reverse;
-    }
-
-    .chart {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .table {
-        width: 100%;
-    }
 }
 </style>

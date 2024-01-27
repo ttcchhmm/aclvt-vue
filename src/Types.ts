@@ -290,3 +290,23 @@ export type UserStatus = 'watching' | 'competed' | 'on_hold' | 'dropped' | 'plan
  * Defines an anime.
  */
 export type Anime = AnimeBase & AnimeExtended;
+
+/**
+ * Defines an entry within a pie chart.
+ */
+export type ChartEntry = {
+    /**
+     * The label of this entry.
+     */
+    name: string,
+
+    /**
+     * The weight associated with this entry.
+     */
+    entries: number,
+
+    /**
+     * The CSS color of this entry.
+     */
+    color: string,
+};
