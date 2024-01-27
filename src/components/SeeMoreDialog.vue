@@ -197,11 +197,11 @@ function share(e: MouseEvent) {
                                 <td class="label">Romaji title</td>
                                 <td>{{ anime.titles.original }}</td>
                             </tr>
-                            <tr v-if="anime.titles.en !== undefined">
+                            <tr v-if="anime.titles.en !== undefined && anime.titles.en.length !== 0">
                                 <td class="label">English title</td>
                                 <td>{{ anime.titles.en }}</td>
                             </tr>
-                            <tr v-if="anime.titles.ja !== undefined">
+                            <tr v-if="anime.titles.ja !== undefined && anime.titles.ja.length !== 0">
                                 <td class="label">Japanese title</td>
                                 <td lang="ja" class="japanese">{{ anime.titles.ja }}</td>
                             </tr>
