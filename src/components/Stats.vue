@@ -118,6 +118,44 @@ const userChartData = computed(() => {
     return [a, c, l, v, t, q].filter(entry => entry.entries > 0).sort((a, b) => b.entries - a.entries);
 });
 
+/**
+ * The total amount of seconds watched.
+ */
+const secondsWatched = computed(() => {
+    return props.animes.map(a => {
+        // The average length of an episode, in seconds. Using 24 minutes as a default if unknown.
+        const length = a.averageEpisodeDuration === undefined ? 24 * 60 : a.averageEpisodeDuration; 
+
+        let watched = 0;
+
+        if(a.scores.A) {
+            watched += a.scores.A.watchedEpisodesCount * length;
+        }
+
+        if(a.scores.C) {
+            watched += a.scores.C.watchedEpisodesCount * length;
+        }
+
+        if(a.scores.L) {
+            watched += a.scores.L.watchedEpisodesCount * length;
+        }
+
+        if(a.scores.V) {
+            watched += a.scores.V.watchedEpisodesCount * length;
+        }
+
+        if(a.scores.T) {
+            watched += a.scores.T.watchedEpisodesCount * length;
+        }
+
+        if(a.scores.Q) {
+            watched += a.scores.Q.watchedEpisodesCount * length;
+        }
+
+        return watched;
+    }).reduce((a, b) => a + b, 0) as number;
+});
+
 </script>
 
 <template v-memo="[dialogOpen]">
@@ -129,6 +167,9 @@ const userChartData = computed(() => {
         :hide="() => dialogOpen = false"
         :buttons="[]">
             <p><strong>Tip</strong>: The statistics displayed here are based on the current search criteria ! Feel free to go back and change a few things to see what changed.</p>
+
+            <h2>Watch time</h2>
+            <p>The total amount of time spent watching was <strong>{{ new Intl.NumberFormat().format(Math.ceil(((secondsWatched/60)/60)/24)) }} days</strong>, which is <strong>{{ new Intl.NumberFormat().format(Math.ceil((secondsWatched/60)/60)) }} hours</strong>, or <strong>{{ new Intl.NumberFormat().format(Math.ceil(secondsWatched/60)) }} minutes</strong>.</p>
 
             <h2>By genre</h2>
             <ChartDisplay v-if="dialogOpen === true" :chart-data="genreChartData" :label="'Genres'"/>
