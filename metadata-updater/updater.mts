@@ -264,7 +264,7 @@ async function generateApiV2() {
                     endDate: anime.node.end_date,
                     startSeason: anime.node.start_season,
                     studios: anime.node.studios.map((s: { name: string }) => s.name),
-                    genres: anime.node.genres.map((g: { name: string }) => g.name),
+                    genres: anime.node.genres != undefined ? anime.node.genres.map((g: { name: string }) => g.name) : [],
                     episodes: anime.node.num_episodes,
                     rating: ratingToValue(anime.node.rating),
                     music: music === undefined ? [] : music,
