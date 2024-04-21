@@ -4,7 +4,6 @@ After=network.target
 
 [Service]
 Type=oneshot
-Restart=on-failure
 User=CHANGE_ME # TODO: Change this to a non-root user
 Group=CHANGE_ME # TODO: Change this to a non-root group
 Environment="MAL_CLIENT_ID=CHANGE_ME" # TODO: Change this to your MyAnimeList client ID
