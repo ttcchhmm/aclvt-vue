@@ -345,12 +345,13 @@ function watched(score: UserEntry | undefined): boolean {
  */
 function getAverageScore(s: Scores) {
     // Get an array of all the scores. Remove undefined values as they either mean the anime has not been watched or not scored.
-    const scores = Object.values(s).filter(s => s !== undefined).filter(s => s.rating !== undefined).map(entry => entry.rating as number);
+    const scoresObj = Object.values(s).filter(s2 => s2 != undefined || s2 != null).filter(s2 => s2.rating != undefined || s2.rating != null);
+    const scores = scoresObj.map(entry => entry.rating as number);
 
     if(scores.length === 0) {
         return undefined;
     } else {
-        return (scores.reduce((a, b) => a + b) / scores.length) + Object.values(s).filter(sa => sa.rating !== undefined).length / 1000;
+        return (scores.reduce((a, b) => a + b) / scores.length) + scoresObj.length / 1000;
     }
 }
 
