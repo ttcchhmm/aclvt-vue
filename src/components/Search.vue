@@ -12,6 +12,7 @@ import 'vue-select/dist/vue-select.css';
 import Dialog from './Dialog.vue';
 
 import ResetIcon from '@/assets/reset.svg';
+import type { AiringStatus } from '@/Types';
 
 /**
  * The props for this component.
@@ -32,7 +33,6 @@ const { data } = storeToRefs(dataStore);
 const {
     search,
     searchType,
-    searchAiringFilter,
     listFilterType,
     maxAgeRating,
     selectedGenres,
@@ -53,6 +53,15 @@ const searchTypeFilter = ref({
     ona: true,
     special: true,
     music: true,
+});
+
+/**
+ * The airing state filter.
+ */
+const airingState = ref({
+    completed: true,
+    airing: true,
+    notYetAired: false,
 });
 
 /**
@@ -77,6 +86,7 @@ onMounted(() => {
     }
 });
 
+// Transform the inner type state to an array for filtering.
 const searchTypeFilterArray = computed(() => {
     const searchTypeFilterArray = [];
 
@@ -107,12 +117,39 @@ const searchTypeFilterArray = computed(() => {
     return searchTypeFilterArray;
 });
 
+// Transform the inner airing state to an array for filtering.
+const airingStateArray = computed(() => {
+    const airingStateArray = [];
+
+    if(airingState.value.airing) {
+        airingStateArray.push('currently_airing');
+    }
+
+    if(airingState.value.completed) {
+        airingStateArray.push('finished_airing');
+    }
+
+    if(airingState.value.notYetAired) {
+        airingStateArray.push('not_yet_aired');
+    }
+
+    return airingStateArray;
+});
+
+// -- Update the stores --
 watch(searchTypeFilterArray, () => {
     searchStore.$patch({
         searchTypeFilter: searchTypeFilterArray.value,
     });
 });
 
+watch(airingStateArray, () => {
+    searchStore.$patch({
+        searchAiringFilter: airingStateArray.value as AiringStatus[],
+    });
+});
+
+// Set the max song count if it changes
 watch(upperSongsLimit, () => {
     searchStore.$patch({
         maxSongsCount: upperSongsLimit.value,
@@ -128,6 +165,7 @@ watch(maxSongsCount, () => {
     }
 });
 
+// Same for the min count
 watch(minSongsCount, () => {
     if(minSongsCount.value > maxSongsCount.value) {
         maxSongsCount.value = minSongsCount.value | 0;
@@ -159,7 +197,7 @@ function reset() {
     searchStore.$patch({
         search: '',
         searchType: 'anime',
-        searchAiringFilter: 'any',
+        searchAiringFilter: ['currently_airing', 'finished_airing'],
         listFilterType: 'union',
         maxAgeRating: 4,
         selectedGenres: [],
@@ -217,9 +255,9 @@ function reset() {
                         </td>
                         <td>
                             <select v-model="searchType" id="searchFilterType">
-                                <option value="anime">Anime</option>
-                                <option value="song">Song</option>
-                                <option value="artist">Artist</option>
+                                <option value="anime">Anime name</option>
+                                <option value="song">Song name</option>
+                                <option value="artist">Artist name</option>
                                 <option value="id" v-if="searchType === 'id'">ID</option>
                             </select>
                         </td>
@@ -254,14 +292,12 @@ function reset() {
 
                     <tr>
                         <td>
-                            <label for="searchAiringFilter">Airing state: </label>
+                            <span>Airing state: </span>
                         </td>
-                        <td>
-                            <select v-model="searchAiringFilter" id="searchAiringFilter">
-                                <option value="any">Any</option>
-                                <option value="finished">Finished</option>
-                                <option value="airing">Currently Airing</option>
-                            </select>
+                        <td id="advancedSearchTypes">
+                            <div><input v-model="airingState.airing" type="checkbox" id="airing"> <label for="airing">Airing</label></div>
+                            <div><input v-model="airingState.completed" type="checkbox" id="completed"> <label for="completed">Finished</label></div>
+                            <div><input v-model="airingState.notYetAired" type="checkbox" id="notYetAired"> <label for="notYetAired">Not yet aired</label></div>
                         </td>
                     </tr>
 

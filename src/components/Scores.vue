@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { type Scores } from '../Types';
+import { type Scores, type UserEntry } from '../Types';
 
 /**
  * The props for this component.
@@ -12,26 +12,68 @@ const props = defineProps<{
     scores: Scores;
 }>();
 
+function getStatusClass(entry: UserEntry | undefined) {
+    if(entry == undefined) {
+        return 'notWatched';
+    } else {
+        switch(entry.status) {
+            case 'watching':
+                return 'watching';
+
+            case 'completed':
+                return 'watched';
+
+            case 'on_hold':
+                return 'onHold';
+
+            case 'dropped':
+                return 'dropped';
+
+            case 'plan_to_watch':
+                return 'planToWatch';
+
+            default:
+                return 'notWatched';
+        }
+    }
+}
+
 </script>
 
 <template>
     <table class="watchedTable" v-once>
         <tbody>
             <tr>
-                <td class="cursorHelp" :class="props.scores.A !== undefined ? 'watched' : 'notWatched'" title="Alexis">A <span v-if="props.scores.A !== undefined && props.scores.A.rating !== undefined">{{ props.scores.A.rating }}</span></td>
-                <td class="cursorHelp" :class="props.scores.C !== undefined ? 'watched' : 'notWatched'" title="Cyprien">C <span v-if="props.scores.C !== undefined && props.scores.C.rating !== undefined">{{ props.scores.C.rating }}</span></td>
-                <td class="cursorHelp" :class="props.scores.L !== undefined ? 'watched' : 'notWatched'" title="Léonard">L <span v-if="props.scores.L !== undefined && props.scores.L.rating !== undefined">{{ props.scores.L.rating }}</span></td>
-                <td class="cursorHelp" :class="props.scores.V !== undefined ? 'watched' : 'notWatched'" title="Victor">V <span v-if="props.scores.V !== undefined && props.scores.V.rating !== undefined">{{ props.scores.V.rating }}</span></td>
-                <td class="cursorHelp" :class="props.scores.T !== undefined ? 'watched' : 'notWatched'" title="Tom">T <span v-if="props.scores.T !== undefined && props.scores.T.rating !== undefined">{{ props.scores.T.rating }}</span></td>
-                <td class="cursorHelp" :class="props.scores.Q !== undefined ? 'watched' : 'notWatched'" title="Quentin">Q <span v-if="props.scores.Q !== undefined && props.scores.Q.rating !== undefined">{{ props.scores.Q.rating }}</span></td>
+                <td class="cursorHelp" :class="getStatusClass(props.scores.A)" title="Alexis">A <span v-if="props.scores.A !== undefined && props.scores.A.rating !== undefined">{{ props.scores.A.rating }}</span></td>
+                <td class="cursorHelp" :class="getStatusClass(props.scores.C)" title="Cyprien">C <span v-if="props.scores.C !== undefined && props.scores.C.rating !== undefined">{{ props.scores.C.rating }}</span></td>
+                <td class="cursorHelp" :class="getStatusClass(props.scores.L)" title="Léonard">L <span v-if="props.scores.L !== undefined && props.scores.L.rating !== undefined">{{ props.scores.L.rating }}</span></td>
+                <td class="cursorHelp" :class="getStatusClass(props.scores.V)" title="Victor">V <span v-if="props.scores.V !== undefined && props.scores.V.rating !== undefined">{{ props.scores.V.rating }}</span></td>
+                <td class="cursorHelp" :class="getStatusClass(props.scores.T)" title="Tom">T <span v-if="props.scores.T !== undefined && props.scores.T.rating !== undefined">{{ props.scores.T.rating }}</span></td>
+                <td class="cursorHelp" :class="getStatusClass(props.scores.Q)" title="Quentin">Q <span v-if="props.scores.Q !== undefined && props.scores.Q.rating !== undefined">{{ props.scores.Q.rating }}</span></td>
             </tr>
         </tbody>
     </table>
 </template>
 
 <style>
+.planToWatch {
+    background-color: lightskyblue;
+}
+
+.onHold {
+    background-color: lightsalmon;
+}
+
 .watched {
     background-color: lightgreen;
+}
+
+.watching {
+    background-color: greenyellow;
+}
+
+.dropped {
+    background-color: violet;
 }
 
 .notWatched {

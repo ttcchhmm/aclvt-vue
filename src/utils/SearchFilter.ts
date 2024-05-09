@@ -88,22 +88,8 @@ export function getFilterAnimes(alternativeTitles: Map<number, string[]>) {
         }
 
         // If an airing filter is present, filter based on it.
-        if(searchAiringFilter.value !== 'any') {
-            switch(searchAiringFilter.value) {
-                case 'airing':
-                    if(a.status !== 'currently_airing') {
-                        return false;
-                    }
-
-                    break;
-                
-                case 'finished':
-                    if(a.status !== 'finished_airing') {
-                        return false;
-                    }
-
-                    break;
-            }
+        if(!searchAiringFilter.value.reduce((prev, curr) => (prev || a.status === curr), false)) {
+            return false;
         }
 
         // If a type filter is present, filter based on it.
