@@ -227,7 +227,7 @@ onMounted(() => {
 });
 
 // Setup the virtual list
-const observer = new IntersectionObserver(showMore, { root: null, rootMargin: '300px' });
+const observer = new IntersectionObserver(showMore, { root: null, rootMargin: '1000px' });
 watch(endAnchorRef, () => {
   if(endAnchorRef.value !== null) {
     observer.observe(endAnchorRef.value);
