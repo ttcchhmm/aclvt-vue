@@ -160,16 +160,16 @@ function showMore(entries: IntersectionObserverEntry[], observer: IntersectionOb
 function onResize() {
   // Vertical screen
   if(window.innerWidth / window.innerHeight < 1) {
-    virtualListStep.value = 3;
+    virtualListStep.value = 5;
   } else { // Horizontal screen
     if(window.innerHeight <= 720) {
-      virtualListStep.value = 10
+      virtualListStep.value = 20
     } else if(window.innerHeight <= 1080) {
-      virtualListStep.value = 20;
+      virtualListStep.value = 30;
     } else if(window.innerHeight <= 1440) {
-      virtualListStep.value = 25;
+      virtualListStep.value = 35;
     } else { // 4K and up
-      virtualListStep.value = 40;
+      virtualListStep.value = 50;
     }
   }
 }
