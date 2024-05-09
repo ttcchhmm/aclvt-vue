@@ -283,41 +283,39 @@ async function generateApiV2() {
             }
 
             // Check if the anime was watched
-            if(anime.list_status.status === 'completed' || anime.list_status.status === 'watching') {
-                currentState.wasWatched = true;
+            currentState.wasWatched = true;
 
-                const entry: UserEntry = {
-                    rating: anime.list_status.score == 0 ? undefined : anime.list_status.score,
-                    status: anime.list_status.status,
-                    watchedEpisodesCount: anime.list_status.num_episodes_watched,
-                };
+            const entry: UserEntry = {
+                rating: anime.list_status.score == 0 ? undefined : anime.list_status.score,
+                status: anime.list_status.status,
+                watchedEpisodesCount: anime.list_status.num_episodes_watched,
+            };
 
-                // Add the score
-                switch(user) {
-                    case tiralex:
-                        currentState.scores.A = entry;
-                        break;
+            // Add the score
+            switch(user) {
+                case tiralex:
+                    currentState.scores.A = entry;
+                    break;
 
-                    case cycy:
-                        currentState.scores.C = entry;
-                        break;
+                case cycy:
+                    currentState.scores.C = entry;
+                    break;
 
-                    case leo:
-                        currentState.scores.L = entry;
-                        break;
+                case leo:
+                    currentState.scores.L = entry;
+                    break;
 
-                    case gyrehio:
-                        currentState.scores.V = entry;
-                        break;
+                case gyrehio:
+                    currentState.scores.V = entry;
+                    break;
 
-                    case tchm:
-                        currentState.scores.T = entry;
-                        break;
+                case tchm:
+                    currentState.scores.T = entry;
+                    break;
 
-                    case qgWolf:
-                        currentState.scores.Q = entry;
-                        break;
-                }
+                case qgWolf:
+                    currentState.scores.Q = entry;
+                    break;
             }
         }
     }
