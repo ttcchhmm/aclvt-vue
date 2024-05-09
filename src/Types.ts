@@ -284,7 +284,7 @@ export type Source = 'other' | 'original' | 'manga' | '4_koma_manga' | 'web_mang
 /**
  * Defines the status of an anime for a given user.
  */
-export type UserStatus = 'watching' | 'competed' | 'on_hold' | 'dropped' | 'plan_to_watch';
+export type UserStatus = 'watching' | 'completed' | 'on_hold' | 'dropped' | 'plan_to_watch';
 
 /**
  * Defines an anime.
