@@ -128,6 +128,8 @@ function displayMoreDetails(name: string, entry: UserEntry | undefined) {
 .watchedTable tbody tr td {
     margin-top: 5px;
     margin-bottom: 5px;
+    min-width: 23px;
+    text-align: center;
 }
 
 .watchedTable * {
