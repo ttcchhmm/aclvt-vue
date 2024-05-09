@@ -12,7 +12,7 @@ import 'vue-select/dist/vue-select.css';
 import Dialog from './Dialog.vue';
 
 import ResetIcon from '@/assets/reset.svg';
-import type { AiringStatus } from '@/Types';
+import type { AiringStatus, UserStatus } from '@/Types';
 
 /**
  * The props for this component.
@@ -62,6 +62,17 @@ const airingState = ref({
     completed: true,
     airing: true,
     notYetAired: false,
+});
+
+/**
+ * The status filter.
+ */
+const userStatusState = ref({
+    completed: true,
+    watching: true,
+    dropped: false,
+    onHold: false,
+    planToWatch: false,
 });
 
 /**
@@ -136,6 +147,33 @@ const airingStateArray = computed(() => {
     return airingStateArray;
 });
 
+// Transform the inner user status state to an array for filtering.
+const userStatusArray = computed(() => {
+    const userStatusArray = [];
+
+    if(userStatusState.value.completed) {
+        userStatusArray.push('completed');
+    }
+
+    if(userStatusState.value.dropped) {
+        userStatusArray.push('dropped');
+    }
+
+    if(userStatusState.value.onHold) {
+        userStatusArray.push('on_hold');
+    }
+
+    if(userStatusState.value.planToWatch) {
+        userStatusArray.push('plan_to_watch');
+    }
+
+    if(userStatusState.value.watching) {
+        userStatusArray.push('watching');
+    }
+
+    return userStatusArray;
+});
+
 // -- Update the stores --
 watch(searchTypeFilterArray, () => {
     searchStore.$patch({
@@ -146,6 +184,12 @@ watch(searchTypeFilterArray, () => {
 watch(airingStateArray, () => {
     searchStore.$patch({
         searchAiringFilter: airingStateArray.value as AiringStatus[],
+    });
+});
+
+watch(userStatusArray, () => {
+    searchStore.$patch({
+        userStatusFilter: userStatusArray.value as UserStatus[],
     });
 });
 
@@ -174,6 +218,13 @@ watch(minSongsCount, () => {
     }
 });
 
+// Disallow choosing "not yet aired" if "plan to watch" is not selected.
+watch(userStatusState, () => {
+    if(!userStatusState.value.planToWatch) {
+        airingState.value.notYetAired = false;
+    }
+}, { deep: true });
+
 /**
  * Clears the search field.
  */
@@ -194,10 +245,25 @@ function reset() {
         music: true,
     };
 
+    airingState.value = {
+        airing: true,
+        completed: true,
+        notYetAired: false,
+    };
+
+    userStatusState.value = {
+        completed: true,
+        watching: true,
+        dropped: false,
+        onHold: false,
+        planToWatch: false,
+    };
+
     searchStore.$patch({
         search: '',
         searchType: 'anime',
         searchAiringFilter: ['currently_airing', 'finished_airing'],
+        userStatusFilter: ['completed', 'watching'],
         listFilterType: 'union',
         maxAgeRating: 4,
         selectedGenres: [],
@@ -296,8 +362,8 @@ function reset() {
                         </td>
                         <td id="advancedSearchTypes">
                             <div><input v-model="airingState.airing" type="checkbox" id="airing"> <label for="airing">Airing</label></div>
-                            <div><input v-model="airingState.completed" type="checkbox" id="completed"> <label for="completed">Finished</label></div>
-                            <div><input v-model="airingState.notYetAired" type="checkbox" id="notYetAired"> <label for="notYetAired">Not yet aired</label></div>
+                            <div><input v-model="airingState.completed" type="checkbox" id="finished"> <label for="finished">Finished</label></div>
+                            <div><input v-model="airingState.notYetAired" type="checkbox" id="notYetAired" :disabled="!userStatusState.planToWatch"> <label for="notYetAired">Not yet aired</label></div>
                         </td>
                     </tr>
 
@@ -311,6 +377,19 @@ function reset() {
                                 <option value="intersect">Intersect</option>
                                 <option value="strict">Strict</option>
                             </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span>State on lists: </span>
+                        </td>
+                        <td id="advancedSearchTypes">
+                            <div><input v-model="userStatusState.completed" type="checkbox" id="completed"> <label for="completed">Completed</label></div>
+                            <div><input v-model="userStatusState.watching" type="checkbox" id="watching"> <label for="watching">Watching</label></div>
+                            <div><input v-model="userStatusState.onHold" type="checkbox" id="onHold"> <label for="onHold">On hold</label></div>
+                            <div><input v-model="userStatusState.dropped" type="checkbox" id="dropped"> <label for="dropped">Dropped</label></div>
+                            <div><input v-model="userStatusState.planToWatch" type="checkbox" id="planToWatch"> <label for="planToWatch">Plan to watch</label></div>
                         </td>
                     </tr>
 

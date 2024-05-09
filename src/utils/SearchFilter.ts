@@ -15,6 +15,7 @@ export function getFilterAnimes(alternativeTitles: Map<number, string[]>) {
         searchType,
         searchAiringFilter,
         searchTypeFilter,
+        userStatusFilter,
         listFilterType,
         checkTiralex,
         checkCycy,
@@ -89,6 +90,11 @@ export function getFilterAnimes(alternativeTitles: Map<number, string[]>) {
 
         // If an airing filter is present, filter based on it.
         if(!searchAiringFilter.value.reduce((prev, curr) => (prev || a.status === curr), false)) {
+            return false;
+        }
+
+        // If a user status filter is present, filter based on it.
+        if(!userStatusFilter.value.reduce((prev, curr) => (prev || Object.values(a.scores).filter(s => s != undefined).map(s => s.status).includes(curr)), false)) {
             return false;
         }
 

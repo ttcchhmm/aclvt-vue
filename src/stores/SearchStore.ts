@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { type AiringStatus, type Rating } from '../Types';
+import { type AiringStatus, type Rating, type UserStatus } from '../Types';
 
 /**
  * Search store.
@@ -55,6 +55,11 @@ export const useSearchStore = defineStore('search', {
          * The search airing filter.
          */
         searchAiringFilter: ['currently_airing', 'finished_airing'] as AiringStatus[],
+
+        /**
+         * The user status filter.
+         */
+        userStatusFilter: ['completed', 'watching'] as UserStatus[],
 
         /**
          * The search type filter.
