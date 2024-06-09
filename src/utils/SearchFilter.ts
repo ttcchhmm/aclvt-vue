@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia';
 import { type SortType, useSearchStore } from '../stores/SearchStore';
 import { useSettingsStore } from '../stores/SettingsStore';
-import { type AnimeBase, type Scores, type UserEntry } from '../Types';
+import { type AnimeBase, type Scores, type UserEntry, type UserStatus } from '../Types';
 
 /**
  * Get a function that filters animes based on the search query, the search type, the airing filter, the type filter and the list filter.
@@ -94,8 +94,36 @@ export function getFilterAnimes(alternativeTitles: Map<number, string[]>) {
         }
 
         // If a user status filter is present, filter based on it.
-        if(!userStatusFilter.value.reduce((prev, curr) => (prev || Object.values(a.scores).filter(s => s != undefined).map(s => s.status).includes(curr)), false)) {
-            return false;
+        if(userStatusFilter.value.length !== 0) {
+            const status: UserStatus[] = [];
+
+            if(checkTiralex.value && a.scores.A?.status) {
+                status.push(a.scores.A.status);
+            }
+
+            if(checkCycy.value && a.scores.C?.status) {
+                status.push(a.scores.C.status);
+            }
+
+            if(checkLeo.value && a.scores.L?.status) {
+                status.push(a.scores.L.status);
+            }
+
+            if(checkGyrehio.value && a.scores.V?.status) {
+                status.push(a.scores.V.status);
+            }
+
+            if(checktchm.value && a.scores.T?.status) {
+                status.push(a.scores.T.status);
+            }
+
+            if(checkqgWolf.value && a.scores.Q?.status) {
+                status.push(a.scores.Q.status);
+            }
+
+            if(!userStatusFilter.value.reduce((prev, curr) => (prev || status.includes(curr)), false)) {
+                return false;
+            }
         }
 
         // If a type filter is present, filter based on it.
