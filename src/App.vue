@@ -149,7 +149,11 @@ function offlineAlert() {
 function showMore(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
   entries.forEach(e => {
     if(e.isIntersecting) {
-      virtualListStepCount.value += 2;
+      if(window.innerWidth / window.innerHeight < 1) {
+        virtualListStepCount.value += 6;
+      } else {
+        virtualListStepCount.value += 2;
+      }
     }
   });
 }
@@ -158,7 +162,7 @@ function showMore(entries: IntersectionObserverEntry[], observer: IntersectionOb
  * Called each tile the window is resized. Used to calculate the number of animes to render when reaching the end of the page.
  */
 function onResize() {
-  // // Vertical screen
+  // Vertical screen
   if(window.innerWidth / window.innerHeight < 1) {
     virtualListStep.value = 1;
   } else {
