@@ -6,6 +6,7 @@ import { ref, onMounted, computed } from 'vue';
 import Dialog from './Dialog.vue';
 
 import PiPIcon from '@/assets/picture-in-picture.svg';
+import SearchWebIcon from '@/assets/search-web.svg';
 
 /**
  * The video player state.
@@ -72,6 +73,11 @@ function togglePictureInPicture() {
     }
 }
 
+function searchOnYouTube() {
+    const query = `${artist.value.replaceAll(' ', '+')}+${title.value.replaceAll(' ', '+')}`;
+    window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank');
+}
+
 /**
  * Called when the dialog is shown.
  */
@@ -102,8 +108,18 @@ function hidden() {
                         icon: PiPIcon,
                         alt: 'Toggle picture-in-picture mode',
                         action: togglePictureInPicture
+                    }, {
+                        icon: SearchWebIcon,
+                        alt: 'Search on YouTube',
+                        action: searchOnYouTube,
                     }
-                ] : []"
+                ] : [
+                    {
+                        icon: SearchWebIcon,
+                        alt: 'Search on YouTube',
+                        action: searchOnYouTube,
+                    }
+                ]"
             :fit-content="true"
             @shown="shown"
             @closed="hidden">
