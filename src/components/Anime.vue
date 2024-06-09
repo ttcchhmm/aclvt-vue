@@ -152,8 +152,7 @@ const titleLanguage = computed(() => getLangCode());
 
     padding: 5px;
 
-    width: fit-content;
-    min-width: 250px;
+    width: 300px;
 
     border-radius: 5px;
 

@@ -105,7 +105,7 @@ const virtualListStep = ref(35);
 /**
  * The number of step taken within the virtual list.
  */
-const virtualListStepCount = ref(1);
+const virtualListStepCount = ref(3);
 
 /**
  * Gets the alternative titles for an anime.
@@ -149,7 +149,7 @@ function offlineAlert() {
 function showMore(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
   entries.forEach(e => {
     if(e.isIntersecting) {
-      virtualListStepCount.value++;
+      virtualListStepCount.value += 2;
     }
   });
 }
@@ -158,19 +158,11 @@ function showMore(entries: IntersectionObserverEntry[], observer: IntersectionOb
  * Called each tile the window is resized. Used to calculate the number of animes to render when reaching the end of the page.
  */
 function onResize() {
-  // Vertical screen
+  // // Vertical screen
   if(window.innerWidth / window.innerHeight < 1) {
-    virtualListStep.value = 3;
-  } else { // Horizontal screen
-    if(window.innerHeight <= 720) {
-      virtualListStep.value = 10
-    } else if(window.innerHeight <= 1080) {
-      virtualListStep.value = 20;
-    } else if(window.innerHeight <= 1440) {
-      virtualListStep.value = 25;
-    } else { // 4K and up
-      virtualListStep.value = 40;
-    }
+    virtualListStep.value = 1;
+  } else {
+    virtualListStep.value = Math.floor(window.innerWidth / 338);
   }
 }
 
@@ -227,7 +219,7 @@ onMounted(() => {
 });
 
 // Setup the virtual list
-const observer = new IntersectionObserver(showMore, { root: null, rootMargin: '1000px' });
+const observer = new IntersectionObserver(showMore, { root: null, rootMargin: '100px' });
 watch(endAnchorRef, () => {
   if(endAnchorRef.value !== null) {
     observer.observe(endAnchorRef.value);
@@ -296,9 +288,13 @@ watch(animes, () => {
       <img v-if="data !== null && dataLoadingFailed === true" @click="offlineAlert" src="@/assets/offline.svg" class="svgFix errorIcon" height="30" width="30">
     </div>
 
-    <div id="animes">
-      <Anime v-for="anime in animes.slice(0, Math.min(animes.length, virtualListStepCount * virtualListStep))" :key="anime.id" :anime="anime"/>
-    </div>
+    <table id="animes">
+      <tr v-for="index in virtualListStepCount">
+          <td v-for="anime in animes.slice((index - 1) * virtualListStep, index * virtualListStep)">
+            <Anime :key="anime.id" :anime="anime" />
+          </td>
+      </tr>
+    </table>
 
     <div v-if="animes.length === 0" id="noResults">
       <img src="./assets/no-results.svg" class="svgFix">
@@ -391,10 +387,19 @@ header h1 {
   justify-content: center;
 }
 
-#animes {
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row wrap;
+#animes > tr > td {
+  vertical-align: top;
+  text-align: center;
+
+  padding: 15px;
+  width: 323px;
+
+  border: unset;
+}
+
+#animes > tr > td > div {
+  display: inline-block;
+  text-align: start;
 }
 
 #loadedData, #noResults {
@@ -456,6 +461,11 @@ header h1 {
     align-items: center;
 
     width: 100%;
+  }
+
+  #animes > tr > td {
+    width: 100%;
+    padding: 0px;
   }
 
   #listFilterComponent > div.listFilter {
