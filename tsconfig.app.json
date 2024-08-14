@@ -10,6 +10,11 @@
         },
         "types": [
             "vite-plugin-pwa/vue"
+        ],
+        "lib": [
+            "ES2022",
+            "DOM",
+            "DOM.Iterable"
         ]
     }
 }
