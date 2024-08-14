@@ -1,12 +1,13 @@
 <script setup lang="ts">
 
-import { ref, computed } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
 import Dialog from './Dialog.vue';
 import type { AnimeBase } from '../Types';
 import { useDataStore } from '@/stores/DataStore';
 import { storeToRefs } from 'pinia';
-import ChartDisplay from './ChartDisplay.vue';
 import { type ChartEntry } from '../Types';
+
+const ChartDisplay = defineAsyncComponent(() => import('./ChartDisplay.vue'));
 
 /**
  * The props passed to this component.

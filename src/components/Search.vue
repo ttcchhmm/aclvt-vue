@@ -1,18 +1,19 @@
 <script setup lang="ts">
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, defineAsyncComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { pluralize } from '../utils/Pluralize';
 import { useSearchStore } from '../stores/SearchStore';
 import { getRating } from '../utils/AnimeLabels';
 import { useDataStore } from '../stores/DataStore';
 
-import VueSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import Dialog from './Dialog.vue';
 
 import ResetIcon from '@/assets/reset.svg';
 import type { AiringStatus, UserStatus } from '@/Types';
+
+const VueSelect = defineAsyncComponent(() => import('vue-select'));
 
 /**
  * The props for this component.
@@ -343,7 +344,7 @@ function reset() {
                             <label for="genres">Genres: </label>
                         </td>
                         <td class="vueselect">
-                            <VueSelect v-model="selectedGenres" :options="dataStore.data?.genres" multiple/>
+                            <VueSelect v-if="dialogOpen" v-model="selectedGenres" :options="dataStore.data?.genres" multiple/>
                         </td>
                     </tr>
 
@@ -352,7 +353,7 @@ function reset() {
                             <label for="studios">Studios: </label>
                         </td>
                         <td class="vueselect">
-                            <VueSelect v-model="selectedStudios" :options="dataStore.data?.studios" multiple/>
+                            <VueSelect v-if="dialogOpen" v-model="selectedStudios" :options="dataStore.data?.studios" multiple/>
                         </td>
                     </tr>
 
