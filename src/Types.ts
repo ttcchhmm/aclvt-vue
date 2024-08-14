@@ -279,7 +279,7 @@ export type MusicType = 'Opening' | 'Ending' | 'Insert Song';
 /**
  * Defines the source of an anime.
  */
-export type Source = 'other' | 'original' | 'manga' | '4_koma_manga' | 'web_manga' | 'digital_manga' | 'novel' | 'light_novel' | 'visual_novel' | 'game' | 'card_game' | 'book' | 'picture_book' | 'radio' | 'music';
+export type Source = 'other' | 'original' | 'manga' | '4_koma_manga' | 'web_manga' | 'digital_manga' | 'novel' | 'light_novel' | 'visual_novel' | 'game' | 'card_game' | 'book' | 'picture_book' | 'radio' | 'music' | 'mixed_media';
 
 /**
  * Defines the status of an anime for a given user.

@@ -135,5 +135,12 @@ export function getSource(source: Source) {
         
         case 'music':
             return 'Music';
+
+        case 'mixed_media':
+            return 'Mixed media';
+        
+        default:
+            console.error(`No label for source type ${source}!`);
+            return '';
     }
 }
