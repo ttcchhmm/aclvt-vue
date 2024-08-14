@@ -108,6 +108,11 @@ const virtualListStep = ref(35);
 const virtualListStepCount = ref(3);
 
 /**
+ * The maximum number of lines that can be displayed on the screen at any given time.
+ */
+const maxLinesOnScreen = ref(3);
+
+/**
  * Gets the alternative titles for an anime.
  * @param anime The anime.
  * @returns The alternative titles.
@@ -165,8 +170,10 @@ function onResize() {
   // Vertical screen
   if(window.innerWidth / window.innerHeight < 1) {
     virtualListStep.value = 1;
+    maxLinesOnScreen.value = Math.floor(window.innerHeight / 300) + 1;
   } else {
     virtualListStep.value = Math.floor(window.innerWidth / 338);
+    maxLinesOnScreen.value = Math.floor(window.innerHeight / 400) + 1;
   }
 }
 
@@ -219,7 +226,7 @@ onMounted(() => {
 
   // Set up the resize event listener
   window.addEventListener('resize', onResize);
-  onResize(); // Set initial value. 
+  onResize(); // Set initial values. 
 });
 
 // Setup the virtual list
@@ -232,7 +239,7 @@ watch(endAnchorRef, () => {
 
 // Reset the virtual list step count when the dataset changes and go to the top of the page.
 watch(animes, () => {
-  virtualListStepCount.value = 1;
+  virtualListStepCount.value = maxLinesOnScreen.value;
 
   setTimeout(() => {
     window.scrollTo({
