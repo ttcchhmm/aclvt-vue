@@ -135,7 +135,7 @@ function hidden() {
     height: 100%;
     width: 100%;
 
-    max-height: 500px;
+    max-height: 700px;
 }
 
 #videoDialogContent {
