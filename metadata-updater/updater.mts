@@ -39,6 +39,7 @@ type TiralexData = {
         id: number,
         mal_id: number,
         nb_musique: number,
+        genres: number[],
         musique: {
             type: MusicType,
             nom: string,
@@ -145,9 +146,14 @@ async function generateApiV1() {
         for(const anime of user) {
             // Check if the anime is already in the map
             if(additionalData[anime.node.id] === undefined) {
+                let cover = undefined;
+                if(anime.node.main_picture !== undefined) {
+                    cover = anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium;
+                }
+
                 additionalData[anime.node.id] = {
                     scores: {},
-                    cover: anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium,
+                    cover,
                     titles: { original: anime.node.title , ...anime.node.alternative_titles },
                     status: anime.node.status,
                     type: anime.node.media_type,
@@ -251,10 +257,15 @@ async function generateApiV2() {
             if(currentState === undefined) {
                 const music = tiralexJson.anime.find(a => a.mal_id === anime.node.id)?.musique.map(m => { return { type: m.type, name: m.nom, artist: m.artiste, link: m.lien, number: m.numero } });
 
+                let cover = undefined;
+                if(anime.node.main_picture !== undefined) {
+                    cover = anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium;
+                }
+
                 currentState = {
                     id: anime.node.id,
                     scores: {},
-                    cover: anime.node.main_picture.large !== undefined ? anime.node.main_picture.large : anime.node.main_picture.medium,
+                    cover,
                     titles: { original: anime.node.title , ...anime.node.alternative_titles },
                     status: anime.node.status,
                     type: anime.node.media_type,
@@ -320,6 +331,123 @@ async function generateApiV2() {
         }
     }
 
+    const animesNoMusic = mergedData
+        .filter(a => a.status !== 'not_yet_aired')
+        .filter(a => {
+            let toKeep = false;
+
+            if(a.scores.A != undefined && a.scores.A.status !== "plan_to_watch") {
+                toKeep = true;
+            } else if(a.scores.C != undefined && a.scores.C.status !== "plan_to_watch") {
+                toKeep = true;
+            } else if(a.scores.L != undefined && a.scores.L.status !== "plan_to_watch") {
+                toKeep = true;
+            } else if(a.scores.V != undefined && a.scores.V.status !== "plan_to_watch") {
+                toKeep = true;
+            } else if(a.scores.T != undefined && a.scores.T.status !== "plan_to_watch") {
+                toKeep = true;
+            } else if(a.scores.Q != undefined && a.scores.Q.status !== "plan_to_watch") {
+                toKeep = true;
+            }
+        
+            return toKeep;
+        })
+        .filter(a => a.music.length === 0);
+    
+    console.log(`${animesNoMusic.length} without entries.`);
+
+    // Query anisongdb
+    // TODO: maybe try not to DDOS anisongdb ? :)
+    await Promise.all(animesNoMusic.map(async (a) => {
+        // Remove season information, if possible
+        const cleanName = a.titles.original.replaceAll(/(?:\s*(?:Final|(?:\d+(?:st|nd|rd|th)?)?)\s+Season(?: \d+)?)?(?:\s*Part \d?)?(?:\s+M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$)?/ig, '').replaceAll(/Specials?/ig, '').trim();
+
+        console.log(`Searching AnisongDB for ${cleanName}`);
+
+        const anisongDB: any = await fetch("https://anisongdb.com/api/search_request", {
+            method: 'POST',
+            body: JSON.stringify({
+                and_logic: false,
+                anime_search_filter: {
+                    partial_match: true,
+                    search: cleanName,
+                },
+                chanting: true,
+                character: true,
+                dub: true,
+                ending_filter: true,
+                ignore_duplicate: false,
+                insert_filter: true,
+                instrumental: true,
+                normal_broadcast: true,
+                opening_filter: true,
+                rebroadcast: true,
+                standard: true,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'ACLVTQ-Updater/1.0',
+            },
+        }).then(r => r.json());
+
+        // For every result
+        anisongDB
+            // Make sure that the MAL id match
+            .filter((adb: any) => adb.linked_ids.myanimelist === a.id)
+            // Process each music
+            .forEach((adb: any) => {
+                // Check if the anime is already in Tiralex's database
+                let tiralexAnime = tiralexJson.anime.find(at => adb.linked_ids.myanimelist === at.mal_id);
+
+                let mergedAnime = mergedData.find(a => a.id === adb.linked_ids.myanimelist);
+
+                // If not, add it
+                if(!tiralexAnime) {
+                    tiralexAnime = {
+                        nom: adb.animeJPName,
+                        id: 0, // TODO: really unused?
+                        mal_id: a.id,
+                        nb_musique: 0, // Will be recalculated later
+                        genres: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // TODO: fill correctly
+                        musique: [],
+                    };
+
+                    tiralexJson.anime.push(tiralexAnime);
+                    tiralexJson.nb_anime++;
+                }
+
+                // Extract the Opening, Ending or Insert status
+                const type = adb.songType === "Insert Song" ? "Insert Song" : adb.songType.split(' ')[0];
+
+                // Add the music
+                const song = {
+                    type,
+                    numero: type === "Insert Song" ? 0 : adb.songType.split(' ')[1],
+                    nom: adb.songName,
+                    artiste: adb.songArtist,
+                    lien: `https://eudist.animemusicquiz.com/${adb.HQ}`,
+                };
+
+                console.log(`Added ${song.nom} (${adb.songType}) by ${song.artiste} for ${adb.animeJPName}`);
+
+                tiralexAnime.musique.push(song);
+                mergedAnime?.music.push({
+                    type: type as MusicType,
+                    artist: adb.songArtist,
+                    link: `https://eudist.animemusicquiz.com/${adb.HQ}`,
+                    name: adb.songName,
+                    number: type === "Insert Song" ? 0 : adb.songType.split(' ')[1],
+                });
+            });
+    }));
+
+    // Recalculate sizes
+    tiralexJson.anime.forEach(a => {
+        a.nb_musique = a.musique.length;
+    });
+
+    tiralexJson.nb_musique = tiralexJson.anime.reduce((acc, a) => acc + a.musique.length, 0);
+
     // Generate a file for each anime and an index file
     const animes: AnimeBase[] = [];
     const promises: Promise<any>[] = [];
@@ -384,6 +512,10 @@ async function generateApiV2() {
     
     promises.push(gzipFile('api/v2/index.json', 'api/v2/index.json.gz'));
     promises.push(brotliFile('api/v2/index.json', 'api/v2/index.json.br'));
+
+    await fsPromise.writeFile('api/v2/tiralex.json', JSON.stringify(tiralexJson));
+    promises.push(gzipFile('api/v2/tiralex.json', 'api/v2/tiralex.json.gz'));
+    promises.push(brotliFile('api/v2/tiralex.json', 'api/v2/tiralex.json.br'))
 
     await Promise.all(promises);
 
