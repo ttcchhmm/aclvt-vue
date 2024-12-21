@@ -184,16 +184,56 @@ function onResize() {
  */
 function showOnlyOneList(e: MouseEvent, selectedList: string) {
   e.preventDefault();
-  navigator.vibrate(10);
 
-  searchStore.$patch({
-    checkTiralex: selectedList === 'A',
-    checkCycy: selectedList === 'C',
-    checkLeo: selectedList === 'L',
-    checkGyrehio: selectedList === 'V',
-    checktchm: selectedList === 'T',
-    checkqgWolf: selectedList === 'Q',
-  });
+  let checked = 0;
+
+  if(searchStore.checkTiralex) {
+    checked++;
+  }
+
+  if(searchStore.checkCycy) {
+    checked++;
+  }
+
+  if(searchStore.checkLeo) {
+    checked++;
+  }
+
+  if(searchStore.checkGyrehio) {
+    checked++;
+  }
+
+  if(searchStore.checktchm) {
+    checked++;
+  }
+
+  if(searchStore.checkqgWolf) {
+    checked++;
+  }
+
+  if(checked <= 1) {
+    searchStore.$patch({
+      checkTiralex: true,
+      checkCycy: true,
+      checkGyrehio: true,
+      checkLeo: true,
+      checktchm: true,
+      checkqgWolf: true,
+    });
+  } else {
+    searchStore.$patch({
+      checkTiralex: selectedList === 'A',
+      checkCycy: selectedList === 'C',
+      checkLeo: selectedList === 'L',
+      checkGyrehio: selectedList === 'V',
+      checktchm: selectedList === 'T',
+      checkqgWolf: selectedList === 'Q',
+    });
+  }
+
+  if(navigator.vibrate) {
+    navigator.vibrate(10);
+  }
 }
 
 onMounted(() => {
