@@ -172,7 +172,7 @@ function onResize() {
     virtualListStep.value = 1;
     maxLinesOnScreen.value = Math.floor(window.innerHeight / 300) + 1;
   } else {
-    virtualListStep.value = Math.floor(window.innerWidth / 338);
+    virtualListStep.value = Math.floor(window.innerWidth / 338) - 1;
     maxLinesOnScreen.value = Math.floor(window.innerHeight / 400) + 1;
   }
 }
