@@ -357,90 +357,119 @@ async function generateApiV2() {
     console.log(`${animesNoMusic.length} without entries.`);
 
     // Query anisongdb
-    // TODO: maybe try not to DDOS anisongdb ? :)
-    await Promise.all(animesNoMusic.map(async (a) => {
-        // Remove season information, if possible
-        const cleanName = a.titles.original.replaceAll(/(?:\s*(?:Final|(?:\d+(?:st|nd|rd|th)?)?)\s+Season(?: \d+)?)?(?:\s*Part \d?)?(?:\s+M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$)?/ig, '').replaceAll(/Specials?/ig, '').trim();
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-        console.log(`Searching AnisongDB for ${cleanName}`);
-
-        const anisongDB: any = await fetch("https://anisongdb.com/api/search_request", {
-            method: 'POST',
-            body: JSON.stringify({
-                and_logic: false,
-                anime_search_filter: {
-                    partial_match: true,
-                    search: cleanName,
+    const batchSize = 3;
+    for (let i = 0; i < animesNoMusic.length; i += batchSize) {
+        const batch = animesNoMusic.slice(i, i + batchSize);
+    
+        await Promise.all(batch.map(async (a) => {
+            // Remove season information, if possible
+            const cleanName = a.titles.original.replaceAll(/(?:\s*(?:Final|(?:\d+(?:st|nd|rd|th)?)?)\s+(?:Season|Movie)(?: \d+)?)?(?:\s*Part \d?)?(?:\s+M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$)?/ig, '').replaceAll(/Specials?/ig, '').trim();
+    
+            console.log(`Searching AnisongDB for ${cleanName}`);
+    
+            const anisongDB: any = await fetch("https://anisongdb.com/api/search_request", {
+                method: 'POST',
+                body: JSON.stringify({
+                    and_logic: false,
+                    anime_search_filter: {
+                        partial_match: true,
+                        search: cleanName,
+                    },
+                    artist_search_filter: {
+                        group_granularity: 0,
+                        partial_match: true,
+                        max_other_artist: 99,
+                        search: cleanName, // Copy the behavior of the website
+                    },
+                    chanting: true,
+                    character: true,
+                    composer_search_filter: {
+                        arrangement: true,
+                        partial_match: true,
+                        search: cleanName, // Copy the behavior of the website
+                    },
+                    dub: true,
+                    ending_filter: true,
+                    ignore_duplicate: false,
+                    insert_filter: true,
+                    instrumental: true,
+                    normal_broadcast: true,
+                    opening_filter: true,
+                    rebroadcast: true,
+                    song_name_search_filter: {
+                        partial_match: true,
+                        search: cleanName, // Copy the behavior of the website
+                    },
+                    standard: true,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'ACLVTQ-Updater/1.0',
                 },
-                chanting: true,
-                character: true,
-                dub: true,
-                ending_filter: true,
-                ignore_duplicate: false,
-                insert_filter: true,
-                instrumental: true,
-                normal_broadcast: true,
-                opening_filter: true,
-                rebroadcast: true,
-                standard: true,
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'ACLVTQ-Updater/1.0',
-            },
-        }).then(r => r.json());
+            }).then(r => r.json()).catch((e) => console.error(e));
 
-        // For every result
-        anisongDB
-            // Make sure that the MAL id match
-            .filter((adb: any) => adb.linked_ids.myanimelist === a.id)
-            // Process each music
-            .forEach((adb: any) => {
-                // Check if the anime is already in Tiralex's database
-                let tiralexAnime = tiralexJson.anime.find(at => adb.linked_ids.myanimelist === at.mal_id);
-
-                let mergedAnime = mergedData.find(a => a.id === adb.linked_ids.myanimelist);
-
-                // If not, add it
-                if(!tiralexAnime) {
-                    tiralexAnime = {
-                        nom: adb.animeJPName,
-                        id: 0, // TODO: really unused?
-                        mal_id: a.id,
-                        nb_musique: 0, // Will be recalculated later
-                        genres: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // TODO: fill correctly
-                        musique: [],
+            if(anisongDB === undefined) {
+                console.error(`Failed to fetch AnisongDB for ${cleanName}`);
+                return;
+            }
+    
+            // For every result
+            anisongDB
+                // Make sure that the MAL id match
+                .filter((adb: any) => adb.linked_ids.myanimelist === a.id)
+                // Process each music
+                .forEach((adb: any) => {
+                    // Check if the anime is already in Tiralex's database
+                    let tiralexAnime = tiralexJson.anime.find(at => adb.linked_ids.myanimelist === at.mal_id);
+    
+                    let mergedAnime = mergedData.find(a => a.id === adb.linked_ids.myanimelist);
+    
+                    // If not, add it
+                    if(!tiralexAnime) {
+                        tiralexAnime = {
+                            nom: adb.animeJPName,
+                            id: 0, // TODO: really unused?
+                            mal_id: a.id,
+                            nb_musique: 0, // Will be recalculated later
+                            genres: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // TODO: fill correctly
+                            musique: [],
+                        };
+    
+                        tiralexJson.anime.push(tiralexAnime);
+                        tiralexJson.nb_anime++;
+                    }
+    
+                    // Extract the Opening, Ending or Insert status
+                    const type = adb.songType === "Insert Song" ? "Insert Song" : adb.songType.split(' ')[0];
+    
+                    // Add the music
+                    const song = {
+                        type,
+                        numero: type === "Insert Song" ? 0 : adb.songType.split(' ')[1],
+                        nom: adb.songName,
+                        artiste: adb.songArtist,
+                        lien: `https://eudist.animemusicquiz.com/${adb.HQ}`,
                     };
-
-                    tiralexJson.anime.push(tiralexAnime);
-                    tiralexJson.nb_anime++;
-                }
-
-                // Extract the Opening, Ending or Insert status
-                const type = adb.songType === "Insert Song" ? "Insert Song" : adb.songType.split(' ')[0];
-
-                // Add the music
-                const song = {
-                    type,
-                    numero: type === "Insert Song" ? 0 : adb.songType.split(' ')[1],
-                    nom: adb.songName,
-                    artiste: adb.songArtist,
-                    lien: `https://eudist.animemusicquiz.com/${adb.HQ}`,
-                };
-
-                console.log(`Added ${song.nom} (${adb.songType}) by ${song.artiste} for ${adb.animeJPName}`);
-
-                tiralexAnime.musique.push(song);
-                mergedAnime?.music.push({
-                    type: type as MusicType,
-                    artist: adb.songArtist,
-                    link: `https://eudist.animemusicquiz.com/${adb.HQ}`,
-                    name: adb.songName,
-                    number: type === "Insert Song" ? 0 : adb.songType.split(' ')[1],
+    
+                    console.log(`Added ${song.nom} (${adb.songType}) by ${song.artiste} for ${adb.animeJPName}`);
+    
+                    tiralexAnime.musique.push(song);
+                    mergedAnime?.music.push({
+                        type: type as MusicType,
+                        artist: adb.songArtist,
+                        link: `https://eudist.animemusicquiz.com/${adb.HQ}`,
+                        name: adb.songName,
+                        number: type === "Insert Song" ? 0 : adb.songType.split(' ')[1],
+                    });
                 });
-            });
-    }));
-
+        }));
+    
+        // Wait for 1 second before processing the next batch
+        await delay(250);
+    }
+    
     // Recalculate sizes
     tiralexJson.anime.forEach(a => {
         a.nb_musique = a.musique.length;
