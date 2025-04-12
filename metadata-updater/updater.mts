@@ -331,8 +331,7 @@ async function generateApiV2() {
         }
     }
 
-    const animesNoMusic = mergedData
-        .filter(a => a.status !== 'not_yet_aired')
+    const filterNoMusic = (animes: Anime[]) => animes.filter(a => a.status !== 'not_yet_aired')
         .filter(a => {
             let toKeep = false;
 
@@ -353,6 +352,8 @@ async function generateApiV2() {
             return toKeep;
         })
         .filter(a => a.music.length === 0);
+
+    const animesNoMusic = filterNoMusic(mergedData);
     
     console.log(`${animesNoMusic.length} without entries.`);
 
@@ -468,6 +469,73 @@ async function generateApiV2() {
     
         // Wait for 1 second before processing the next batch
         await delay(250);
+    }
+
+    // As a last resort, query Animethemes.moe for recent-ish animes
+    const toQueryAnimethemes = filterNoMusic(mergedData)
+        .filter(a => a.startSeason.year >= 2025);
+    
+    const splicedQueries = [];
+    for (let i = 0; i < toQueryAnimethemes.length; i += 85) {
+        splicedQueries.push(toQueryAnimethemes.slice(i, i + 85));
+    }
+
+    for (const batch of splicedQueries) {
+        console.log(`Processing batch of ${batch.length} animes for Animethemes.moe`);
+
+        const responses = await Promise.all(batch.map(a =>
+            fetch(`https://api.animethemes.moe/anime?include=animethemes,resources,animethemes.animethemeentries.videos,animethemes.song,animethemes.song.artists&fields%5Banime%5D=id,name,slug,year&filter%5Bhas%5D=resources&filter%5Bsite%5D=myanimelist&filter%5Bexternal_id%5D=${a.id}`)
+            .then(r => r.json())
+        ));
+
+        responses.forEach((r: any) => {
+            r.anime.forEach((a: any) => {
+                const mergedAnime = mergedData.find(ma => ma.id === a.resources.find((res: any) => res.site === 'MyAnimeList').external_id);
+
+                console.log(`Animetheme.moe: found results for ${a.name}`);
+
+                if(mergedAnime) {
+                    a.animethemes.forEach((theme: any) => {
+                        const song = {
+                            type: theme.type === 'OP' ? 'Opening' : 'Ending' as MusicType,
+                            artist: theme.song.artists.map((artist: any) => artist.name).join(', '),
+                            name: theme.song.title,
+                            number: theme.type.substr(2),
+                            link: theme.animethemeentries[0].videos?.sort((x: any, y: any) => y.size - x.size)[0].link,
+                        };
+
+                        mergedAnime.music.push(song);
+                        
+                        let tiralexAnime = tiralexJson.anime.find(at => mergedAnime.id === at.mal_id);
+                        if(!tiralexAnime) {
+                            tiralexAnime = {
+                                nom: mergedAnime.titles.original,
+                                id: 0, // TODO: really unused?
+                                mal_id: mergedAnime.id,
+                                nb_musique: 0, // Will be recalculated later
+                                genres: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // TODO: fill correctly
+                                musique: [{
+                                    type: song.type,
+                                    artiste: song.artist,
+                                    lien: song.link,
+                                    nom: song.name,
+                                    numero: song.number,
+                                }],
+                            };
+        
+                            tiralexJson.anime.push(tiralexAnime);
+                            tiralexJson.nb_anime++;
+                        }
+                    });
+                } else {
+                    console.log(`Animethemes.moe: skipping ${a.name}`);
+                }
+            });
+        });
+
+        if(splicedQueries.length !== 1) {
+            await delay(60000);
+        }
     }
     
     // Recalculate sizes
