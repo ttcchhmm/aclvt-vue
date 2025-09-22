@@ -148,8 +148,8 @@ function offlineAlert() {
 
 /**
  * Called each time the end of the page is reached. Increment the number of animes to show at a given time.
- * @param entries 
- * @param observer 
+ * @param entries
+ * @param observer
  */
 function showMore(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
   entries.forEach(e => {
@@ -172,7 +172,7 @@ function onResize() {
     virtualListStep.value = 1;
     maxLinesOnScreen.value = Math.floor(window.innerHeight / 300) + 1;
   } else {
-    virtualListStep.value = Math.floor(window.innerWidth / 338) - 1;
+    virtualListStep.value = Math.floor(window.innerWidth / 320) - 1;
     maxLinesOnScreen.value = Math.floor(window.innerHeight / 400) + 1;
   }
 }
@@ -266,7 +266,7 @@ onMounted(() => {
 
   // Set up the resize event listener
   window.addEventListener('resize', onResize);
-  onResize(); // Set initial values. 
+  onResize(); // Set initial values.
 });
 
 // Setup the virtual list
@@ -367,7 +367,7 @@ header {
   left: 0px;
   width: calc(100% - 50px);
   height: 50px;
-  
+
   /* background-color: rgba(0, 191, 255, 0.5); */
   background-color: v-bind(headerColorWithAlpha);
   backdrop-filter: blur(5px);
@@ -531,7 +531,7 @@ header h1 {
 
   #headerCenter {
     width: fit-content;
-    
+
     flex-direction: row;
   }
 
