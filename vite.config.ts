@@ -51,24 +51,6 @@ export default defineConfig({
               },
             },
           },
-          // {
-          //   urlPattern: /^https:\/\/nl\.catbox\.video\/.*/i,
-          //   handler: 'CacheFirst',
-          //   options: {
-          //     cacheName: 'catbox',
-          //     expiration: {
-          //       maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-          //       purgeOnQuotaError: true,
-          //     },
-          //     cacheableResponse: {
-          //       statuses: [0, 200],
-          //     },
-          //     fetchOptions: {
-          //       mode: 'cors',
-          //       credentials: 'omit',
-          //     },
-          //   },
-          // },
         ],
       },
       manifest: {
