@@ -356,7 +356,7 @@ export function sortAnimes(sortType: SortType) {
  * @returns True if the anime has been watched by the user, false otherwise.
  */
 function watched(score: UserEntry | undefined): boolean {
-    return score !== undefined;
+    return score !== undefined && score.status !== "plan_to_watch";
 }
 
 /**
