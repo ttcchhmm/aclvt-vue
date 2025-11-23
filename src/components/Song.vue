@@ -48,7 +48,8 @@ function playVideo() {
         <h5>{{ props.song.artist }}</h5>
     </div>
 
-    <img v-once @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" :title="`Watch ${props.song.name} by ${props.song.artist}`" height="30" width="30">
+    <img v-if="props.song.link" v-once @click="playVideo" src="@/assets/play.svg" alt="Play video" class="svgFix playButton" :title="`Watch ${props.song.name} by ${props.song.artist}`" height="30" width="30">
+    <img v-else v-once src="@/assets/error.svg" alt="Missing video" class="svgFix" title="Missing video file" height="30" width="30">
 </div>
 </template>
 

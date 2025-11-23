@@ -188,7 +188,7 @@ export type Music = {
     /**
      * The link to the song.
      */
-    link: string;
+    link?: string;
 
     /**
      * The number of the song.

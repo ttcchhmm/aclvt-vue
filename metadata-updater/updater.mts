@@ -501,7 +501,7 @@ async function generateApiV2() {
                             artist: theme.song.artists.map((artist: any) => artist.name).join(', '),
                             name: theme.song.title,
                             number: theme.type.substr(2),
-                            link: theme.animethemeentries[0].videos?.sort((x: any, y: any) => y.size - x.size)[0].link,
+                            link: theme.animethemeentries[0].videos?.sort((x: any, y: any) => y.size - x.size)[0]?.link,
                         };
 
                         mergedAnime.music.push(song);
