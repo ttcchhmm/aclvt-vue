@@ -3,6 +3,7 @@ import { createGzip, createBrotliCompress, constants as zlibConstants } from 'zl
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 import { Anime, AnimeBase, MusicType, Rating, UserEntry } from '../src/Types.js';
+import { exit } from 'process';
 
 /**
  * The anime API v1 type.
@@ -414,6 +415,9 @@ async function generateApiV2() {
             if(anisongDB === undefined) {
                 console.error(`Failed to fetch AnisongDB for ${cleanName}`);
                 return;
+            } else if(anisongDB.detail == "Search temporarily unavailable during ranked time. Song name, artist, and composer searches are disabled.") {
+                console.error("A ranked game currently in progress and requests to AnisongDB are required to properly rebuild the database. Canceling the update now.")
+                exit(1);
             }
     
             // For every result
@@ -486,9 +490,13 @@ async function generateApiV2() {
         const responses = await Promise.all(batch.map(a =>
             fetch(`https://api.animethemes.moe/anime?include=animethemes,resources,animethemes.animethemeentries.videos,animethemes.song,animethemes.song.artists&fields%5Banime%5D=id,name,slug,year&filter%5Bhas%5D=resources&filter%5Bsite%5D=myanimelist&filter%5Bexternal_id%5D=${a.id}`)
             .then(r => r.json())
+            .catch(e => {
+                console.error(e);
+                return null;
+            })
         ));
 
-        responses.forEach((r: any) => {
+        responses.filter(r => r != null).forEach((r: any) => {
             r.anime.forEach((a: any) => {
                 const mergedAnime = mergedData.find(ma => ma.id === a.resources.find((res: any) => res.site === 'MyAnimeList').external_id);
 
